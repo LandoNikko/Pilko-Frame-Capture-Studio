@@ -18,6 +18,7 @@
       --accent-secondary: #10b981; --accent-secondary-dark: #059669;
       --accent-tertiary: #f59e0b; --accent-tertiary-dark: #d97706;
       --border-color: #4a4a52; --border-dashed: #6b6b74; --danger-color: #ef4444;
+      --danger-color-dark: #dc2626;
       --white: #ffffff; --black: #000000;
       --glitch-cyan: rgba(0, 255, 255, 0.7); --glitch-magenta: rgba(255, 0, 255, 0.7);
       --border-radius-sm: 4px; --border-radius-md: 6px; --border-radius-lg: 8px; --border-radius-full: 9999px;
@@ -25,7 +26,13 @@
       --scrollbar-width: 8px; --separator-width: 2px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg-primary); color: var(--text-primary); font-family: 'Inter', "Helvetica Neue", Arial, sans-serif; line-height: 1.6; font-size: 16px; overflow: hidden; height: 100vh; display: flex; }
+    body { background-color: var(--bg-primary); color: var(--text-primary); font-family: 'Inter', "Helvetica Neue", Arial, sans-serif; line-height: 1.6; font-size: 16px; min-height: 100vh; display: flex; overflow: hidden; }
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
     /* Scrollbar Styling */
     ::-webkit-scrollbar { width: var(--scrollbar-width); height: var(--scrollbar-width); }
     ::-webkit-scrollbar-track { background: var(--bg-secondary); border-radius: var(--border-radius-full); }
@@ -33,14 +40,63 @@
     ::-webkit-scrollbar-thumb:hover { background-color: var(--border-color); }
     * { scrollbar-width: thin; scrollbar-color: var(--bg-tertiary) var(--bg-secondary); }
     /* Layout */
-    .app-container { flex-grow: 1; display: flex; overflow: hidden; position: relative; width: 100%; }
-    .vertical-separator { position: absolute; top: 0; bottom: 0; left: var(--settings-column-width); width: var(--separator-width); background-image: linear-gradient(to bottom, var(--border-dashed) 60%, transparent 40%); background-size: 100% 8px; background-repeat: repeat-y; z-index: 10; }
-    .settings-column { flex: 0 0 var(--settings-column-width); height: 100%; position: relative; overflow-y: auto; overflow-x: hidden; direction: rtl; background-color: var(--bg-secondary); padding-left: var(--content-padding); padding-right: calc(var(--content-padding)); padding-top: var(--content-padding); padding-bottom: var(--content-padding); }
+    .app-container { 
+        flex: 1; 
+        display: flex; 
+        position: relative; 
+        width: 100%;
+        height: 100%;
+        overflow: hidden; /* Container doesn't scroll */
+    }
+    .vertical-separator { 
+        position: absolute; 
+        top: 0; 
+        bottom: 0; 
+        left: var(--settings-column-width); 
+        width: var(--separator-width); 
+        background-image: linear-gradient(to bottom, var(--border-dashed) 60%, transparent 40%); 
+        background-size: 100% 8px; 
+        background-repeat: repeat-y; 
+        z-index: 10;
+        pointer-events: none; /* Let clicks pass through */
+        transition: background-image 0.3s ease;
+    }
+    .vertical-separator.loading {
+        background-image: linear-gradient(to bottom, var(--accent-primary) 60%, transparent 40%);
+        background-size: 100% 12px;
+        animation: loadingAnimation 12s linear infinite;
+    }
+    .vertical-separator.loading-smart {
+        background-image: linear-gradient(to bottom, var(--accent-secondary) 60%, transparent 40%);
+        background-size: 100% 12px;
+        animation: loadingAnimation 12s linear infinite;
+    }
+    @keyframes loadingAnimation {
+        0% {
+            background-position: 0 100vh;
+        }
+        100% {
+            background-position: 0 0;
+        }
+    }
+    .settings-column { flex: 0 0 var(--settings-column-width); position: relative; height: 100%; overflow-y: auto; overflow-x: hidden; direction: rtl; background-color: var(--bg-secondary); padding-left: var(--content-padding); padding-right: calc(var(--content-padding)); padding-top: var(--content-padding); padding-bottom: var(--content-padding); }
     .settings-content-wrapper { direction: ltr; width: 100%; }
-    .output-column { flex: 1 1 auto; height: 100%; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-primary); }
-    #screenshots { flex-grow: 1; overflow-y: auto; padding: var(--content-padding); display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; align-content: flex-start; }
+    .output-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-primary);
+        overflow-y: auto;
+    }
+    #screenshots {
+        padding: var(--content-padding);
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 0.2rem;
+        align-content: start;
+    }
     /* H1 */
-    h1 { font-family: 'Doto', sans-serif; /* REMOVED font-size */ text-align: center; padding-bottom: 1rem; margin-bottom: 1.5rem; font-weight: 400; color: var(--white); position: relative; cursor: pointer; user-select: none; transition: color 0.3s ease; border-bottom: 1px solid var(--border-color); }
+    h1 { font-family: 'Doto', sans-serif; text-align: center; padding-bottom: 1rem; margin-bottom: 1.5rem; font-weight: 400; color: var(--white); position: relative; cursor: pointer; user-select: none; transition: color 0.3s ease; border-bottom: 1px solid var(--border-color); }
     h1::before, h1::after { content: attr(data-text); position: absolute; top: 0; left: 0; right: 0; padding-bottom: 1rem; overflow: hidden; color: var(--white); background: var(--bg-secondary); transition: transform 0.05s ease-in-out, color 0.1s ease; opacity: 0; }
     h1:hover::before { color: var(--glitch-magenta); transform: translate(-2px, -1px) skewX(-5deg); opacity: 1; animation: glitchAnim 0.8s infinite linear alternate-reverse; }
     h1:hover::after { color: var(--glitch-cyan); transform: translate(2px, 1px) skewX(5deg); opacity: 1; animation: glitchAnim 0.8s infinite linear alternate; }
@@ -53,25 +109,93 @@
     /* Tabs */
     .segmented-controls { display: flex; border-radius: var(--border-radius-md); overflow: hidden; background-color: var(--bg-tertiary); margin-bottom: 1.5rem; border: 1px solid var(--border-color); } .segmented-controls button { flex: 1; background-color: transparent; text-align: center; border: none; padding: 0.7rem 0.5rem; color: var(--text-secondary); cursor: pointer; transition: background-color 0.2s, color 0.2s; font-family: inherit; font-size: 0.9rem; font-weight: 500; border-left: 1px solid var(--border-color); } .segmented-controls button:first-child { border-left: none; } .segmented-controls button:hover:not(.active) { background-color: var(--border-color); color: var(--text-primary); } .segmented-controls button.active { background-color: var(--accent-primary); color: var(--white); font-weight: 600; } .format-tabs, .smart-algo-tabs { margin-bottom: 1rem; } .format-tabs button, .smart-algo-tabs button { padding: 0.5rem 0.5rem; font-size: 0.85rem; } .smart-algo-tabs button.active { background-color: var(--accent-secondary); }
     /* Mode Containers Display Logic */
-    .mode-content > div { display: none; } /* Hide all mode divs by default */
-    .mode-content > div.active { display: block; } /* Show only the one with .active class */
+    .mode-content > div { display: none; } .mode-content > div.active { display: block; }
     /* Sliders */
     .slider-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; } .slider-label { width: 110px; text-align: left; font-size: 0.9rem; color: var(--text-secondary); flex-shrink: 0; } .slider-wrapper { flex: 1; display: flex; align-items: center; gap: 1rem; min-width: 180px; } .value-display { font-weight: 500; min-width: 45px; text-align: right; font-family: 'Source Code Pro', monospace; color: var(--text-primary); } input[type="range"] { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--bg-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; } input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.1s ease-out; } input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.2); transition: transform 0.1s ease-out; } input[type="range"]:active::-webkit-slider-thumb, input[type="range"]:active::-moz-range-thumb { transform: scale(1.1); } input[type="range"]:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
     /* Notes & Buttons */
     #pngNote, #pngNoteSmart { font-size: 0.85rem; color: var(--text-secondary); text-align: center; width: 100%; min-height: 36px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
-    .button-group { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.5rem; } .action-button { width: 100%; padding: 0.8rem 1.5rem; font-size: 1rem; border: none; border-radius: var(--border-radius-full); color: var(--white); cursor: pointer; transition: background-color 0.2s, opacity 0.2s; text-align: center; font-weight: 600; } .action-button:disabled { opacity: 0.5; cursor: not-allowed; } #processButton { background-color: var(--accent-primary); } #processButton:hover:enabled { background-color: var(--accent-primary-dark); } #processButton:disabled { background-color: var(--accent-primary); } #downloadAllButton { background-color: var(--bg-tertiary); color: var(--text-primary); } #downloadAllButton:hover:enabled { background-color: var(--border-color); } #downloadAllButton:disabled { background-color: var(--bg-tertiary); } #processSmartButton { background-color: var(--accent-secondary); } #processSmartButton:hover:enabled { background-color: var(--accent-secondary-dark); } #processSmartButton:disabled { background-color: var(--accent-secondary); } #downloadAllSmartButton { background-color: var(--accent-tertiary); color: var(--bg-primary); } #downloadAllSmartButton:hover:enabled { background-color: var(--accent-tertiary-dark); } #downloadAllSmartButton:disabled { background-color: var(--accent-tertiary); }
+    .button-group { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.5rem; } .action-button { width: 100%; padding: 0.8rem 1.5rem; font-size: 1rem; border: none; border-radius: var(--border-radius-full); color: var(--white); cursor: pointer; transition: background-color 0.2s, opacity 0.2s, color 0.2s; text-align: center; font-weight: 600; } .action-button:disabled { opacity: 0.5; cursor: not-allowed; }
+    #processButton, #processSmartButton { background-color: var(--accent-primary); }
+    #processButton:hover:enabled:not(.cancel-active),
+    #processSmartButton:hover:enabled:not(.cancel-active) { background-color: var(--accent-primary-dark); }
+    #processButton:disabled:not(.cancel-active),
+    #processSmartButton:disabled:not(.cancel-active) { background-color: var(--accent-primary); }
+    #processButton.cancel-active, #processSmartButton.cancel-active { background-color: var(--danger-color); color: var(--white); }
+    #processButton.cancel-active:hover:enabled, #processSmartButton.cancel-active:hover:enabled { background-color: var(--danger-color-dark); }
+    #downloadAllButton { background-color: var(--bg-tertiary); color: var(--text-primary); } #downloadAllButton:hover:enabled { background-color: var(--border-color); } #downloadAllButton:disabled { background-color: var(--bg-tertiary); }
+    #processSmartButton { background-color: var(--accent-secondary); } #processSmartButton:hover:enabled:not(.cancel-active) { background-color: var(--accent-secondary-dark); } #processSmartButton:disabled:not(.cancel-active) { background-color: var(--accent-secondary); } #downloadAllSmartButton { background-color: var(--accent-tertiary); color: var(--bg-primary); } #downloadAllSmartButton:hover:enabled { background-color: var(--accent-tertiary-dark); } #downloadAllSmartButton:disabled { background-color: var(--accent-tertiary); }
+    #clearScreenshotsButton { margin-top: 1.5rem; padding: 0.6rem 1.2rem; font-size: 0.9rem; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); border-radius: var(--border-radius-md); cursor: pointer; transition: background-color 0.2s, color 0.2s, border-color 0.2s; width: 100%; } #clearScreenshotsButton:hover:enabled { background-color: var(--danger-color-dark); color: var(--white); border-color: var(--danger-color); } #clearScreenshotsButton:disabled { opacity: 0.4; cursor: not-allowed; }
     /* Manual Mode */
     #manualVideo { width: 100%; border-radius: var(--border-radius-lg); background-color: var(--black); margin-bottom: 1rem; aspect-ratio: 16 / 9; border: 1px solid var(--border-color); } .manual-buttons { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; } #extractManualButton { flex: 1 1 auto; padding: 0.7rem 1.2rem; font-size: 0.9rem; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s; font-weight: 500; min-width: 120px; } #extractManualButton:hover { background-color: var(--border-color); } #downloadManualButton { flex: 1 1 auto; padding: 0.7rem 1.2rem; font-size: 0.9rem; background-color: var(--accent-primary); border: none; border-radius: var(--border-radius-md); color: var(--white); font-weight: 500; min-width: 120px;} #downloadManualButton:hover:enabled { background-color: var(--accent-primary-dark); } #downloadManualButton:disabled { background-color: var(--accent-primary); opacity: 0.5; cursor: not-allowed; } #addManualButton { width: 44px; height: 44px; background-color: var(--accent-primary); border: none; border-radius: 50%; color: var(--white); font-size: 1.8rem; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background-color 0.2s, transform 0.1s; flex-shrink: 0; } #addManualButton:hover { background-color: var(--accent-primary-dark); } #addManualButton:active { transform: scale(0.95); }
     /* Progress Bars */
     .progress-bar-container { width: 100%; height: 8px; background-color: var(--bg-secondary); background-image: repeating-linear-gradient( -45deg, var(--bg-tertiary), var(--bg-tertiary) 3px, transparent 3px, transparent 6px ); border-radius: var(--border-radius-full); overflow: hidden; margin-top: 1rem; display: none; } .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); border-radius: var(--border-radius-full); transition: width 0.3s ease-out; } #progressBarSmart .progress-bar-fill { background: linear-gradient(90deg, var(--accent-secondary), var(--accent-tertiary)); }
     /* Screenshots Grid */
-    .screenshot-container { position: relative; overflow: hidden; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); background-color: var(--bg-secondary); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; } .screenshot-container:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); } .screenshot-container a { display: block; line-height: 0; } .screenshot-container img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--border-radius-md); animation: fadeIn 0.5s ease-in-out; } .screenshot-overlay, .delete-btn { position: absolute; opacity: 0; transition: opacity 0.2s ease-in-out; pointer-events: none; } .screenshot-container:hover .screenshot-overlay, .screenshot-container:hover .delete-btn { opacity: 1; pointer-events: auto; } .screenshot-overlay { left: 0; bottom: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); color: var(--white); font-size: 0.8rem; padding: 1rem 0.6rem 0.4rem; text-align: right; font-family: 'Source Code Pro', monospace; } .delete-btn { top: 6px; right: 6px; background: rgba(239, 68, 68, 0.8); border: none; color: var(--white); font-size: 0.9rem; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; backdrop-filter: blur(2px); } .delete-btn:hover { background: var(--danger-color); }
+    .screenshot-container { position: relative; overflow: hidden; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); background-color: var(--bg-secondary); } .screenshot-container:hover { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); } .screenshot-container a { display: block; line-height: 0; } .screenshot-container img { display: block; width: 100%; height: auto; object-fit: cover; border-radius: var(--border-radius-md); animation: fadeIn 0.5s ease-in-out; } .screenshot-overlay, .delete-btn { position: absolute; opacity: 0; transition: opacity 0.2s ease-in-out; pointer-events: none; } .screenshot-container:hover .screenshot-overlay, .screenshot-container:hover .delete-btn { opacity: 1; pointer-events: auto; } .screenshot-overlay { left: 0; bottom: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); color: var(--white); font-size: 0.8rem; padding: 1rem 0.6rem 0.4rem; text-align: right; font-family: 'Source Code Pro', monospace; } .delete-btn { top: 6px; right: 6px; background: rgba(239, 68, 68, 0.8); border: none; color: var(--white); font-size: 0.9rem; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; backdrop-filter: blur(2px); } .delete-btn:hover { background: var(--danger-color); }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     /* Hidden Elements */
     #video, #canvas { display: none; }
     /* Responsive */
-    @media (max-width: 1024px) { body { overflow-y: auto; height: auto; } .app-container { flex-direction: column; height: auto; } .vertical-separator { display: none; } .settings-column { flex-basis: auto; width: 100%; border-right: none; overflow-y: visible; height: auto; padding: var(--content-padding); direction: ltr; background-color: transparent; border-bottom: 2px dashed var(--border-dashed); margin-bottom: var(--content-padding); } .settings-content-wrapper { direction: ltr; height: auto; } .output-column { flex-basis: auto; height: auto; overflow-y: visible; background-color: transparent; } #screenshots { overflow-y: visible; height: auto; max-height: none; padding: 0 var(--content-padding) var(--content-padding); } h1 { margin-bottom: 1.5rem; border-bottom: none; } }
-    @media (max-width: 600px) { body { font-size: 15px; } .settings-column { padding: 1rem; margin-bottom: 1rem;} .output-column { padding: 0; } #screenshots { padding: 1rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; } .slider-label { width: 90px; } h1 { font-size: 1.8em; } .action-button { font-size: 0.9rem; padding: 0.7rem 1.2rem;} }
+    @media (max-width: 800px) { 
+        body {
+            overflow-y: auto;
+            height: auto;
+        }
+        .app-container { 
+            flex-direction: column;
+            height: auto;
+            overflow: visible;
+        } 
+        .vertical-separator { 
+            display: none; 
+        } 
+        .settings-column { 
+            flex-basis: auto; 
+            width: 100%; 
+            height: auto;
+            max-height: none;
+            border-right: none; 
+            overflow-y: visible;
+            padding: var(--content-padding); 
+            direction: ltr; 
+            background-color: transparent; 
+            border-bottom: 2px dashed var(--border-dashed); 
+            margin-bottom: var(--content-padding); 
+        } 
+        .settings-content-wrapper { direction: ltr; } 
+        .output-column { 
+            width: 100%;
+            overflow-y: visible;
+            background-color: transparent;
+        } 
+        #screenshots { 
+            padding: 0 var(--content-padding) var(--content-padding);
+        } 
+        h1 { margin-bottom: 1.5rem; border-bottom: none; } 
+    }
+    @media (max-width: 600px) {
+        body { font-size: 15px; } 
+        .settings-column { padding: 1rem; margin-bottom: 1rem; } 
+        .output-column { 
+            padding: 0; 
+        } 
+        #screenshots { 
+            padding: 1rem; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 0.8rem; 
+        } 
+        .slider-label { width: 90px; } 
+        h1 { font-size: 1.8em; } 
+        .action-button { font-size: 0.9rem; padding: 0.7rem 1.2rem; } 
+    }
+    /* Toggle Switch */
+    .toggle-row { display: flex; align-items: center; margin-bottom: 1.5rem; background-color: var(--bg-tertiary); padding: 0.8rem 1rem; border-radius: var(--border-radius-md); }
+    .toggle-label { flex: 1; font-size: 0.9rem; color: var(--text-primary); font-weight: 500; }
+    .toggle-switch { position: relative; display: inline-block; width: 48px; height: 24px; }
+    .toggle-input { opacity: 0; width: 0; height: 0; }
+    .toggle-label-switch { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-primary); transition: .3s; border-radius: 24px; border: 1px solid var(--border-color); }
+    .toggle-label-switch:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 2px; background-color: var(--text-secondary); transition: .3s; border-radius: 50%; }
+    .toggle-input:checked + .toggle-label-switch { background-color: var(--accent-primary); border-color: var(--accent-primary-dark); }
+    .toggle-input:checked + .toggle-label-switch:before { transform: translateX(24px); background-color: var(--white); }
   </style>
 </head>
 <body>
@@ -99,6 +223,9 @@
             <div class="info-row"><div class="info-label">Images</div><span class="leader"></span><div class="info-value" id="imageCountValue">0</div></div>
         </div>
 
+        <!-- Black Bars Removal Toggle -->
+        <div class="toggle-row"><div class="toggle-label">Remove Black Bars</div><div class="toggle-switch"><input type="checkbox" id="removeBarsToggle" class="toggle-input"><label for="removeBarsToggle" class="toggle-label-switch"></label></div></div>
+
         <div class="segmented-controls mode-tabs">
             <button class="mode-tab active" data-mode="auto">Automated</button>
             <button class="mode-tab" data-mode="autoSmart">Smart Auto</button>
@@ -112,6 +239,7 @@
               <div id="pngNote">Lossless quality, largest file size.</div>
               <div class="slider-row" id="jpegSettings" style="display:none;"><div class="slider-label">JPEG Quality</div><div class="slider-wrapper"><input type="range" id="jpegQuality" min="10" max="100" value="85" step="5"><span id="jpegQualityValue" class="value-display"></span></div></div>
               <div class="slider-row" id="webpSettings" style="display:none;"><div class="slider-label">WEBP Quality</div><div class="slider-wrapper"><input type="range" id="webpQuality" min="10" max="100" value="85" step="5"><span id="webpQualityValue" class="value-display"></span></div></div>
+              
               <div class="button-group"><button id="processButton" class="action-button">Extract Screenshots</button><button id="downloadAllButton" class="action-button" disabled>Download All (.zip)</button></div>
               <div id="progressBar" class="progress-bar-container"><div id="progressBarFill" class="progress-bar-fill"></div></div>
             </div>
@@ -119,8 +247,15 @@
                <div class="segmented-controls smart-algo-tabs"><button class="smart-tab active" data-algo="histogram">Histogram Diff</button><button class="smart-tab" data-algo="pixeldiff">Pixel Diff</button><button class="smart-tab" data-algo="ssim">Low SSIM</button></div>
                <div class="segmented-controls format-tabs" id="smartFormatTabs"><button class="format-tab active" data-format="png">PNG</button><button class="format-tab" data-format="jpeg">JPEG</button><button class="format-tab" data-format="webp">WEBP</button></div>
                <div id="pngNoteSmart">Lossless quality, largest file size.</div>
+               
+               <!-- Smart Threshold Sliders -->
+               <div class="slider-row" id="histThresholdSettings"><div class="slider-label">Hist Threshold</div><div class="slider-wrapper"><input type="range" id="histThresholdInput" min="0.05" max="0.75" value="0.35" step="0.05"><span id="histThresholdValue" class="value-display"></span></div></div>
+               <div class="slider-row" id="pixelThresholdSettings" style="display:none;"><div class="slider-label">Pixel Threshold</div><div class="slider-wrapper"><input type="range" id="pixelThresholdInput" min="5" max="100" value="35" step="5"><span id="pixelThresholdValue" class="value-display"></span></div></div>
+               <div class="slider-row" id="ssimThresholdSettings" style="display:none;"><div class="slider-label">SSIM Threshold</div><div class="slider-wrapper"><input type="range" id="ssimThresholdInput" min="0.5" max="0.99" value="0.90" step="0.01"><span id="ssimThresholdValue" class="value-display"></span></div></div>
+               
                <div class="slider-row" id="jpegSettingsSmart" style="display:none;"><div class="slider-label">JPEG Quality</div><div class="slider-wrapper"><input type="range" id="jpegQualitySmart" min="10" max="100" value="85" step="5"><span id="jpegQualityValueSmart" class="value-display"></span></div></div>
                <div class="slider-row" id="webpSettingsSmart" style="display:none;"><div class="slider-label">WEBP Quality</div><div class="slider-wrapper"><input type="range" id="webpQualitySmart" min="10" max="100" value="85" step="5"><span id="webpQualityValueSmart" class="value-display"></span></div></div>
+               
                <div class="button-group"><button id="processSmartButton" class="action-button">Extract Smart Shots</button><button id="downloadAllSmartButton" class="action-button" disabled>Download All (.zip)</button></div>
                <div id="progressBarSmart" class="progress-bar-container"><div id="progressBarFillSmart" class="progress-bar-fill"></div></div>
             </div>
@@ -129,6 +264,9 @@
               <div class="manual-buttons"><button id="extractManualButton" type="button">Quick Save Frame</button><button id="downloadManualButton" type="button" disabled>Download Added</button><button id="addManualButton" title="Add current frame to download list" type="button">+</button></div>
             </div>
         </div>
+
+        <button id="clearScreenshotsButton" type="button" disabled>Clear All Screenshots</button>
+
       </div> <!-- End Settings Content Wrapper -->
     </div> <!-- End Settings Column -->
 
@@ -144,15 +282,19 @@
   <!-- Hidden elements -->
   <video id="video" style="display:none;"></video>
   <canvas id="canvas"></canvas>
+  <canvas id="frameCanvas" style="display:none;"></canvas>
 
   <script>
     // Strict mode helps catch common errors
     'use strict';
 
-    // Wrap entire script in DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', () => {
-      try { // Add a top-level try...catch
+    // Global variables that will be initialized in DOMContentLoaded
+    let verticalSeparatorElement = null; // Reference to the vertical separator element
+    let cropData = null; // Will store crop boundaries data
+    let removeBarsEnabled = false; // Flag to track if remove black bars is enabled
 
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
         // --- DOM Element References ---
         const pageTitle = document.getElementById('pageTitle');
         const dropZone = document.getElementById('dropZone');
@@ -204,17 +346,28 @@
 
         const smartAlgoTabs = document.querySelectorAll('.smart-tab');
 
+        const histThresholdSettings = document.getElementById('histThresholdSettings');
+        const pixelThresholdSettings = document.getElementById('pixelThresholdSettings');
+        const ssimThresholdSettings = document.getElementById('ssimThresholdSettings');
+
         const manualVideo = document.getElementById('manualVideo');
+        const frameCanvas = document.getElementById('frameCanvas');
         const extractManualButton = document.getElementById('extractManualButton');
         const addManualButton = document.getElementById('addManualButton');
         const downloadManualButton = document.getElementById('downloadManualButton');
 
+        const removeBarsToggle = document.getElementById('removeBarsToggle');
         const screenshotsDiv = document.getElementById('screenshots');
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
+        const clearScreenshotsButton = document.getElementById('clearScreenshotsButton');
+
+        // Get reference to vertical separator
+        verticalSeparatorElement = document.querySelector('.vertical-separator');
+        console.log('Vertical separator element found:', !!verticalSeparatorElement);
 
         // --- Check if Core Elements Exist ---
-        if (!dropZone || !videoInput || !selectFileButton || !video || !manualVideo || !canvas || !modeContentDiv || !screenshotsDiv) {
+        if (!dropZone || !videoInput || !selectFileButton || !video || !manualVideo || !canvas || !modeContentDiv || !screenshotsDiv || !clearScreenshotsButton) {
             throw new Error("One or more critical HTML elements are missing. Check IDs.");
         }
 
@@ -225,17 +378,127 @@
         let uploadedFile = null;
         let currentVideoDuration = 0;
         let processingActive = false;
+        let cancelExtractionRequested = false;
         let screenshotBlobs = []; // { blob, timestamp }
         let manualScreenshotBlobs = []; // { blob, timestamp }
+        let currentAnimationFrameId = null; // To cancel extraction loops
 
         // --- Helper Functions ---
         const updateSliderBackground = (slider) => { if (!slider) return; const val = slider.value; const min = slider.min; const max = slider.max; const pct = ((val - min) * 100) / (max - min); let color = slider.id.includes('Smart') ? 'var(--accent-secondary)' : 'var(--accent-primary)'; slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, var(--bg-tertiary) ${pct}%, var(--bg-tertiary) 100%)`; };
         const formatTime = (seconds) => { if (isNaN(seconds) || seconds < 0) return "0:00"; const s = Math.floor(seconds); const m = Math.floor(s / 60); const sec = s % 60; return m + ":" + (sec < 10 ? "0" + sec : sec); };
         const gcd = (a, b) => { return b ? gcd(b, a % b) : a; };
         const updateFileInfoDisplay = () => { if (!video?.duration || !video?.videoWidth || !video?.videoHeight || !resolutionValue || !lengthValue || !aspectRatioValue || !bitrateValue) return; currentVideoDuration = video.duration; const width = video.videoWidth; const height = video.videoHeight; resolutionValue.textContent = `${width}x${height}`; lengthValue.textContent = formatTime(currentVideoDuration); const divisor = gcd(width, height); aspectRatioValue.textContent = `${width / divisor}:${height / divisor}`; if (uploadedFile && uploadedFile.size > 0 && currentVideoDuration > 0) { const bitrateKbps = Math.round((uploadedFile.size * 8) / currentVideoDuration / 1000); bitrateValue.textContent = `${bitrateKbps} kbps`; } else { bitrateValue.textContent = "N/A"; } };
-        const updateImageCount = () => { const autoSmartCount = screenshotBlobs.length; const manualCount = manualScreenshotBlobs.length; const totalCount = screenshotsDiv ? screenshotsDiv.childElementCount : 0; if(imageCountValue) imageCountValue.textContent = totalCount; if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || autoSmartCount === 0 || processingActive; if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || autoSmartCount === 0 || processingActive; if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualCount === 0 || processingActive; };
-        const resetProcessingUI = (mode = 'all') => { processingActive = false; if (mode === 'auto' || mode === 'all') { if(progressBarAuto) progressBarAuto.style.display = 'none'; if(progressBarFillAuto) progressBarFillAuto.style.width = '0%'; if(processButton) processButton.disabled = !video?.src; if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || screenshotBlobs.length === 0; } if (mode === 'autoSmart' || mode === 'all') { if(progressBarSmart) progressBarSmart.style.display = 'none'; if(progressBarFillSmart) progressBarFillSmart.style.width = '0%'; if(processSmartButton) processSmartButton.disabled = !video?.src; if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || screenshotBlobs.length === 0; } if (mode === 'manual' || mode === 'all') { if(addManualButton) addManualButton.disabled = !video?.src; if(extractManualButton) extractManualButton.disabled = !video?.src; if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualScreenshotBlobs.length === 0; } };
-        const setProcessingUI = (mode = 'auto') => { processingActive = true; if (mode === 'auto' && progressBarAuto) progressBarAuto.style.display = 'block'; else if (mode === 'autoSmart' && progressBarSmart) progressBarSmart.style.display = 'block'; if(processButton) processButton.disabled = true; if(downloadAllButton) downloadAllButton.disabled = true; if(processSmartButton) processSmartButton.disabled = true; if(downloadAllSmartButton) downloadAllSmartButton.disabled = true; if(addManualButton) addManualButton.disabled = true; if(extractManualButton) extractManualButton.disabled = true; if(downloadManualButton) downloadManualButton.disabled = true; };
+        const updateImageCount = () => { const autoSmartCount = screenshotBlobs.length; const manualCount = manualScreenshotBlobs.length; const totalCount = screenshotsDiv ? screenshotsDiv.childElementCount : 0; if(imageCountValue) imageCountValue.textContent = totalCount; if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || autoSmartCount === 0 || processingActive; if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || autoSmartCount === 0 || processingActive; if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualCount === 0 || processingActive; if(clearScreenshotsButton) clearScreenshotsButton.disabled = totalCount === 0; };
+
+        // --- UI State Management ---
+        const resetProcessingUI = (mode = 'all') => {
+            console.log(`[Reset UI] Resetting for mode: ${mode}`);
+            processingActive = false;
+            cancelExtractionRequested = false;
+            
+            // Stop loading animation on vertical separator
+            if (verticalSeparatorElement) {
+                verticalSeparatorElement.classList.remove('loading');
+                verticalSeparatorElement.classList.remove('loading-smart');
+            }
+             
+            if (currentAnimationFrameId) {
+                cancelAnimationFrame(currentAnimationFrameId); // Stop any active animation frame loop
+                currentAnimationFrameId = null;
+            }
+
+            // Reset Auto Mode UI
+            if ((mode === 'auto' || mode === 'all') && processButton) {
+                if(progressBarAuto) progressBarAuto.style.display = 'none';
+                if(progressBarFillAuto) progressBarFillAuto.style.width = '0%';
+                processButton.disabled = !video?.src;
+                processButton.textContent = 'Extract Screenshots';
+                processButton.classList.remove('cancel-active');
+                processButton.removeEventListener('click', handleCancelClick); // Ensure cancel listener removed
+                processButton.addEventListener('click', startAutoExtraction); // Re-attach start listener
+                if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || screenshotBlobs.length === 0;
+            }
+            
+            // Reset Smart Mode UI
+            if ((mode === 'autoSmart' || mode === 'all') && processSmartButton) {
+                if(progressBarSmart) progressBarSmart.style.display = 'none';
+                if(progressBarFillSmart) progressBarFillSmart.style.width = '0%';
+                processSmartButton.disabled = !video?.src;
+                processSmartButton.textContent = 'Extract Smart Shots';
+                processSmartButton.classList.remove('cancel-active');
+                processSmartButton.removeEventListener('click', handleCancelClick); // Ensure cancel listener removed
+                processSmartButton.addEventListener('click', startSmartExtraction); // Re-attach start listener
+                if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || screenshotBlobs.length === 0;
+            }
+            
+            // Reset Manual Mode UI
+            if (mode === 'manual' || mode === 'all') {
+                if(addManualButton) addManualButton.disabled = !video?.src;
+                if(extractManualButton) extractManualButton.disabled = !video?.src;
+                if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualScreenshotBlobs.length === 0;
+            }
+            
+            // Ensure other mode buttons are enabled if video exists
+            if (video?.src) {
+                if(processButton && currentMode !== 'auto') processButton.disabled = false;
+                if(processSmartButton && currentMode !== 'autoSmart') processSmartButton.disabled = false;
+            }
+            
+            updateImageCount(); // Update clear button state
+        };
+
+        const setProcessingUI = (mode = 'auto') => {
+             console.log(`[Set UI] Setting processing state for mode: ${mode}`);
+             processingActive = true;
+             cancelExtractionRequested = false;
+             
+             // Start loading animation on vertical separator
+             if (verticalSeparatorElement) {
+                 if (mode === 'auto') {
+                     verticalSeparatorElement.classList.add('loading');
+                 } else if (mode === 'autoSmart') {
+                     verticalSeparatorElement.classList.add('loading-smart');
+                 }
+             }
+
+             // Disable all interaction buttons first
+             if(processButton) processButton.disabled = true;
+             if(processSmartButton) processSmartButton.disabled = true;
+             if(addManualButton) addManualButton.disabled = true;
+             if(extractManualButton) extractManualButton.disabled = true;
+             if(downloadAllButton) downloadAllButton.disabled = true;
+             if(downloadAllSmartButton) downloadAllSmartButton.disabled = true;
+             if(downloadManualButton) downloadManualButton.disabled = true;
+             if(clearScreenshotsButton) clearScreenshotsButton.disabled = true;
+
+             // Activate the specific process button as "Cancel"
+             if (mode === 'auto' && processButton) {
+                 if(progressBarAuto) progressBarAuto.style.display = 'block';
+                 processButton.textContent = 'Cancel Extraction';
+                 processButton.classList.add('cancel-active');
+                 processButton.removeEventListener('click', startAutoExtraction); // Remove start listener
+                 processButton.addEventListener('click', handleCancelClick, { once: true }); // Add cancel listener
+                 processButton.disabled = false; // Re-enable as Cancel button
+             } else if (mode === 'autoSmart' && processSmartButton) {
+                 if(progressBarSmart) progressBarSmart.style.display = 'block';
+                 processSmartButton.textContent = 'Cancel Extraction';
+                 processSmartButton.classList.add('cancel-active');
+                 processSmartButton.removeEventListener('click', startSmartExtraction); // Remove start listener
+                 processSmartButton.addEventListener('click', handleCancelClick, { once: true }); // Add cancel listener
+                 processSmartButton.disabled = false; // Re-enable as Cancel button
+             }
+         };
+
+        // Cancel Handler
+        const handleCancelClick = () => {
+            console.log("[Cancel Action] Cancel requested by user.");
+            cancelExtractionRequested = true;
+            // The active extraction loop will detect this flag and call resetProcessingUI
+            // No need to immediately call resetProcessingUI here, let the loop handle it
+        };
+
+
+        // --- Helper Functions (Cont.) ---
         const computeHistogram = (imageData, sampleFactor = 4) => { const data = imageData.data; const hist = new Array(256).fill(0); let count = 0; for (let i = 0; i < data.length; i += 4 * sampleFactor) { const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]); hist[gray]++; count++; } if (count === 0) return hist; return hist.map(val => val / count); };
         const histogramDifference = (hist1, hist2) => { if (!hist1 || !hist2 || hist1.length !== hist2.length) return 1; return hist1.reduce((acc, val, i) => acc + Math.abs(val - hist2[i]), 0); };
         const computePixelDiff = (data1, data2, sampleFactor = 4) => { let diff = 0; let count = 0; const step = 4 * sampleFactor; for (let i = 0; i < data1.length; i += step) { diff += Math.abs(data1[i] - data2[i]); diff += Math.abs(data1[i+1] - data2[i+1]); diff += Math.abs(data1[i+2] - data2[i+2]); count++; } return count > 0 ? (diff / (count * 3)) : 0; };
@@ -246,95 +509,54 @@
         const handleFileLoad = (file) => { if (!video || !manualVideo || !file) return; uploadedFile = file; const fileURL = URL.createObjectURL(file); video.src = fileURL; manualVideo.src = fileURL; updateDropZoneUI(true, file.name); resetUIOnNewVideo(); };
         const resetUIOnNewVideo = () => { if(screenshotsDiv) screenshotsDiv.innerHTML = ''; screenshotBlobs = []; manualScreenshotBlobs = []; updateImageCount(); resetProcessingUI('all'); if(resolutionValue) resolutionValue.textContent = "Loading..."; if(lengthValue) lengthValue.textContent = "-"; if(aspectRatioValue) aspectRatioValue.textContent = "-"; if(bitrateValue) bitrateValue.textContent = "-"; };
         const updateDropZoneUI = (isFileLoaded, text) => { if(!dropZone || !dropZoneText || !selectFileButton || !uploadIcon) return; dropZoneText.textContent = text; if (isFileLoaded) { dropZone.classList.add('file-loaded'); selectFileButton.textContent = "File Loaded"; selectFileButton.classList.add('file-selected'); uploadIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="var(--accent-secondary)"><path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/></svg>`; } else { dropZone.classList.remove('file-loaded'); selectFileButton.textContent = "Select File"; selectFileButton.classList.remove('file-selected'); uploadIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>`; dropZoneText.textContent = "Drag & drop video file or"; } };
-        
-        // *** CORE FRAME CAPTURE LOGIC ***
-        const captureFrameAtTime = (time, callback) => {
-            console.log(`[captureFrameAtTime] Attempting capture at ${time.toFixed(2)}s`);
-            if (!video || !canvas || !video.src || video.readyState < 1 /* HAVE_METADATA */) {
-                console.error("[captureFrameAtTime] Prerequisite failed: Video/Canvas element missing, no src, or video not ready (readyState:", video?.readyState, ")");
-                callback(null); // Indicate failure
-                return;
+        const captureFrameAtTime = (time, callback) => { if (!video || !canvas || !video.src || video.readyState < 1 ) { console.error("Video/Canvas not ready for captureFrameAtTime"); callback(null); return; } const videoElement = video; let seekTimeout = setTimeout(() => { console.warn(`[captureFrameAtTime] Seek timed out for ${time.toFixed(2)}s`); videoElement.removeEventListener('seeked', onSeeked); videoElement.removeEventListener('error', onError); callback(null); }, 5000); const onSeeked = () => { clearTimeout(seekTimeout); videoElement.removeEventListener('error', onError); try { if (!canvas) throw new Error('Canvas element not found'); 
+            // If remove black bars is enabled and we have crop data
+            if (removeBarsEnabled && cropData) {
+                canvas.width = cropData.cropWidth;
+                canvas.height = cropData.cropHeight;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) throw new Error('Could not get 2d context');
+                ctx.drawImage(
+                    videoElement, 
+                    cropData.cropX, cropData.cropY, cropData.cropWidth, cropData.cropHeight,
+                    0, 0, cropData.cropWidth, cropData.cropHeight
+                );
+            } else {
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) throw new Error('Could not get 2d context');
+                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
             }
-
-            const videoElement = video; // Use the hidden video element for processing
-
-            // --- Timeout fallback ---
-            let seekTimeout = setTimeout(() => {
-                console.warn(`[captureFrameAtTime] Seek timed out for ${time.toFixed(2)}s`);
-                videoElement.removeEventListener('seeked', onSeeked); // Clean up listener
-                 videoElement.removeEventListener('error', onError);
-                callback(null); // Indicate failure
-            }, 5000); // 5 second timeout for seek
-
-            // --- Event Handlers ---
-            const onSeeked = () => {
-                clearTimeout(seekTimeout); // Clear the timeout
-                 videoElement.removeEventListener('error', onError); // Clean up error listener
-                console.log(`[captureFrameAtTime] Seek successful for ${time.toFixed(2)}s`);
-                try {
-                    if (!canvas) throw new Error('Canvas element not found');
-                    canvas.width = videoElement.videoWidth;
-                    canvas.height = videoElement.videoHeight;
-                    const ctx = canvas.getContext('2d');
-                    if (!ctx) throw new Error('Could not get 2d context');
-
-                    console.log(`[captureFrameAtTime] Drawing video frame (${canvas.width}x${canvas.height}) to canvas.`);
-                    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-                    const { type, quality } = getCurrentFormatSettings();
-                    console.log(`[captureFrameAtTime] Converting canvas to blob (Type: ${type}, Quality: ${quality})`);
-                    canvas.toBlob((blob) => {
-                        if (blob) {
-                            console.log(`[captureFrameAtTime] Blob created successfully (Size: ${blob.size} bytes)`);
-                            callback(blob); // SUCCESS
-                        } else {
-                            console.error("[captureFrameAtTime] canvas.toBlob failed - callback received null blob.");
-                            callback(null); // Indicate failure
-                        }
-                    }, type, quality);
-
-                } catch (error) {
-                    console.error("[captureFrameAtTime] Error during drawing/blob creation:", error);
-                    callback(null); // Indicate failure
+            
+            const { type, quality } = getCurrentFormatSettings();
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    callback(blob);
+                } else {
+                    console.error("[captureFrameAtTime] canvas.toBlob failed - callback received null blob.");
+                    callback(null);
                 }
-            };
-
-            const onError = (e) => {
-                clearTimeout(seekTimeout); // Clear the timeout
-                 videoElement.removeEventListener('seeked', onSeeked); // Clean up seek listener
-                console.error(`[captureFrameAtTime] Video error during seek/load for time ${time.toFixed(2)}s:`, e);
-                callback(null); // Indicate failure
-            };
-
-            // --- Initiate Seek ---
-            // Add listeners *before* changing currentTime
-            videoElement.addEventListener('seeked', onSeeked, { once: true });
-            videoElement.addEventListener('error', onError, { once: true });
-
-            try {
-                const targetTime = Math.max(0, Math.min(time, currentVideoDuration));
-                console.log(`[captureFrameAtTime] Setting currentTime to: ${targetTime.toFixed(2)}`);
-                // Some browsers are picky about seeking to the exact same time again
-                if (Math.abs(videoElement.currentTime - targetTime) < 0.01) {
-                     console.log(`[captureFrameAtTime] Target time is very close to current time, attempting seek anyway or potentially triggering draw directly.`);
-                     // If seek doesn't fire quickly for same time, might need alternative handling,
-                     // but usually 'seeked' should still fire. Let's rely on the timeout for now.
-                }
-                videoElement.currentTime = targetTime;
-            } catch (error) {
-                 console.error(`[captureFrameAtTime] Error setting video currentTime:`, error);
-                 clearTimeout(seekTimeout);
-                 videoElement.removeEventListener('seeked', onSeeked);
-                 videoElement.removeEventListener('error', onError);
-                 callback(null);
-            }
-        };
-
+            }, type, quality);
+        } catch (error) { console.error("[captureFrameAtTime] Error during drawing/blob creation:", error); callback(null); } }; const onError = (e) => { clearTimeout(seekTimeout); videoElement.removeEventListener('seeked', onSeeked); console.error(`[captureFrameAtTime] Video error during seek/load for time ${time.toFixed(2)}s:`, e); callback(null); }; videoElement.addEventListener('seeked', onSeeked, { once: true }); videoElement.addEventListener('error', onError, { once: true }); try { const targetTime = Math.max(0, Math.min(time, currentVideoDuration)); videoElement.currentTime = targetTime; } catch (error) { console.error(`[captureFrameAtTime] Error setting video currentTime:`, error); clearTimeout(seekTimeout); videoElement.removeEventListener('seeked', onSeeked); videoElement.removeEventListener('error', onError); callback(null); } };
 
         // --- Event Listeners Setup ---
 
         if (pageTitle) pageTitle.addEventListener('click', () => { if (confirm("Reload the application? Any unsaved screenshots will be lost.")) window.location.reload(); });
-        if (video) video.addEventListener('loadedmetadata', () => { updateFileInfoDisplay(); resetProcessingUI('all'); });
+        if (video) video.addEventListener('loadedmetadata', () => { 
+            updateFileInfoDisplay(); 
+            resetProcessingUI('all');
+            
+            // Reset crop data when loading a new video
+            cropData = null;
+            
+            // If any of the remove bars toggles are checked, detect black bars
+            if (removeBarsEnabled) {
+                detectCropBoundariesMulti(() => {
+                    console.log("Black bar detection completed for new video");
+                });
+            }
+        });
         if (manualVideo) manualVideo.addEventListener('loadedmetadata', updateFileInfoDisplay);
 
         // File Upload Listeners
@@ -365,327 +587,507 @@
             });
         }
 
-        // Function to setup a single slider
-        const setupSlider = (slider, displaySpan, suffix) => {
-            if (!slider || !displaySpan) return;
-            const updateSliderUI = () => {
-                displaySpan.textContent = slider.value + suffix;
-                updateSliderBackground(slider);
-            };
-            slider.addEventListener('input', updateSliderUI);
-            updateSliderUI(); // Initial call
-        };
+        // Slider Setup
+        const setupSlider = (slider, displaySpan, suffix) => { if (!slider || !displaySpan) return; const updateSliderUI = () => { displaySpan.textContent = slider.value + suffix; updateSliderBackground(slider); }; slider.addEventListener('input', updateSliderUI); updateSliderUI(); };
         setupSlider(intervalInput, intervalValue, 's');
         setupSlider(jpegQualityAuto, jpegQualityValueAuto, '%');
         setupSlider(webpQualityAuto, webpQualityValueAuto, '%');
         setupSlider(jpegQualitySmart, jpegQualityValueSmart, '%');
         setupSlider(webpQualitySmart, webpQualityValueSmart, '%');
 
-        // Format Tab Setup Function
+        // Initialize threshold sliders
+        const histThresholdInput = document.getElementById('histThresholdInput');
+        const histThresholdValue = document.getElementById('histThresholdValue');
+        const pixelThresholdInput = document.getElementById('pixelThresholdInput');
+        const pixelThresholdValue = document.getElementById('pixelThresholdValue');
+        const ssimThresholdInput = document.getElementById('ssimThresholdInput');
+        const ssimThresholdValue = document.getElementById('ssimThresholdValue');
+        
+        setupSlider(histThresholdInput, histThresholdValue, '');
+        setupSlider(pixelThresholdInput, pixelThresholdValue, '');
+        setupSlider(ssimThresholdInput, ssimThresholdValue, '');
+
+        // Black Bars Detection and Removal
+        const detectCropBoundariesMulti = (callback) => {
+          if (
+            !video.duration ||
+            !isFinite(video.duration) ||
+            video.videoWidth === 0 ||
+            video.videoHeight === 0
+          ) {
+            console.warn("Video not ready or has invalid dimensions for crop detection.");
+            cropData = {
+              cropX: 0,
+              cropY: 0,
+              cropWidth: video.videoWidth || 1,
+              cropHeight: video.videoHeight || 1,
+            };
+            callback();
+            return;
+          }
+          // Define sample times at 30%, 50%, and 70% of video duration
+          const samplePercents = [0.3, 0.5, 0.7];
+          const sampleTimes = samplePercents.map(
+            (p) => Math.min(Math.max(p * video.duration, 0.1), video.duration - 0.1)
+          );
+          let sampleResults = [];
+          let currentSample = 0;
+
+          // Helper function to analyze the current frame for black borders
+          function analyzeFrame(callbackFrame) {
+            frameCanvas.width = video.videoWidth;
+            frameCanvas.height = video.videoHeight;
+            const ctx = frameCanvas.getContext("2d", { willReadFrequently: true });
+            ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+            const imageData = ctx.getImageData(0, 0, video.videoWidth, video.videoHeight);
+            const data = imageData.data,
+              width = video.videoWidth,
+              height = video.videoHeight;
+            const pixelThreshold = 15,
+              lineRatioThreshold = 0.98;
+            let topCrop = 0,
+              bottomCrop = height - 1,
+              leftCrop = 0,
+              rightCrop = width - 1;
+
+            // Detect top crop boundary
+            for (let y = 0; y < height / 2; y++) {
+              let blackPxCount = 0;
+              for (let x = 0; x < width; x++) {
+                const i = (y * width + x) * 4;
+                if (
+                  data[i] < pixelThreshold &&
+                  data[i + 1] < pixelThreshold &&
+                  data[i + 2] < pixelThreshold
+                ) {
+                  blackPxCount++;
+                }
+              }
+              if (blackPxCount / width < lineRatioThreshold) {
+                topCrop = y;
+                break;
+              }
+              if (y === Math.floor(height / 2) - 1) topCrop = y;
+            }
+
+            // Detect bottom crop boundary
+            for (let y = height - 1; y >= height / 2; y--) {
+              let blackPxCount = 0;
+              for (let x = 0; x < width; x++) {
+                const i = (y * width + x) * 4;
+                if (
+                  data[i] < pixelThreshold &&
+                  data[i + 1] < pixelThreshold &&
+                  data[i + 2] < pixelThreshold
+                ) {
+                  blackPxCount++;
+                }
+              }
+              if (blackPxCount / width < lineRatioThreshold) {
+                bottomCrop = y;
+                break;
+              }
+              if (y === Math.ceil(height / 2)) bottomCrop = y;
+            }
+
+            // Detect left crop boundary
+            for (let x = 0; x < width / 2; x++) {
+              let blackPxCount = 0;
+              for (let y = topCrop; y <= bottomCrop; y++) {
+                const i = (y * width + x) * 4;
+                if (
+                  data[i] < pixelThreshold &&
+                  data[i + 1] < pixelThreshold &&
+                  data[i + 2] < pixelThreshold
+                ) {
+                  blackPxCount++;
+                }
+              }
+              if (blackPxCount / (bottomCrop - topCrop + 1) < lineRatioThreshold) {
+                leftCrop = x;
+                break;
+              }
+              if (x === Math.floor(width / 2) - 1) leftCrop = x;
+            }
+
+            // Detect right crop boundary
+            for (let x = width - 1; x >= width / 2; x--) {
+              let blackPxCount = 0;
+              for (let y = topCrop; y <= bottomCrop; y++) {
+                const i = (y * width + x) * 4;
+                if (
+                  data[i] < pixelThreshold &&
+                  data[i + 1] < pixelThreshold &&
+                  data[i + 2] < pixelThreshold
+                ) {
+                  blackPxCount++;
+                }
+              }
+              if (blackPxCount / (bottomCrop - topCrop + 1) < lineRatioThreshold) {
+                rightCrop = x;
+                break;
+              }
+              if (x === Math.ceil(width / 2)) rightCrop = x;
+            }
+
+            callbackFrame({ topCrop, bottomCrop, leftCrop, rightCrop });
+          }
+
+          // Helper function to compute the median of an array of numbers
+          function median(arr) {
+            const sorted = arr.slice().sort((a, b) => a - b);
+            return sorted[Math.floor(sorted.length / 2)];
+          }
+
+          // Process each sample sequentially
+          function processNextSample() {
+            if (currentSample >= sampleTimes.length) {
+              // Combine sample results by taking the median for each boundary
+              const topCrops = sampleResults.map((r) => r.topCrop);
+              const bottomCrops = sampleResults.map((r) => r.bottomCrop);
+              const leftCrops = sampleResults.map((r) => r.leftCrop);
+              const rightCrops = sampleResults.map((r) => r.rightCrop);
+
+              const finalTop = median(topCrops);
+              const finalBottom = median(bottomCrops);
+              const finalLeft = median(leftCrops);
+              const finalRight = median(rightCrops);
+
+              const finalCropWidth = Math.max(1, finalRight - finalLeft + 1);
+              const finalCropHeight = Math.max(1, finalBottom - finalTop + 1);
+
+              cropData = {
+                cropX: finalLeft,
+                cropY: finalTop,
+                cropWidth: finalCropWidth,
+                cropHeight: finalCropHeight,
+              };
+              
+              console.log("Detected black bars crop data:", cropData);
+              callback();
+              return;
+            }
+            // Set up listener for each sample's seek event
+            const sampleTime = sampleTimes[currentSample];
+            video.addEventListener(
+              "seeked",
+              function onSeeked() {
+                video.removeEventListener("seeked", onSeeked);
+                analyzeFrame((boundaries) => {
+                  sampleResults.push(boundaries);
+                  currentSample++;
+                  processNextSample();
+                });
+              },
+              { once: true }
+            );
+            video.addEventListener(
+              "error",
+              function onError(e) {
+                console.error("Seek error during crop detection:", e);
+                // In case of an error, default to full frame for this sample
+                sampleResults.push({
+                  topCrop: 0,
+                  bottomCrop: video.videoHeight - 1,
+                  leftCrop: 0,
+                  rightCrop: video.videoWidth - 1
+                });
+                currentSample++;
+                processNextSample();
+              },
+              { once: true }
+            );
+            video.currentTime = sampleTime;
+          }
+
+          processNextSample();
+        };
+
+        // Set up toggle handlers to sync the state across modes
+        if (removeBarsToggle) removeBarsToggle.addEventListener('change', (e) => {
+          removeBarsEnabled = e.target.checked;
+          if (removeBarsEnabled && !cropData) {
+            detectCropBoundariesMulti(() => {
+              console.log("Black bar detection completed");
+            });
+          }
+        });
+
+        // USER PROVIDED FIX FOR FORMAT TABS
         const setupFormatTabs = (tabsNodeList, pngNoteEl, jpegSettingsEl, webpSettingsEl) => {
             if (tabsNodeList.length === 0 || !pngNoteEl || !jpegSettingsEl || !webpSettingsEl) return;
+
             const updateFormatVisibility = (format, isInitialCall = false) => {
-                 const belongsToCurrentMode = (tabsNodeList === formatTabsAuto && currentMode === 'auto') || (tabsNodeList === formatTabsSmart && currentMode === 'autoSmart');
-                 if (belongsToCurrentMode || isInitialCall) currentFormat = format;
+                const belongsToCurrentMode = (tabsNodeList === formatTabsAuto && currentMode === 'auto') ||
+                                             (tabsNodeList === formatTabsSmart && currentMode === 'autoSmart');
+                // Update global state only if these tabs belong to the currently active mode,
+                // OR if it's the initial setup call for the default mode.
+                 if (belongsToCurrentMode || (isInitialCall && currentMode === (tabsNodeList === formatTabsAuto ? 'auto' : 'autoSmart'))) {
+                    currentFormat = format;
+                 }
+
                 pngNoteEl.style.display = (format === 'png') ? 'flex' : 'none';
                 jpegSettingsEl.style.display = (format === 'jpeg') ? 'flex' : 'none';
                 webpSettingsEl.style.display = (format === 'webp') ? 'flex' : 'none';
-            }
+            };
+
             let initialFormat = 'png';
             tabsNodeList.forEach(tab => {
                 if (tab.classList.contains('active')) initialFormat = tab.getAttribute('data-format') || 'png';
-                tab.addEventListener('click', () => { if (processingActive) return; const format = tab.getAttribute('data-format'); if (!format) return; tabsNodeList.forEach(t => t.classList.remove('active')); tab.classList.add('active'); updateFormatVisibility(format); });
+                tab.addEventListener('click', () => {
+                    if (processingActive) return;
+                    const format = tab.getAttribute('data-format');
+                    if (!format) return;
+                    tabsNodeList.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    updateFormatVisibility(format);
+                });
             });
-            updateFormatVisibility(initialFormat, true);
+            updateFormatVisibility(initialFormat, true); // Set initial visibility and state
         };
         setupFormatTabs(formatTabsAuto, pngNoteAuto, jpegSettingsAuto, webpSettingsAuto);
         setupFormatTabs(formatTabsSmart, pngNoteSmart, jpegSettingsSmart, webpSettingsSmart);
 
+
         // Smart Algo Tabs
-        if (smartAlgoTabs.length > 0) {
-            let initialAlgo = 'histogram';
-            smartAlgoTabs.forEach(tab => {
-                if (tab.classList.contains('active')) initialAlgo = tab.getAttribute('data-algo') || 'histogram';
-                tab.addEventListener('click', () => { if (processingActive) return; const algo = tab.getAttribute('data-algo'); if(!algo) return; smartAlgorithm = algo; smartAlgoTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active'); });
-            });
+        if (smartAlgoTabs.length > 0) { 
+            let initialAlgo = 'histogram'; 
+            
+            const updateThresholdSliders = (algo) => {
+                if(histThresholdSettings) histThresholdSettings.style.display = (algo === 'histogram') ? 'flex' : 'none';
+                if(pixelThresholdSettings) pixelThresholdSettings.style.display = (algo === 'pixeldiff') ? 'flex' : 'none';
+                if(ssimThresholdSettings) ssimThresholdSettings.style.display = (algo === 'ssim') ? 'flex' : 'none';
+            };
+            
+            smartAlgoTabs.forEach(tab => { 
+                if (tab.classList.contains('active')) {
+                    initialAlgo = tab.getAttribute('data-algo') || 'histogram';
+                }
+                tab.addEventListener('click', () => { 
+                    if (processingActive) return; 
+                    const algo = tab.getAttribute('data-algo'); 
+                    if(!algo) return; 
+                    smartAlgorithm = algo; 
+                    smartAlgoTabs.forEach(t => t.classList.remove('active')); 
+                    tab.classList.add('active');
+                    updateThresholdSliders(algo);
+                }); 
+            }); 
             smartAlgorithm = initialAlgo;
+            updateThresholdSliders(initialAlgo);
         }
 
-        // --- Core Processing Logic (Event Listener Attachment) ---
+        // --- Processing Logic ---
 
-        // Automated Mode
-        if (processButton && intervalInput) processButton.addEventListener('click', () => {
-            if (!video?.src || processingActive) {
-                alert("Please load a video first or wait for processing.");
-                return;
-            }
-            console.log("[Process Auto] Starting...");
+        // AUTOMATED EXTRACTION
+        const startAutoExtraction = () => {
+            if (!video?.src || processingActive || !intervalInput) return;
             setProcessingUI('auto');
             if(screenshotsDiv) screenshotsDiv.innerHTML = '';
             screenshotBlobs = [];
             updateImageCount();
 
             const interval = parseFloat(intervalInput.value);
-            if (isNaN(interval) || interval <= 0) {
-                 console.error("[Process Auto] Invalid interval value:", intervalInput.value);
-                 resetProcessingUI('auto');
-                 return;
-            }
+            if (isNaN(interval) || interval <= 0) { resetProcessingUI('auto'); return; }
             let currentTime = 0;
             const totalDuration = currentVideoDuration;
-            console.log(`[Process Auto] Interval: ${interval}s, Duration: ${totalDuration.toFixed(2)}s`);
 
             function processNextFrame() {
-                console.log(`[Process Auto] Current time: ${currentTime.toFixed(2)}s`);
-                // Add a small buffer (e.g., 0.1s) to ensure the last frame is potentially captured
-                if (currentTime > totalDuration + 0.1) {
-                    console.log("[Process Auto] Finished processing loop.");
-                    resetProcessingUI('auto');
+                if (cancelExtractionRequested || currentTime > totalDuration + 0.1) {
+                    resetProcessingUI('auto'); // This now re-attaches the start listener
                     return;
                 }
-                const timestamp = currentTime; // Capture before async call
+                const timestamp = currentTime;
                 captureFrameAtTime(timestamp, (blob) => {
-                    if (blob) {
-                        console.log(`[Process Auto] Frame captured successfully at ${timestamp.toFixed(2)}s`);
+                    if (!cancelExtractionRequested && blob) { // Check cancel again after async
                         const blobData = { blob, timestamp };
                         screenshotBlobs.push(blobData);
                         const container = createScreenshotElement(blob, timestamp, screenshotBlobs);
                         if(container && screenshotsDiv) screenshotsDiv.appendChild(container);
                         updateImageCount();
-                    } else {
-                         console.warn(`[Process Auto] Failed to capture frame at ${timestamp.toFixed(2)}s`);
                     }
-
-                    // Prepare for next frame
-                    currentTime += interval;
-                    const progress = Math.min((currentTime / totalDuration) * 100, 100);
-                     if(progressBarFillAuto) progressBarFillAuto.style.width = `${progress}%`;
-
-                    // Schedule next iteration - use requestAnimationFrame for smoother updates potentially
-                    // setTimeout(processNextFrame, 50); // Small delay
-                    requestAnimationFrame(processNextFrame); // Alternative timing
+                    // Schedule next only if not cancelled
+                    if (!cancelExtractionRequested) {
+                        currentTime += interval;
+                        const progress = Math.min((currentTime / totalDuration) * 100, 100);
+                        if(progressBarFillAuto) progressBarFillAuto.style.width = `${progress}%`;
+                        currentAnimationFrameId = requestAnimationFrame(processNextFrame);
+                    } else {
+                        // If cancelled during capture/blob, ensure UI reset happens
+                        resetProcessingUI('auto');
+                    }
                 });
             }
-            requestAnimationFrame(processNextFrame); // Start the loop
-        });
+            currentAnimationFrameId = requestAnimationFrame(processNextFrame);
+        };
 
-
-        // Smart Auto Mode
-        if (processSmartButton) processSmartButton.addEventListener('click', () => {
-            if (!video?.src || processingActive) {
-                 alert("Please load a video first or wait for processing.");
-                 return;
-            }
-            console.log("[Process Smart] Starting...");
-            setProcessingUI('autoSmart');
+        // SMART EXTRACTION
+        const startSmartExtraction = () => {
+            if (!video?.src || processingActive) return;
+             setProcessingUI('autoSmart');
              if(screenshotsDiv) screenshotsDiv.innerHTML = '';
              screenshotBlobs = [];
              updateImageCount();
 
-             const smartInterval = 1.0; // Check every second
-             const sampleFactor = 8; // Use a higher sample factor for performance
-             const histThreshold = 0.35;
-             const pixelThreshold = 35;
-             const ssimThreshold = 0.90; // Closer to 1 is more similar
-
-             let currentTime = 0;
-             const totalDuration = currentVideoDuration;
-             let previousImageData = null;
-             let previousHist = null;
-             let previousPixelData = null;
-             console.log(`[Process Smart] Interval: ${smartInterval}s, Duration: ${totalDuration.toFixed(2)}s, Algorithm: ${smartAlgorithm}`);
+             const smartInterval = 1.0; const sampleFactor = 8;
+             // Get user-defined threshold values
+             const histThreshold = histThresholdInput ? parseFloat(histThresholdInput.value) : 0.35;
+             const pixelThreshold = pixelThresholdInput ? parseFloat(pixelThresholdInput.value) : 35;
+             const ssimThreshold = ssimThresholdInput ? parseFloat(ssimThresholdInput.value) : 0.90;
+             
+             let currentTime = 0; const totalDuration = currentVideoDuration;
+             let previousImageData = null; let previousHist = null; let previousPixelData = null;
 
              function processNextSmartFrame() {
-                 console.log(`[Process Smart] Current time: ${currentTime.toFixed(2)}s`);
-                 if (currentTime > totalDuration + 0.1) {
-                     console.log("[Process Smart] Finished processing loop.");
-                     resetProcessingUI('autoSmart');
+                 if (cancelExtractionRequested || currentTime > totalDuration + 0.1) {
+                     resetProcessingUI('autoSmart'); // This now re-attaches the start listener
                      return;
                  }
-
                  const timestamp = currentTime;
                  captureFrameAtTime(timestamp, (blob) => {
-                     if (!blob) {
-                         console.warn(`[Process Smart] Failed to capture frame at ${timestamp.toFixed(2)}s for comparison.`);
-                         currentTime += smartInterval; // Move to next time anyway
-                         const progress = Math.min((currentTime / totalDuration) * 100, 100);
-                         if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`;
-                         requestAnimationFrame(processNextSmartFrame);
-                         return;
-                     }
+                     if (cancelExtractionRequested) { resetProcessingUI('autoSmart'); return; }
+                     if (!blob) { currentTime += smartInterval; const progress = Math.min((currentTime / totalDuration) * 100, 100); if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`; currentAnimationFrameId = requestAnimationFrame(processNextSmartFrame); return; }
 
-                     // Convert blob to ImageData for comparison
                      const tempCanvas = document.createElement('canvas');
                      const tempCtx = tempCanvas.getContext('2d');
                      const img = new Image();
                      img.onload = () => {
+                        if (cancelExtractionRequested) { resetProcessingUI('autoSmart'); return; } // Check again
                         try {
-                             tempCanvas.width = img.width;
-                             tempCanvas.height = img.height;
+                             tempCanvas.width = img.width; tempCanvas.height = img.height;
                              if(!tempCtx) throw new Error("Could not get temp canvas context");
                              tempCtx.drawImage(img, 0, 0);
                              const currentImageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-                             URL.revokeObjectURL(img.src); // Clean up URL
+                             URL.revokeObjectURL(img.src);
 
                              let captureThisFrame = false;
-                             if (!previousImageData) { // Always capture the first frame
-                                 console.log("[Process Smart] Capturing first frame.");
-                                 captureThisFrame = true;
-                             } else {
-                                 // Compare with previous frame
-                                 let differenceMetric = 0;
-                                 if (smartAlgorithm === "histogram") {
-                                     const currentHist = computeHistogram(currentImageData, sampleFactor);
-                                     differenceMetric = histogramDifference(currentHist, previousHist);
-                                     console.log(`[Process Smart] Hist diff: ${differenceMetric.toFixed(3)} (Threshold: ${histThreshold})`);
-                                     if (differenceMetric >= histThreshold) captureThisFrame = true;
-                                     previousHist = currentHist; // Update for next comparison
-                                 } else if (smartAlgorithm === "pixeldiff") {
-                                     differenceMetric = computePixelDiff(currentImageData.data, previousPixelData, sampleFactor);
-                                     console.log(`[Process Smart] Pixel diff: ${differenceMetric.toFixed(2)} (Threshold: ${pixelThreshold})`);
-                                     if (differenceMetric >= pixelThreshold) captureThisFrame = true;
-                                 } else if (smartAlgorithm === "ssim") {
-                                     differenceMetric = computeSSIM(previousImageData, currentImageData, sampleFactor);
-                                     console.log(`[Process Smart] SSIM: ${differenceMetric.toFixed(3)} (Capture if < ${ssimThreshold})`);
-                                     // Capture if similarity is LOW
-                                     if (differenceMetric < ssimThreshold) captureThisFrame = true;
-                                 }
-                             }
+                             if (!previousImageData) { captureThisFrame = true; }
+                             else if(currentImageData) { /* ... comparison logic ... */ if (smartAlgorithm === "histogram") { const currentHist = computeHistogram(currentImageData, sampleFactor); if (!previousHist || histogramDifference(currentHist, previousHist) >= histThreshold) captureThisFrame = true; previousHist = currentHist; } else if (smartAlgorithm === "pixeldiff") { const diff = computePixelDiff(currentImageData.data, previousPixelData, sampleFactor); if (diff >= pixelThreshold) captureThisFrame = true; } else if (smartAlgorithm === "ssim") { const ssimValue = computeSSIM(previousImageData, currentImageData, sampleFactor); if (ssimValue < ssimThreshold) captureThisFrame = true; } }
 
                              if (captureThisFrame) {
-                                 console.log(`[Process Smart] CAPTURING frame at ${timestamp.toFixed(2)}s`);
-                                 const blobData = { blob, timestamp };
-                                 screenshotBlobs.push(blobData);
+                                 const blobData = { blob, timestamp }; screenshotBlobs.push(blobData);
                                  const container = createScreenshotElement(blob, timestamp, screenshotBlobs);
-                                 if(container && screenshotsDiv) screenshotsDiv.appendChild(container);
-                                 updateImageCount();
-                                 // Update the "previous" frame data only if captured
+                                 if(container && screenshotsDiv) screenshotsDiv.appendChild(container); updateImageCount();
                                  previousImageData = currentImageData;
-                                 if (smartAlgorithm === 'pixeldiff') previousPixelData = currentImageData.data.slice();
-                                 // previousHist updated above
+                                 if (smartAlgorithm === 'pixeldiff' && currentImageData) previousPixelData = currentImageData.data.slice();
                              }
+                             if (!cancelExtractionRequested) { currentTime += smartInterval; const progress = Math.min((currentTime / totalDuration) * 100, 100); if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`; currentAnimationFrameId = requestAnimationFrame(processNextSmartFrame); }
+                             else { resetProcessingUI('autoSmart'); } // Reset if cancelled during processing
 
-                             // Prepare for next frame
-                             currentTime += smartInterval;
-                             const progress = Math.min((currentTime / totalDuration) * 100, 100);
-                             if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`;
-                             requestAnimationFrame(processNextSmartFrame);
-
-                        } catch (error) {
-                            console.error("[Process Smart] Error during image data processing:", error);
-                            URL.revokeObjectURL(img.src); // Clean up URL on error
-                             currentTime += smartInterval; // Move on
-                             const progress = Math.min((currentTime / totalDuration) * 100, 100);
-                             if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`;
-                             requestAnimationFrame(processNextSmartFrame);
-                        }
+                        } catch (error) { console.error("[Process Smart] Error during image data processing:", error); URL.revokeObjectURL(img.src); if(!cancelExtractionRequested){ currentTime += smartInterval; const progress = Math.min((currentTime / totalDuration) * 100, 100); if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`; currentAnimationFrameId = requestAnimationFrame(processNextSmartFrame); } else {resetProcessingUI('autoSmart');} }
                      };
-                     img.onerror = () => {
-                         console.error("[Process Smart] Failed to load blob into image for comparison.");
-                         URL.revokeObjectURL(img.src);
-                         currentTime += smartInterval; // Move on
-                         const progress = Math.min((currentTime / totalDuration) * 100, 100);
-                         if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`;
-                         requestAnimationFrame(processNextSmartFrame);
-                     }
+                     img.onerror = () => { console.error("[Process Smart] Failed to load blob into image."); URL.revokeObjectURL(img.src); if(!cancelExtractionRequested){ currentTime += smartInterval; const progress = Math.min((currentTime / totalDuration) * 100, 100); if(progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`; currentAnimationFrameId = requestAnimationFrame(processNextSmartFrame); } else {resetProcessingUI('autoSmart');} }
                      img.src = URL.createObjectURL(blob);
                  });
              }
-             requestAnimationFrame(processNextSmartFrame); // Start the smart loop
+             currentAnimationFrameId = requestAnimationFrame(processNextSmartFrame);
+        };
+
+        // Assign initial listeners ONLY if buttons exist
+        if(processButton) processButton.addEventListener('click', startAutoExtraction);
+        if(processSmartButton) processSmartButton.addEventListener('click', startSmartExtraction);
+
+        // Manual Mode Listeners
+        if (extractManualButton) extractManualButton.addEventListener('click', () => { 
+            if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) return; 
+            try { 
+                const { type, quality } = getCurrentFormatSettings(); 
+                const ctx = canvas.getContext('2d'); 
+                if(!ctx) throw new Error("Canvas context not available"); 
+                
+                // Apply black bar removal if enabled
+                if (removeBarsEnabled && cropData) {
+                    canvas.width = cropData.cropWidth;
+                    canvas.height = cropData.cropHeight;
+                    ctx.drawImage(
+                        manualVideo, 
+                        cropData.cropX, cropData.cropY, cropData.cropWidth, cropData.cropHeight,
+                        0, 0, cropData.cropWidth, cropData.cropHeight
+                    );
+                } else {
+                    canvas.width = manualVideo.videoWidth;
+                    canvas.height = manualVideo.videoHeight;
+                    ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
+                }
+                
+                canvas.toBlob((blob) => { 
+                    if (blob) { 
+                        const tempLink = document.createElement('a'); 
+                        const url = URL.createObjectURL(blob); 
+                        tempLink.href = url; 
+                        const extension = currentFormat === 'jpeg' ? 'jpg' : currentFormat; 
+                        tempLink.download = `quick_frame_${formatTime(manualVideo.currentTime).replace(':','-')}.${extension}`; 
+                        document.body.appendChild(tempLink); 
+                        tempLink.click(); 
+                        document.body.removeChild(tempLink); 
+                        URL.revokeObjectURL(url); 
+                    } 
+                }, type, quality); 
+            } catch(error) { 
+                console.error("[Manual Quick Save] Error:", error); 
+                alert("An error occurred during Quick Save."); 
+            } 
+        });
+        
+        if (addManualButton) addManualButton.addEventListener('click', () => { 
+            if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) return; 
+            try { 
+                const { type, quality } = getCurrentFormatSettings(); 
+                const ctx = canvas.getContext('2d'); 
+                if(!ctx) throw new Error("Canvas context not available"); 
+                
+                // Apply black bar removal if enabled
+                if (removeBarsEnabled && cropData) {
+                    canvas.width = cropData.cropWidth;
+                    canvas.height = cropData.cropHeight;
+                    ctx.drawImage(
+                        manualVideo, 
+                        cropData.cropX, cropData.cropY, cropData.cropWidth, cropData.cropHeight,
+                        0, 0, cropData.cropWidth, cropData.cropHeight
+                    );
+                } else {
+                    canvas.width = manualVideo.videoWidth;
+                    canvas.height = manualVideo.videoHeight;
+                    ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
+                }
+                
+                const timestamp = manualVideo.currentTime; 
+                canvas.toBlob((blob) => { 
+                    if (blob) { 
+                        const blobData = { blob, timestamp }; 
+                        manualScreenshotBlobs.push(blobData); 
+                        const container = createScreenshotElement(blob, timestamp, manualScreenshotBlobs); 
+                        if(container && screenshotsDiv) screenshotsDiv.appendChild(container); 
+                        updateImageCount(); 
+                    } 
+                }, type, quality); 
+            } catch(error) { 
+                console.error("[Manual Add] Error:", error); 
+                alert("An error occurred while adding the frame."); 
+            } 
         });
 
-        // Manual Mode Buttons
-        if (extractManualButton) extractManualButton.addEventListener('click', () => {
-            console.log("[Manual Quick Save] Clicked");
-            if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) {
-                 console.warn("[Manual Quick Save] Preconditions not met.");
-                 return;
-            }
-            try {
-                const { type, quality } = getCurrentFormatSettings();
-                const ctx = canvas.getContext('2d');
-                if(!ctx) throw new Error("Canvas context not available");
-                canvas.width = manualVideo.videoWidth;
-                canvas.height = manualVideo.videoHeight;
-                console.log("[Manual Quick Save] Drawing manual video frame to canvas.");
-                ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
-                canvas.toBlob((blob) => {
-                    if (blob) {
-                         console.log("[Manual Quick Save] Blob created, initiating download.");
-                        const tempLink = document.createElement('a');
-                        const url = URL.createObjectURL(blob);
-                        tempLink.href = url;
-                        const extension = currentFormat === 'jpeg' ? 'jpg' : currentFormat;
-                        tempLink.download = `quick_frame_${formatTime(manualVideo.currentTime).replace(':','-')}.${extension}`;
-                        document.body.appendChild(tempLink);
-                        tempLink.click();
-                        document.body.removeChild(tempLink);
-                        URL.revokeObjectURL(url);
-                    } else {
-                         console.error("[Manual Quick Save] Failed to create blob.");
-                         alert("Error capturing frame for quick save.");
-                    }
-                }, type, quality);
-            } catch(error) {
-                 console.error("[Manual Quick Save] Error:", error);
-                 alert("An error occurred during Quick Save.");
-            }
-        });
-
-        if (addManualButton) addManualButton.addEventListener('click', () => {
-             console.log("[Manual Add] Clicked");
-            if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) {
-                 console.warn("[Manual Add] Preconditions not met.");
-                 return;
-            }
-             try {
-                const { type, quality } = getCurrentFormatSettings();
-                const ctx = canvas.getContext('2d');
-                 if(!ctx) throw new Error("Canvas context not available");
-                canvas.width = manualVideo.videoWidth;
-                canvas.height = manualVideo.videoHeight;
-                 console.log("[Manual Add] Drawing manual video frame to canvas.");
-                ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
-                const timestamp = manualVideo.currentTime;
-                canvas.toBlob((blob) => {
-                    if (blob) {
-                         console.log("[Manual Add] Blob created, adding to list and grid.");
-                        const blobData = { blob, timestamp };
-                        manualScreenshotBlobs.push(blobData);
-                        const container = createScreenshotElement(blob, timestamp, manualScreenshotBlobs);
-                        if(container && screenshotsDiv) screenshotsDiv.appendChild(container);
-                        updateImageCount();
-                    } else {
-                        console.error("[Manual Add] Failed to create blob.");
-                         alert("Error capturing frame to add.");
-                    }
-                }, type, quality);
-            } catch(error) {
-                 console.error("[Manual Add] Error:", error);
-                 alert("An error occurred while adding the frame.");
-            }
-        });
-
-        // Download Listeners
+        // Download & Clear Listeners
         if(downloadAllButton) downloadAllButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(screenshotBlobs, "auto_screenshots"); });
         if(downloadAllSmartButton) downloadAllSmartButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(screenshotBlobs, "smart_screenshots"); });
         if(downloadManualButton) downloadManualButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(manualScreenshotBlobs, "manual_screenshots"); });
+        if (clearScreenshotsButton) clearScreenshotsButton.addEventListener('click', () => { if (processingActive) return; if (screenshotsDiv && (screenshotBlobs.length > 0 || manualScreenshotBlobs.length > 0)) { if (confirm("Are you sure you want to remove all generated screenshots?")) { screenshotsDiv.querySelectorAll('.screenshot-container').forEach(container => { if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); }); screenshotsDiv.innerHTML = ''; screenshotBlobs = []; manualScreenshotBlobs = []; updateImageCount(); } } });
 
         // --- Final Initial Setup ---
         currentMode = document.querySelector('.mode-tab.active')?.getAttribute('data-mode') || 'auto';
-        currentFormat = document.querySelector('#'+currentMode+'Mode .format-tab.active')?.getAttribute('data-format') || 'png'; // Get format from CURRENT mode's tabs
+        currentFormat = document.querySelector(`#${currentMode}Mode .format-tab.active`)?.getAttribute('data-format') || 'png'; // More specific selector
         smartAlgorithm = document.querySelector('.smart-tab.active')?.getAttribute('data-algo') || 'histogram';
 
         resetProcessingUI('all');
         updateDropZoneUI(false, "Drag & drop video file or");
+        updateImageCount();
 
-        console.log("Initial setup complete. Mode:", currentMode, "Format:", currentFormat, "Algo:", smartAlgorithm);
+        console.log("Initial setup complete.");
 
       } catch (error) {
           console.error("Error during script execution:", error);
           alert(`A JavaScript error occurred:\n\n${error.message}\n\nPlease check the console (F12) for more details.`);
       }
-
     }); // End DOMContentLoaded
   </script>
 
