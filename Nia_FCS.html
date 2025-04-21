@@ -4,23 +4,63 @@
   <meta charset="UTF-8">
   <title>Video Screenshot Tool</title>
   <style>
-    body { font-family: sans-serif; margin: 20px; }
-    img { margin: 10px; border: 1px solid #ccc; }
+    /* Reset margins and padding, and set up a centered flex container */
+    body {
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      font-family: sans-serif;
+      background-color: #f0f0f0;
+    }
+
+    /* Container for screenshots arranged nicely in the center */
+    #screenshots {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* Style for the images */
+    img {
+      margin: 10px;
+      border: 1px solid #ccc;
+    }
+
+    /* Style for the input section */
+    .input-group {
+      margin: 10px 0;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+    }
   </style>
+  <!-- Include JSZip from a CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
   <h1>Video Screenshot Tool</h1>
   
-  <!-- File Input for Video -->
-  <label for="videoInput">Select Video (MP4):</label>
-  <input type="file" id="videoInput" accept="video/mp4"><br><br>
+  <div class="input-group">
+    <label for="videoInput">Select Video (MP4):</label>
+    <input type="file" id="videoInput" accept="video/mp4">
+  </div>
   
-  <!-- Interval Input -->
-  <label for="intervalInput">Screenshot Interval (seconds):</label>
-  <input type="number" id="intervalInput" value="5" min="1"><br><br>
+  <div class="input-group">
+    <label for="intervalInput">Screenshot Interval (seconds):</label>
+    <input type="number" id="intervalInput" value="5" min="1">
+  </div>
   
-  <!-- Process Button -->
-  <button id="processButton">Extract Screenshots</button>
+  <div class="input-group">
+    <button id="processButton">Extract Screenshots</button>
+    <button id="downloadAllButton" style="display:none;">Download All</button>
+  </div>
   
   <!-- Hidden Video and Canvas Elements -->
   <video id="video" style="display:none"></video>
@@ -34,6 +74,7 @@
     const videoInput = document.getElementById('videoInput');
     const intervalInput = document.getElementById('intervalInput');
     const processButton = document.getElementById('processButton');
+    const downloadAllButton = document.getElementById('downloadAllButton');
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const screenshotsDiv = document.getElementById('screenshots');
@@ -54,13 +95,13 @@
         alert("Please select a video file first.");
         return;
       }
-
-      // Wait until metadata is loaded to get video duration and dimensions.
+      
+      // Ensure metadata is loaded before processing.
       video.addEventListener('loadedmetadata', () => {
         captureScreenshots();
       }, { once: true });
       
-      // Force metadata load if already available.
+      // If metadata is already loaded, start immediately.
       if (video.readyState >= 1) {
         captureScreenshots();
       }
@@ -74,6 +115,8 @@
 
       // Clear any previous screenshots.
       screenshotsDiv.innerHTML = "";
+      // Hide the download button until screenshots are ready.
+      downloadAllButton.style.display = 'none';
 
       const captureFrame = () => {
         video.currentTime = currentTime;
@@ -93,17 +136,44 @@
           screenshotsDiv.appendChild(img);
 
           video.removeEventListener('seeked', onSeeked);
-
-          // Move to the next timestamp.
           currentTime += interval;
           if (currentTime <= duration) {
             captureFrame();
+          } else {
+            downloadAllButton.style.display = 'inline-block';
           }
         }, { once: true });
       };
 
       captureFrame();
     }
+
+    // Download all screenshots as a ZIP file.
+    downloadAllButton.addEventListener('click', function() {
+      const zip = new JSZip();
+      const images = screenshotsDiv.getElementsByTagName('img');
+      if (images.length === 0) {
+        alert("No screenshots to download.");
+        return;
+      }
+      // Loop through images and add them to the zip file.
+      Array.from(images).forEach((img, index) => {
+        // Remove the data URL prefix to get the base64 data.
+        const dataURL = img.src;
+        const base64Data = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+        zip.file(`screenshot${index + 1}.png`, base64Data, { base64: true });
+      });
+      // Generate the ZIP file and trigger a download.
+      zip.generateAsync({ type: "blob" })
+        .then(function(content) {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(content);
+          a.download = "screenshots.zip";
+          document.body.appendChild(a); // Append to body for Firefox
+          a.click();
+          document.body.removeChild(a);
+        });
+    });
   </script>
 </body>
 </html>
