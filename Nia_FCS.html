@@ -3,28 +3,112 @@
 <head>
   <meta charset="UTF-8">
   <title>Video Screenshot Tool</title>
+  <!-- Google Fonts: Doto for h1; Source Code Pro for body text -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Only h1 uses Rationale -->
-  <link href="https://fonts.googleapis.com/css2?family=Rationale&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Doto&family=Source+Code+Pro&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
+    /* Global Styles */
     body {
       margin: 0;
       padding: 20px;
       background-color: #24272c;
       color: #f1f1f1;
-      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Source Code Pro', "Helvetica Neue", Arial, sans-serif;
     }
     h1 {
-      font-family: 'Rationale', sans-serif;
+      font-family: 'Doto', sans-serif;
+      font-size: 3rem;
       text-align: center;
-      margin: 10px 0;
+      margin: 10px 0 20px;
+      animation: fadeInUp 1s ease-out;
+      color: #ffffff;
     }
-    h2 {
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    hr.separator {
+      border: 0;
+      border-top: 2px dashed #626466;
+      margin: 20px 0;
+    }
+    /* URL Input Container */
+    #urlContainer {
+      margin-bottom: 20px;
       text-align: center;
-      margin: 10px 0;
     }
+    #videoURLInput {
+      width: 260px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #626466;
+      background-color: #1f2226;
+      color: #f1f1f1;
+    }
+    #loadURLButton {
+      padding: 8px 12px;
+      margin-left: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #6447ff;
+      color: #fff;
+      cursor: pointer;
+    }
+    /* File Info Area with leader dots */
+    #fileInfo {
+      width: 300px;
+      font-size: 0.9rem;
+      color: #cccccc;
+      opacity: 0.65;
+      margin: 0;
+    }
+    .info-row {
+      display: flex;
+      align-items: center;
+      margin: 2px 0;
+    }
+    .info-label {
+      font-weight: normal;
+      white-space: nowrap;
+    }
+    .info-value {
+      white-space: nowrap;
+      text-align: right;
+    }
+    .leader {
+      flex: 1;
+      margin: 0 5px;
+      border-bottom: 1px dotted rgba(255,255,255,0.2);
+      user-select: none;
+    }
+    /* Mode Tabs – Three main tabs: Automated, Automated (Smart), Manual */
+    .mode-tabs {
+      display: flex;
+      gap: 0;
+      width: 600px;
+      margin: 0 auto 20px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .mode-tab {
+      flex: 1;
+      background-color: #3a3c40;
+      text-align: center;
+      border: none;
+      padding: 10px 0;
+      color: #f1f1f1;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    .mode-tab:hover { background-color: #35363a; }
+    .mode-tab.active {
+      background-color: #ffffff;
+      color: #24272c;
+    }
+    /* Main Layout */
     .main-container {
       display: flex;
       justify-content: center;
@@ -38,13 +122,7 @@
       flex-direction: column;
       align-items: center;
     }
-    .settings-column {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 600px;
-      gap: 20px;
-    }
+    .mode-container { width: 600px; }
     /* Upload/Drop Zone */
     #dropZone {
       width: 300px;
@@ -60,25 +138,11 @@
       cursor: pointer;
       transition: background-color 0.2s, border-color 0.2s;
     }
-    #dropZone:hover {
-      background-color: #272a2e;
-      border-color: #8a8a8a;
-    }
-    #uploadIcon {
-      margin-bottom: 16px;
-    }
-    #uploadIcon svg {
-      width: 48px;
-      height: 48px;
-      fill: #f1f1f1;
-    }
-    #dropZoneText {
-      margin-bottom: 16px;
-      font-size: 1rem;
-    }
-    #videoInput {
-      display: none;
-    }
+    #dropZone:hover { background-color: #272a2e; border-color: #8a8a8a; }
+    #uploadIcon { margin-bottom: 16px; }
+    #uploadIcon svg { width: 48px; height: 48px; fill: #f1f1f1; }
+    #dropZoneText { margin-bottom: 16px; font-size: 1rem; }
+    #videoInput { display: none; }
     #selectFileButton {
       padding: 10px 20px;
       font-size: 1rem;
@@ -89,39 +153,94 @@
       cursor: pointer;
       transition: background-color 0.2s, border 0.2s;
     }
-    #dropZone:hover #selectFileButton {
-      background-color: #474747;
-    }
-    /* File-selected style */
+    #dropZone:hover #selectFileButton { background-color: #474747; }
     #selectFileButton.file-selected {
       background-color: transparent;
-      border: 1px solid rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255,255,255,0.8);
     }
-    #selectFileButton.file-selected:hover {
-      border-color: rgba(255, 255, 255, 1);
+    #selectFileButton.file-selected:hover { border-color: rgba(255,255,255,1); }
+    /* Mode Containers */
+    #autoMode, #autoSmartMode, #manualMode { display: none; }
+    #autoMode { display: block; }
+    /* Manual Mode Video */
+    #manualVideo {
+      width: 100%;
+      max-width: 600px;
+      border: 2px dashed #626466;
+      border-radius: 12px;
+      background-color: #1f2226;
+      margin-bottom: 10px;
     }
-    /* Progress Bar */
-    #progressBar {
+    /* Manual Mode Buttons */
+    .manual-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    #extractManualButton {
+      flex: 1;
+      padding: 12px 24px;
+      font-size: 1rem;
+      background-color: #6447ff;
+      border: none;
+      border-radius: 9999px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    #extractManualButton:hover { background-color: #5d40f0; }
+    #downloadManualButton {
+      flex: 1;
+      padding: 12px 24px;
+      font-size: 1rem;
+      background-color: #3b0d9d;
+      border: none;
+      border-radius: 9999px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    #downloadManualButton:hover { background-color: #371098; }
+    #downloadManualButton:disabled {
+      background-color: #3b3b6e;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    #addManualButton {
+      width: 50px;
+      height: 50px;
+      background-color: #505050;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    #addManualButton:hover { background-color: #474747; }
+    /* Progress Bars */
+    #progressBar, #progressBarSmart {
       width: 500px;
       height: 6px;
+      background: #3a3c40;
+      border-radius: 3px;
+      overflow: hidden;
       margin: 10px 0;
-      -webkit-appearance: none;
-      appearance: none;
-      visibility: hidden;
+      display: none;
     }
-    #progressBar::-webkit-progress-bar {
-      background: transparent;
-    }
-    #progressBar::-moz-progress-bar {
-      background: transparent;
-    }
-    #progressBar::-webkit-progress-value {
+    #progressBarFill, #progressBarFillSmart {
+      height: 100%;
+      width: 0%;
       background: linear-gradient(90deg, #6a82fb, #fc5c7d);
+      transition: width 0.2s;
     }
-    #progressBar::-moz-progress-bar {
-      background: linear-gradient(90deg, #6a82fb, #fc5c7d);
-    }
-    /* Slider Rows */
+    /* Slider Rows (for regular Automated mode) */
     .slider-row {
       display: flex;
       align-items: center;
@@ -130,7 +249,7 @@
       margin-bottom: 10px;
     }
     .slider-label {
-      min-width: 140px;
+      width: 140px;
       text-align: left;
       font-size: 0.95rem;
       white-space: nowrap;
@@ -141,8 +260,9 @@
       align-items: center;
       gap: 8px;
     }
+    .slider-wrapper input[type="range"] { margin-left: 40px; }
     .value-display {
-      font-weight: bold;
+      font-weight: normal;
       min-width: 40px;
       text-align: right;
     }
@@ -201,14 +321,12 @@
       color: #f1f1f1;
       cursor: pointer;
       transition: background-color 0.2s;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.95rem;
     }
-    .format-tab:hover {
-      background-color: #35363a;
-    }
-    .format-tab.active {
-      background-color: #ffffff;
-      color: #24272c;
-    }
+    .format-tab:not(:first-child) { border-left: 1px solid rgba(255,255,255,0.15); }
+    .format-tab:hover { background-color: #35363a; }
+    .format-tab.active { background-color: #ffffff; color: #24272c; }
     /* PNG Note */
     #pngNote {
       font-size: 0.95rem;
@@ -217,9 +335,9 @@
       min-height: 36px;
       display: flex;
       align-items: center;
-      padding-left: 140px;
+      justify-content: center;
     }
-    /* Buttons */
+    /* Automated Mode Buttons */
     .button-group {
       display: flex;
       flex-direction: column;
@@ -227,7 +345,9 @@
       width: 500px;
     }
     #processButton,
-    #downloadAllButton {
+    #downloadAllButton,
+    #processSmartButton,
+    #downloadAllSmartButton {
       width: 100%;
       padding: 12px 24px;
       font-size: 1rem;
@@ -235,40 +355,83 @@
       border-radius: 9999px;
       color: #fff;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background-color 0.2s, box-shadow 0.2s;
       text-align: center;
+      font-family: "Helvetica Neue", Arial, sans-serif;
     }
-    #processButton {
-      background-color: #6447ff;
-    }
-    #processButton:hover:enabled {
-      background-color: #5d40f0;
-      animation: glow 1s infinite;
-    }
-    #downloadAllButton {
-      background-color: #3b0d9d;
-    }
-    #downloadAllButton:hover:enabled {
-      background-color: #371098;
-    }
+    #processButton { background-color: #6447ff; }
+    #processButton:hover:enabled { background-color: #5d40f0; }
+    #downloadAllButton { background-color: #3b0d9d; }
+    #downloadAllButton:hover:enabled { background-color: #371098; }
     #downloadAllButton:disabled {
       background-color: #3b3b6e;
       cursor: not-allowed;
       opacity: 0.6;
     }
-    /* Animated glow for process button */
-    @keyframes glow {
-      0% {
-        box-shadow: 0 0 5px #6447ff;
-      }
-      50% {
-        box-shadow: 0 0 20px #6447ff;
-      }
-      100% {
-        box-shadow: 0 0 5px #6447ff;
-      }
+    #processSmartButton { background-color: #4caf50; }
+    #processSmartButton:hover:enabled { background-color: #43a047; }
+    #downloadAllSmartButton { background-color: #f57c00; }
+    #downloadAllSmartButton:hover:enabled { background-color: #ef6c00; }
+    #downloadAllSmartButton:disabled {
+      background-color: #b38f5e;
+      cursor: not-allowed;
+      opacity: 0.6;
     }
-    /* Screenshots Grid */
+    /* Smart Mode Algorithm Tabs */
+    .smart-algo-tabs {
+      display: flex;
+      gap: 0;
+      width: 500px;
+      margin: 10px 0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .smart-tab {
+      flex: 1;
+      background-color: #3a3c40;
+      text-align: center;
+      border: none;
+      padding: 6px 0;
+      color: #f1f1f1;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-size: 0.9rem;
+    }
+    .smart-tab:not(:first-child) { border-left: 1px solid rgba(255,255,255,0.15); }
+    .smart-tab:hover { background-color: #35363a; }
+    .smart-tab.active { background-color: #ffffff; color: #24272c; }
+    /* Screenshots Grid with hover overlays */
+    .screenshot-container {
+      position: relative;
+    }
+    .screenshot-overlay {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 4px;
+      display: none;
+    }
+    .delete-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: rgba(255,0,0,0.7);
+      border: none;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 4px;
+      cursor: pointer;
+      display: none;
+    }
+    .screenshot-container:hover .screenshot-overlay,
+    .screenshot-container:hover .delete-btn {
+      display: block;
+    }
     #screenshots {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -276,30 +439,46 @@
       width: 100%;
       box-sizing: border-box;
       padding: 0 10px;
+      margin-top: 20px;
     }
     #screenshots a {
       border: 1px solid #3a3c40;
       display: block;
       border-radius: 4px;
       overflow: hidden;
-      box-shadow: none;
     }
     #screenshots img {
       display: block;
       width: 100%;
+      max-width: 355px;
       height: auto;
-      max-height: 320px;
+      max-height: 200px;
       object-fit: cover;
       border-radius: 4px;
+      animation: fadeIn 0.5s ease-in-out;
     }
-    #video, #canvas {
-      display: none;
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
+    #video, #canvas { display: none; }
   </style>
 </head>
 <body>
   <h1>Video Screenshot Tool</h1>
+  <!-- URL Input for Direct Video Links -->
+  <div id="urlContainer">
+    <input type="text" id="videoURLInput" placeholder="Enter video URL (e.g., https://example.com/video.mp4)">
+    <button id="loadURLButton" type="button">Load Video</button>
+  </div>
+  <!-- Main Mode Tabs: Automated, Automated (Smart), Manual -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="auto">Automated</button>
+    <button class="mode-tab" data-mode="autoSmart">Automated (Smart)</button>
+    <button class="mode-tab" data-mode="manual">Manual</button>
+  </div>
   <div class="main-container">
+    <!-- Left Column: Upload Zone & File Info -->
     <div class="upload-column">
       <div id="dropZone">
         <div id="uploadIcon">
@@ -311,125 +490,363 @@
         <button id="selectFileButton" type="button">Select file</button>
         <input type="file" id="videoInput" accept="video/*">
       </div>
+      <div id="fileInfo">
+        <div class="info-row">
+          <div class="info-label">Resolution</div>
+          <span class="leader"></span>
+          <div class="info-value" id="resolutionValue">-</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Duration</div>
+          <span class="leader"></span>
+          <div class="info-value" id="lengthValue">-</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Aspect Ratio</div>
+          <span class="leader"></span>
+          <div class="info-value" id="aspectRatioValue">-</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Bitrate (est.)</div>
+          <span class="leader"></span>
+          <div class="info-value" id="bitrateValue">-</div>
+        </div>
+        <div class="info-row">
+          <div class="info-label">Images</div>
+          <span class="leader"></span>
+          <div class="info-value" id="imageCountValue">0</div>
+        </div>
+      </div>
     </div>
-    <div class="settings-column">
-      <!-- Slider Row: Screenshot Interval -->
-      <div class="slider-row">
-        <div class="slider-label">Screenshot Interval</div>
-        <div class="slider-wrapper">
-          <input type="range" id="intervalInput" min="1" max="20" value="10">
-          <span id="intervalValue" class="value-display">10</span>s
+    <!-- Right Column: Mode Containers -->
+    <div class="mode-container">
+      <!-- Automated (Regular) Mode -->
+      <div id="autoMode">
+        <div class="slider-row">
+          <div class="slider-label">Screenshot Interval</div>
+          <div class="slider-wrapper">
+            <input type="range" id="intervalInput" min="1" max="20" value="10">
+            <span id="intervalValue" class="value-display">10</span>s
+          </div>
+        </div>
+        <div class="format-tabs">
+          <button class="format-tab active" data-format="png">PNG</button>
+          <button class="format-tab" data-format="jpeg">JPEG</button>
+          <button class="format-tab" data-format="webp">WEBP</button>
+        </div>
+        <div id="pngNote">Lossless quality, largest file size</div>
+        <div class="slider-row" id="jpegSettings" style="display:none;">
+          <div class="slider-label">JPEG Quality</div>
+          <div class="slider-wrapper">
+            <input type="range" id="jpegQuality" min="0" max="100" value="80">
+            <span id="jpegQualityValue" class="value-display">80</span>%
+          </div>
+        </div>
+        <div class="slider-row" id="webpSettings" style="display:none;">
+          <div class="slider-label">WEBP Quality</div>
+          <div class="slider-wrapper">
+            <input type="range" id="webpQuality" min="0" max="100" value="80">
+            <span id="webpQualityValue" class="value-display">80</span>%
+          </div>
+        </div>
+        <div class="button-group">
+          <button id="processButton">Extract Screenshots</button>
+          <button id="downloadAllButton" disabled>Download All</button>
+        </div>
+        <div id="progressBar">
+          <div id="progressBarFill"></div>
         </div>
       </div>
-      <!-- Format Tabs -->
-      <div class="format-tabs">
-        <button class="format-tab active" data-format="png">PNG</button>
-        <button class="format-tab" data-format="jpeg">JPEG</button>
-        <button class="format-tab" data-format="webp">WEBP</button>
-      </div>
-      <!-- PNG Note -->
-      <div id="pngNote">Lossless quality, largest file size</div>
-      <!-- Slider Row: JPEG Quality -->
-      <div class="slider-row" id="jpegSettings" style="display:none;">
-        <div class="slider-label">JPEG Quality</div>
-        <div class="slider-wrapper">
-          <input type="range" id="jpegQuality" min="0" max="100" value="80">
-          <span id="jpegQualityValue" class="value-display">80</span>%
+      <!-- Automated (Smart) Mode -->
+      <div id="autoSmartMode">
+        <!-- Smart Mode Algorithm Selector Tabs: Histogram, Pixel Diff, SSIM -->
+        <div class="smart-algo-tabs">
+          <button class="smart-tab active" data-algo="histogram">Histogram</button>
+          <button class="smart-tab" data-algo="pixeldiff">Pixel Diff</button>
+          <button class="smart-tab" data-algo="ssim">SSIM</button>
+        </div>
+        <div id="pngNote">Lossless quality, largest file size</div>
+        <div class="slider-row" id="jpegSettingsSmart" style="display:none;">
+          <div class="slider-label">JPEG Quality</div>
+          <div class="slider-wrapper">
+            <input type="range" id="jpegQualitySmart" min="0" max="100" value="80">
+            <span id="jpegQualityValueSmart" class="value-display">80</span>%
+          </div>
+        </div>
+        <div class="slider-row" id="webpSettingsSmart" style="display:none;">
+          <div class="slider-label">WEBP Quality</div>
+          <div class="slider-wrapper">
+            <input type="range" id="webpQualitySmart" min="0" max="100" value="80">
+            <span id="webpQualityValueSmart" class="value-display">80</span>%
+          </div>
+        </div>
+        <div class="button-group">
+          <button id="processSmartButton">Extract Smart Screenshots</button>
+          <button id="downloadAllSmartButton" disabled>Download All</button>
+        </div>
+        <div id="progressBarSmart">
+          <div id="progressBarFillSmart"></div>
         </div>
       </div>
-      <!-- Slider Row: WEBP Quality -->
-      <div class="slider-row" id="webpSettings" style="display:none;">
-        <div class="slider-label">WEBP Quality</div>
-        <div class="slider-wrapper">
-          <input type="range" id="webpQuality" min="0" max="100" value="80">
-          <span id="webpQualityValue" class="value-display">80</span>%
+      <!-- Manual Mode -->
+      <div id="manualMode">
+        <video id="manualVideo" controls></video>
+        <div class="manual-buttons">
+          <button id="extractManualButton" type="button">Quick Save Frame</button>
+          <button id="downloadManualButton" type="button" disabled>Download All</button>
+          <button id="addManualButton" type="button">+</button>
         </div>
       </div>
-      <!-- Buttons -->
-      <div class="button-group">
-        <button id="processButton">Extract Screenshots</button>
-        <button id="downloadAllButton" disabled>Download All</button>
-      </div>
-      <!-- Progress Bar -->
-      <progress id="progressBar" value="0" max="100"></progress>
     </div>
   </div>
-  <h2>Screenshots</h2>
+  <hr class="separator">
   <div id="screenshots"></div>
-  <video id="video"></video>
+  <video id="video" style="display:none;"></video>
   <canvas id="canvas"></canvas>
   <script>
+    // --- Helper Functions ---
     function updateSliderBackground(slider) {
       const val = slider.value;
       const min = slider.min;
       const max = slider.max;
       const pct = ((val - min) * 100) / (max - min);
-      slider.style.background =
-        `linear-gradient(to right, #6447ff 0%, #6447ff ${pct}%, #3a3c40 ${pct}%, #3a3c40 100%)`;
+      slider.style.background = `linear-gradient(to right, #6447ff 0%, #6447ff ${pct}%, #3a3c40 ${pct}%, #3a3c40 100%)`;
     }
+    // Format time (mm:ss)
+    function formatTime(seconds) {
+      const s = Math.floor(seconds);
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return m + ":" + (sec < 10 ? "0" + sec : sec);
+    }
+    // Compute normalized histogram from image data (grayscale)
+    function computeHistogram(imageData, sampleFactor) {
+      const data = imageData.data;
+      const hist = new Array(256).fill(0);
+      let count = 0;
+      for (let i = 0; i < data.length; i += 4 * sampleFactor) {
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+        hist[gray]++;
+        count++;
+      }
+      return hist.map(val => val / count);
+    }
+    // Compute histogram difference (L1 norm)
+    function histogramDifference(hist1, hist2) {
+      return hist1.reduce((acc, val, i) => acc + Math.abs(val - hist2[i]), 0);
+    }
+    // Compute simple pixel difference between two arrays
+    function computePixelDiff(data1, data2) {
+      let diff = 0;
+      for (let i = 0; i < data1.length; i++) {
+        diff += Math.abs(data1[i] - data2[i]);
+      }
+      return diff / data1.length;
+    }
+    // Compute a simplified SSIM between two imageData objects
+    function computeSSIM(imageData1, imageData2, sampleFactor) {
+      let arr1 = [];
+      let arr2 = [];
+      const data1 = imageData1.data;
+      const data2 = imageData2.data;
+      for (let i = 0; i < data1.length; i += 4 * sampleFactor) {
+        const r = data1[i], g = data1[i+1], b = data1[i+2];
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        arr1.push(gray);
+      }
+      for (let i = 0; i < data2.length; i += 4 * sampleFactor) {
+        const r = data2[i], g = data2[i+1], b = data2[i+2];
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        arr2.push(gray);
+      }
+      const n = arr1.length;
+      const mu1 = arr1.reduce((a, b) => a + b, 0) / n;
+      const mu2 = arr2.reduce((a, b) => a + b, 0) / n;
+      const sigma1_sq = arr1.reduce((a, b) => a + Math.pow(b - mu1, 2), 0) / n;
+      const sigma2_sq = arr2.reduce((a, b) => a + Math.pow(b - mu2, 2), 0) / n;
+      let sigma12 = 0;
+      for (let i = 0; i < n; i++) {
+        sigma12 += (arr1[i] - mu1) * (arr2[i] - mu2);
+      }
+      sigma12 /= n;
+      const L = 255;
+      const C1 = Math.pow(0.01 * L, 2);
+      const C2 = Math.pow(0.03 * L, 2);
+      const ssim = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) /
+                   ((mu1 * mu1 + mu2 * mu2 + C1) * (sigma1_sq + sigma2_sq + C2));
+      return ssim;
+    }
+    // Create a screenshot container with overlay and delete button
+    function createScreenshotElement(blob, timestamp) {
+      const container = document.createElement('div');
+      container.className = "screenshot-container";
+      
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.target = "_blank";
+      
+      const img = document.createElement('img');
+      img.src = a.href;
+      a.appendChild(img);
+      container.appendChild(a);
+      
+      // Create overlay to show timestamp
+      const overlay = document.createElement('div');
+      overlay.className = "screenshot-overlay";
+      overlay.textContent = formatTime(timestamp);
+      container.appendChild(overlay);
+      
+      // Create delete button
+      const delBtn = document.createElement('button');
+      delBtn.className = "delete-btn";
+      delBtn.textContent = "✕";
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        container.remove();
+        updateImageCount();
+      });
+      container.appendChild(delBtn);
+      
+      return container;
+    }
+    // --- Mode Tabs Setup ---
+    const modeTabs = document.querySelectorAll('.mode-tab');
+    const autoMode = document.getElementById('autoMode');
+    const autoSmartMode = document.getElementById('autoSmartMode');
+    const manualMode = document.getElementById('manualMode');
+    modeTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        modeTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const mode = tab.getAttribute('data-mode');
+        if (mode === 'auto') {
+          autoMode.style.display = 'block';
+          autoSmartMode.style.display = 'none';
+          manualMode.style.display = 'none';
+        } else if (mode === 'autoSmart') {
+          autoMode.style.display = 'none';
+          autoSmartMode.style.display = 'block';
+          manualMode.style.display = 'none';
+        } else {
+          autoMode.style.display = 'none';
+          autoSmartMode.style.display = 'none';
+          manualMode.style.display = 'block';
+        }
+      });
+    });
+    // --- Smart Mode Algorithm Tabs Setup ---
+    const smartAlgoTabs = document.querySelectorAll('.smart-tab');
+    let smartAlgorithm = 'histogram'; // default
+    smartAlgoTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        smartAlgoTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        smartAlgorithm = tab.getAttribute('data-algo');
+      });
+    });
+    // --- Common Elements ---
     const dropZone = document.getElementById('dropZone');
     const dropZoneText = document.getElementById('dropZoneText');
     const selectFileButton = document.getElementById('selectFileButton');
     const videoInput = document.getElementById('videoInput');
     const progressBar = document.getElementById('progressBar');
+    const progressBarFill = document.getElementById('progressBarFill');
     const intervalInput = document.getElementById('intervalInput');
     const intervalValue = document.getElementById('intervalValue');
-    const tabs = document.querySelectorAll('.format-tab');
+    const tabsFormat = document.querySelectorAll('.format-tab');
     const pngNote = document.getElementById('pngNote');
     const jpegSettingsRow = document.getElementById('jpegSettings');
     const webpSettingsRow = document.getElementById('webpSettings');
-    const jpegQuality = document.getElementById('jpegQuality');
-    const jpegQualityValue = document.getElementById('jpegQualityValue');
-    const webpQuality = document.getElementById('webpQuality');
-    const webpQualityValue = document.getElementById('webpQualityValue');
+    // Smart mode quality controls
+    const jpegQualitySmart = document.getElementById('jpegQualitySmart');
+    const jpegQualityValueSmart = document.getElementById('jpegQualityValueSmart');
+    const webpQualitySmart = document.getElementById('webpQualitySmart');
+    const webpQualityValueSmart = document.getElementById('webpQualityValueSmart');
     const processButton = document.getElementById('processButton');
     const downloadAllButton = document.getElementById('downloadAllButton');
+    const processSmartButton = document.getElementById('processSmartButton');
+    const downloadAllSmartButton = document.getElementById('downloadAllSmartButton');
+    const progressBarSmart = document.getElementById('progressBarSmart');
     const video = document.getElementById('video');
+    const manualVideo = document.getElementById('manualVideo');
     const canvas = document.getElementById('canvas');
     const screenshotsDiv = document.getElementById('screenshots');
-    let currentFormat = 'png';
-    [intervalInput, jpegQuality, webpQuality].forEach(s => updateSliderBackground(s));
+    const resolutionValue = document.getElementById('resolutionValue');
+    const lengthValue = document.getElementById('lengthValue');
+    const imageCountValue = document.getElementById('imageCountValue');
+    // Ensure Aspect Ratio row exists
+    if (!document.getElementById('aspectRatioValue')) {
+      const aspectRow = document.createElement('div');
+      aspectRow.className = 'info-row';
+      aspectRow.innerHTML = `<div class="info-label">Aspect Ratio</div><span class="leader"></span><div class="info-value" id="aspectRatioValue">-</div>`;
+      const fileInfo = document.getElementById('fileInfo');
+      const durationRow = fileInfo.querySelector('.info-row:nth-child(2)');
+      durationRow.parentElement.insertBefore(aspectRow, durationRow.nextSibling);
+    }
+    const aspectRatioValue = document.getElementById('aspectRatioValue');
+    let autoScreenshotBlobs = [];
+    let manualScreenshotBlobs = [];
+    function updateImageCount() {
+      const count = screenshotsDiv.childElementCount;
+      imageCountValue.textContent = count;
+    }
+    [intervalInput, jpegQuality, webpQuality, jpegQualitySmart, webpQualitySmart].forEach(s => updateSliderBackground(s));
     intervalInput.addEventListener('input', () => {
       intervalValue.textContent = intervalInput.value;
       updateSliderBackground(intervalInput);
     });
     jpegQuality.addEventListener('input', () => {
-      jpegQualityValue.textContent = jpegQuality.value;
+      document.getElementById('jpegQualityValue').textContent = jpegQuality.value;
       updateSliderBackground(jpegQuality);
     });
     webpQuality.addEventListener('input', () => {
-      webpQualityValue.textContent = webpQuality.value;
+      document.getElementById('webpQualityValue').textContent = webpQuality.value;
       updateSliderBackground(webpQuality);
     });
-    tabs.forEach(tab => {
+    jpegQualitySmart.addEventListener('input', () => {
+      document.getElementById('jpegQualityValueSmart').textContent = jpegQualitySmart.value;
+      updateSliderBackground(jpegQualitySmart);
+    });
+    webpQualitySmart.addEventListener('input', () => {
+      document.getElementById('webpQualityValueSmart').textContent = webpQualitySmart.value;
+      updateSliderBackground(webpQualitySmart);
+    });
+    let currentFormat = 'png';
+    tabsFormat.forEach(tab => {
       tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
+        tabsFormat.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         currentFormat = tab.getAttribute('data-format');
         if (currentFormat === 'png') {
           pngNote.style.display = 'flex';
           jpegSettingsRow.style.display = 'none';
           webpSettingsRow.style.display = 'none';
+          if(document.getElementById('jpegSettingsSmart')) document.getElementById('jpegSettingsSmart').style.display = 'none';
+          if(document.getElementById('webpSettingsSmart')) document.getElementById('webpSettingsSmart').style.display = 'none';
         } else if (currentFormat === 'jpeg') {
           pngNote.style.display = 'none';
           jpegSettingsRow.style.display = 'flex';
           webpSettingsRow.style.display = 'none';
+          if(document.getElementById('jpegSettingsSmart')) document.getElementById('jpegSettingsSmart').style.display = 'flex';
+          if(document.getElementById('webpSettingsSmart')) document.getElementById('webpSettingsSmart').style.display = 'none';
         } else {
           pngNote.style.display = 'none';
           jpegSettingsRow.style.display = 'none';
           webpSettingsRow.style.display = 'flex';
+          if(document.getElementById('jpegSettingsSmart')) document.getElementById('jpegSettingsSmart').style.display = 'none';
+          if(document.getElementById('webpSettingsSmart')) document.getElementById('webpSettingsSmart').style.display = 'flex';
         }
       });
     });
-    dropZone.addEventListener('click', () => videoInput.click());
-    selectFileButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      videoInput.click();
-    });
+    let uploadedFile = null;
     videoInput.addEventListener('change', () => {
       const file = videoInput.files[0];
       if (!file) return;
-      video.src = URL.createObjectURL(file);
+      uploadedFile = file;
+      const fileURL = URL.createObjectURL(file);
+      video.src = fileURL;
+      manualVideo.src = fileURL;
       dropZoneText.textContent = file.name;
       selectFileButton.textContent = "File selected";
       selectFileButton.classList.add('file-selected');
@@ -440,6 +857,12 @@
         </svg>
       `;
       downloadAllButton.disabled = true;
+      document.getElementById('downloadManualButton').disabled = true;
+    });
+    dropZone.addEventListener('click', () => videoInput.click());
+    selectFileButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      videoInput.click();
     });
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -454,7 +877,10 @@
       dropZone.classList.remove('hover');
       const file = e.dataTransfer.files[0];
       if (!file) return;
-      video.src = URL.createObjectURL(file);
+      uploadedFile = file;
+      const fileURL = URL.createObjectURL(file);
+      video.src = fileURL;
+      manualVideo.src = fileURL;
       dropZoneText.textContent = file.name;
       selectFileButton.textContent = "File selected";
       selectFileButton.classList.add('file-selected');
@@ -465,80 +891,223 @@
         </svg>
       `;
       downloadAllButton.disabled = true;
+      document.getElementById('downloadManualButton').disabled = true;
     });
+    // --- URL Input Handling ---
+    const videoURLInput = document.getElementById('videoURLInput');
+    const loadURLButton = document.getElementById('loadURLButton');
+    loadURLButton.addEventListener('click', () => {
+      const url = videoURLInput.value.trim();
+      if (!url) { alert("Please enter a video URL."); return; }
+      video.src = url;
+      manualVideo.src = url;
+      dropZoneText.textContent = "Loaded URL: " + url;
+      selectFileButton.textContent = "URL Loaded";
+      selectFileButton.classList.add('file-selected');
+      dropZone.style.backgroundColor = "#272a2e";
+      document.getElementById('uploadIcon').innerHTML = `
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
+          <path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/>
+        </svg>
+      `;
+    });
+    videoURLInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') loadURLButton.click();
+    });
+    video.addEventListener('loadedmetadata', () => {
+      if (uploadedFile || video.src) {
+        const totalSec = Math.floor(video.duration);
+        const min = Math.floor(totalSec / 60);
+        const sec = totalSec % 60;
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+        resolutionValue.textContent = `${width}x${height}`;
+        lengthValue.textContent = `${min} min ${sec} s`;
+        const bitrateMbps = uploadedFile ? Math.round((uploadedFile.size * 8) / video.duration / 1000000) : '-';
+        document.getElementById('bitrateValue').textContent = `${bitrateMbps} Mbps`;
+        function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+        const divisor = gcd(width, height);
+        const aspectRatio = `${width / divisor}:${height / divisor}`;
+        aspectRatioValue.textContent = aspectRatio;
+      }
+    });
+    // --- Regular Automated Mode Extraction ---
     processButton.addEventListener('click', () => {
-      if (!video.src) {
-        alert("Please select or drop a video file first.");
-        return;
-      }
-      progressBar.style.visibility = 'visible';
-      progressBar.value = 0;
-      video.addEventListener('loadedmetadata', captureScreenshots, { once: true });
-      if (video.readyState >= 1) {
-        captureScreenshots();
-      }
+      if (!video.src) { alert("Please select or drop a video file first."); return; }
+      progressBar.style.display = 'block';
+      progressBarFill.style.width = '0%';
+      video.addEventListener('loadedmetadata', captureAutoScreenshots, { once: true });
+      if (video.readyState >= 1) { captureAutoScreenshots(); }
     });
-    function captureScreenshots() {
+    function captureAutoScreenshots() {
+      autoScreenshotBlobs = [];
       const interval = parseFloat(intervalInput.value);
       const duration = video.duration;
       const ctx = canvas.getContext('2d');
       let currentTime = 0;
       let quality = 1.0;
-      if (currentFormat === 'jpeg') {
-        quality = parseFloat(jpegQuality.value) / 100;
-      } else if (currentFormat === 'webp') {
-        quality = parseFloat(webpQuality.value) / 100;
-      }
+      if (currentFormat === 'jpeg') { quality = parseFloat(jpegQuality.value) / 100; }
+      else if (currentFormat === 'webp') { quality = parseFloat(webpQuality.value) / 100; }
       screenshotsDiv.innerHTML = "";
+      updateImageCount();
       downloadAllButton.disabled = true;
       function captureFrame() {
+        const timestamp = currentTime;
         video.currentTime = currentTime;
         video.addEventListener('seeked', function onSeeked() {
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          let imageURL;
-          if (currentFormat === 'png') {
-            imageURL = canvas.toDataURL('image/png');
-          } else if (currentFormat === 'jpeg') {
-            imageURL = canvas.toDataURL('image/jpeg', quality);
-          } else {
-            imageURL = canvas.toDataURL('image/webp', quality);
+          let type = 'image/png';
+          if (currentFormat === 'jpeg') { type = 'image/jpeg'; }
+          else if (currentFormat === 'webp') { type = 'image/webp'; }
+          canvas.toBlob((blob) => {
+            autoScreenshotBlobs.push(blob);
+            const container = createScreenshotElement(blob, timestamp);
+            screenshotsDiv.appendChild(container);
+            updateImageCount();
+            video.removeEventListener('seeked', onSeeked);
+            currentTime += interval;
+            progressBarFill.style.width = Math.min((currentTime / duration) * 100, 100) + '%';
+            if (currentTime <= duration) { setTimeout(captureFrame, 100); }
+            else { downloadAllButton.disabled = false; progressBar.style.display = 'none'; }
+          }, type, quality);
+        }, { once: true });
+      }
+      captureFrame();
+    }
+    // --- Automated (Smart) Mode Extraction with selectable algorithm ---
+    processSmartButton.addEventListener('click', () => {
+      if (!video.src) { alert("Please select or drop a video file first."); return; }
+      progressBarSmart.style.display = 'block';
+      progressBarFillSmart.style.width = '0%';
+      captureSmartScreenshots();
+    });
+    function captureSmartScreenshots() {
+      autoScreenshotBlobs = [];
+      const smartInterval = 1; // sample every 1 second now
+      const duration = video.duration;
+      const ctx = canvas.getContext('2d');
+      let currentTime = 0;
+      const sampleFactor = 4;
+      let prevHist = null;
+      let prevPixelData = null;
+      let prevImageData = null;
+      const histThreshold = 0.40;
+      const pixelThreshold = 40;
+      const ssimThreshold = 0.10;
+      function captureFrame() {
+        if (currentTime > duration) {
+          progressBarSmart.style.display = 'none';
+          downloadAllSmartButton.disabled = false;
+          return;
+        }
+        const timestamp = currentTime;
+        video.currentTime = currentTime;
+        video.addEventListener('seeked', function onSeeked() {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const frameImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          let capture = false;
+          if (smartAlgorithm === "histogram") {
+            const currHist = computeHistogram(frameImageData, sampleFactor);
+            if (!prevHist || histogramDifference(currHist, prevHist) >= histThreshold) {
+              capture = true;
+              prevHist = currHist;
+            }
+          } else if (smartAlgorithm === "pixeldiff") {
+            if (!prevPixelData) { capture = true; }
+            else {
+              const diff = computePixelDiff(frameImageData.data, prevPixelData);
+              if (diff >= pixelThreshold) { capture = true; }
+            }
+            if (capture) { prevPixelData = frameImageData.data.slice(); }
+          } else if (smartAlgorithm === "ssim") {
+            if (!prevImageData) {
+              capture = true;
+              prevImageData = frameImageData;
+            } else {
+              const ssimValue = computeSSIM(prevImageData, frameImageData, sampleFactor);
+              if (ssimValue < ssimThreshold) { capture = true; }
+              prevImageData = frameImageData;
+            }
           }
-          const a = document.createElement('a');
-          a.href = imageURL;
-          a.target = "_blank";
-          const img = document.createElement('img');
-          img.src = imageURL;
-          img.style.width = "100%";
-          img.style.height = "auto";
-          a.appendChild(img);
-          screenshotsDiv.appendChild(a);
-          video.removeEventListener('seeked', onSeeked);
-          currentTime += interval;
-          progressBar.value = Math.min((currentTime / duration) * 100, 100);
-          if (currentTime <= duration) {
-            captureFrame();
+          if (capture) {
+            canvas.toBlob((blob) => {
+              autoScreenshotBlobs.push(blob);
+              const container = createScreenshotElement(blob, timestamp);
+              screenshotsDiv.appendChild(container);
+              updateImageCount();
+              video.removeEventListener('seeked', onSeeked);
+              currentTime += smartInterval;
+              progressBarFillSmart.style.width = Math.min((currentTime / duration) * 100, 100) + '%';
+              setTimeout(captureFrame, 100);
+            }, (currentFormat === 'jpeg') ? 'image/jpeg' : (currentFormat === 'webp') ? 'image/webp' : 'image/png',
+            currentFormat === 'jpeg'
+              ? parseFloat(jpegQualityValueSmart.textContent) / 100
+              : currentFormat === 'webp'
+              ? parseFloat(webpQualityValueSmart.textContent) / 100
+              : 1.0);
           } else {
-            downloadAllButton.disabled = false;
-            progressBar.style.visibility = 'hidden';
+            video.removeEventListener('seeked', onSeeked);
+            currentTime += smartInterval;
+            progressBarFillSmart.style.width = Math.min((currentTime / duration) * 100, 100) + '%';
+            setTimeout(captureFrame, 100);
           }
         }, { once: true });
       }
       captureFrame();
     }
-    downloadAllButton.addEventListener('click', () => {
-      if (downloadAllButton.disabled) return;
+    // --- Manual Mode Functions ---
+    const extractManualButton = document.getElementById('extractManualButton');
+    extractManualButton.textContent = "Quick Save Frame";
+    extractManualButton.addEventListener('click', () => {
+      if (!manualVideo.src) { alert("Please select or drop a video file first."); return; }
+      const ctx = canvas.getContext('2d');
+      canvas.width = manualVideo.videoWidth;
+      canvas.height = manualVideo.videoHeight;
+      ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
+      let type = 'image/png';
+      let extension = 'png';
+      if (currentFormat === 'jpeg') { type = 'image/jpeg'; extension = 'jpg'; }
+      else if (currentFormat === 'webp') { type = 'image/webp'; extension = 'webp'; }
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const tempLink = document.createElement('a');
+        tempLink.href = url;
+        tempLink.download = `quick_frame.${extension}`;
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
+      }, type);
+    });
+    const addManualButton = document.getElementById('addManualButton');
+    addManualButton.addEventListener('click', () => {
+      if (!manualVideo.src) { alert("Please select or drop a video file first."); return; }
+      const ctx = canvas.getContext('2d');
+      canvas.width = manualVideo.videoWidth;
+      canvas.height = manualVideo.videoHeight;
+      ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
+      let type = 'image/png';
+      if (currentFormat === 'jpeg') { type = 'image/jpeg'; }
+      else if (currentFormat === 'webp') { type = 'image/webp'; }
+      canvas.toBlob((blob) => {
+        manualScreenshotBlobs.push(blob);
+        const container = createScreenshotElement(blob, 0);
+        screenshotsDiv.appendChild(container);
+        updateImageCount();
+        document.getElementById('downloadManualButton').disabled = false;
+      }, type);
+    });
+    const downloadManualButton = document.getElementById('downloadManualButton');
+    downloadManualButton.addEventListener('click', () => {
+      if (downloadManualButton.disabled) return;
       const zip = new JSZip();
-      const links = screenshotsDiv.getElementsByTagName('a');
-      if (links.length === 0) return;
       let ext = currentFormat;
       if (ext === 'jpeg') ext = 'jpg';
-      Array.from(links).forEach((a, index) => {
-        const parts = a.href.split(",");
-        if (parts.length < 2) return;
-        const base64Data = parts[1];
-        zip.file(`screenshot${index + 1}.${ext}`, base64Data, { base64: true });
+      manualScreenshotBlobs.forEach((blob, index) => {
+        zip.file(`screenshot${index + 1}.${ext}`, blob);
       });
       zip.generateAsync({ type: "blob" })
         .then((content) => {
@@ -549,10 +1118,12 @@
           tempLink.click();
           document.body.removeChild(tempLink);
         })
-        .catch((err) => {
-          alert("Error generating ZIP: " + err);
-        });
+        .catch((err) => { alert("Error generating ZIP: " + err); });
     });
+    function updateImageCount() {
+      const count = screenshotsDiv.childElementCount;
+      imageCountValue.textContent = count;
+    }
   </script>
 </body>
 </html>
