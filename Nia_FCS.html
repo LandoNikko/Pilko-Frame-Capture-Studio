@@ -3,175 +3,554 @@
 <head>
   <meta charset="UTF-8">
   <title>Video Screenshot Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Only h1 uses Rationale -->
+  <link href="https://fonts.googleapis.com/css2?family=Rationale&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
-    /* Reset margins and padding, and set up a centered flex container */
     body {
       margin: 0;
       padding: 20px;
+      background-color: #24272c;
+      color: #f1f1f1;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    h1 {
+      font-family: 'Rationale', sans-serif;
+      text-align: center;
+      margin: 10px 0;
+    }
+    h2 {
+      text-align: center;
+      margin: 10px 0;
+    }
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 40px auto;
+    }
+    .upload-column {
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
-      font-family: sans-serif;
-      background-color: #f0f0f0;
     }
-
-    /* Container for screenshots arranged nicely in the center */
-    #screenshots {
+    .settings-column {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 600px;
+      gap: 20px;
+    }
+    /* Upload/Drop Zone */
+    #dropZone {
+      width: 300px;
+      padding: 40px 20px;
+      border: 2px dashed #626466;
+      border-radius: 12px;
+      background-color: #1f2226;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      margin-top: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
     }
-
-    /* Style for the images */
-    img {
-      margin: 10px;
-      border: 1px solid #ccc;
+    #dropZone:hover {
+      background-color: #272a2e;
+      border-color: #8a8a8a;
     }
-
-    /* Style for the input section */
-    .input-group {
-      margin: 10px 0;
+    #uploadIcon {
+      margin-bottom: 16px;
     }
-
-    button {
-      margin: 10px;
-      padding: 10px 20px;
+    #uploadIcon svg {
+      width: 48px;
+      height: 48px;
+      fill: #f1f1f1;
+    }
+    #dropZoneText {
+      margin-bottom: 16px;
       font-size: 1rem;
     }
+    #videoInput {
+      display: none;
+    }
+    #selectFileButton {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #505050;
+      border: none;
+      border-radius: 9999px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s, border 0.2s;
+    }
+    #dropZone:hover #selectFileButton {
+      background-color: #474747;
+    }
+    /* File-selected style */
+    #selectFileButton.file-selected {
+      background-color: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    #selectFileButton.file-selected:hover {
+      border-color: rgba(255, 255, 255, 1);
+    }
+    /* Progress Bar */
+    #progressBar {
+      width: 500px;
+      height: 6px;
+      margin: 10px 0;
+      -webkit-appearance: none;
+      appearance: none;
+      visibility: hidden;
+    }
+    #progressBar::-webkit-progress-bar {
+      background: transparent;
+    }
+    #progressBar::-moz-progress-bar {
+      background: transparent;
+    }
+    #progressBar::-webkit-progress-value {
+      background: linear-gradient(90deg, #6a82fb, #fc5c7d);
+    }
+    #progressBar::-moz-progress-bar {
+      background: linear-gradient(90deg, #6a82fb, #fc5c7d);
+    }
+    /* Slider Rows */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 500px;
+      margin-bottom: 10px;
+    }
+    .slider-label {
+      min-width: 140px;
+      text-align: left;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+    .slider-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .value-display {
+      font-weight: bold;
+      min-width: 40px;
+      text-align: right;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 2px;
+      background: #3a3c40;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    input[type="range"]::-webkit-slider-runnable-track {
+      background: transparent;
+      height: 2px;
+      border-radius: 2px;
+    }
+    input[type="range"]::-moz-range-track {
+      background: transparent;
+      height: 2px;
+      border-radius: 2px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      margin-top: -7px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: none;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: none;
+    }
+    /* Format Tabs */
+    .format-tabs {
+      display: flex;
+      gap: 0;
+      width: 500px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .format-tab {
+      flex: 1;
+      background-color: #3a3c40;
+      text-align: center;
+      border: none;
+      padding: 8px 0;
+      color: #f1f1f1;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .format-tab:hover {
+      background-color: #35363a;
+    }
+    .format-tab.active {
+      background-color: #ffffff;
+      color: #24272c;
+    }
+    /* PNG Note */
+    #pngNote {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      width: 500px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      padding-left: 140px;
+    }
+    /* Buttons */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 500px;
+    }
+    #processButton,
+    #downloadAllButton {
+      width: 100%;
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 9999px;
+      color: #fff;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-align: center;
+    }
+    #processButton {
+      background-color: #6447ff;
+    }
+    #processButton:hover:enabled {
+      background-color: #5d40f0;
+      animation: glow 1s infinite;
+    }
+    #downloadAllButton {
+      background-color: #3b0d9d;
+    }
+    #downloadAllButton:hover:enabled {
+      background-color: #371098;
+    }
+    #downloadAllButton:disabled {
+      background-color: #3b3b6e;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    /* Animated glow for process button */
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 5px #6447ff;
+      }
+      50% {
+        box-shadow: 0 0 20px #6447ff;
+      }
+      100% {
+        box-shadow: 0 0 5px #6447ff;
+      }
+    }
+    /* Screenshots Grid */
+    #screenshots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2px;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0 10px;
+    }
+    #screenshots a {
+      border: 1px solid #3a3c40;
+      display: block;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: none;
+    }
+    #screenshots img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    #video, #canvas {
+      display: none;
+    }
   </style>
-  <!-- Include JSZip from a CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
   <h1>Video Screenshot Tool</h1>
-  
-  <div class="input-group">
-    <label for="videoInput">Select Video (MP4):</label>
-    <input type="file" id="videoInput" accept="video/mp4">
+  <div class="main-container">
+    <div class="upload-column">
+      <div id="dropZone">
+        <div id="uploadIcon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2l5.5 9h-4v9h-3v-9h-4l5.5-9z"/>
+          </svg>
+        </div>
+        <div id="dropZoneText">Drag and drop a video file to upload</div>
+        <button id="selectFileButton" type="button">Select file</button>
+        <input type="file" id="videoInput" accept="video/*">
+      </div>
+    </div>
+    <div class="settings-column">
+      <!-- Slider Row: Screenshot Interval -->
+      <div class="slider-row">
+        <div class="slider-label">Screenshot Interval</div>
+        <div class="slider-wrapper">
+          <input type="range" id="intervalInput" min="1" max="20" value="10">
+          <span id="intervalValue" class="value-display">10</span>s
+        </div>
+      </div>
+      <!-- Format Tabs -->
+      <div class="format-tabs">
+        <button class="format-tab active" data-format="png">PNG</button>
+        <button class="format-tab" data-format="jpeg">JPEG</button>
+        <button class="format-tab" data-format="webp">WEBP</button>
+      </div>
+      <!-- PNG Note -->
+      <div id="pngNote">Lossless quality, largest file size</div>
+      <!-- Slider Row: JPEG Quality -->
+      <div class="slider-row" id="jpegSettings" style="display:none;">
+        <div class="slider-label">JPEG Quality</div>
+        <div class="slider-wrapper">
+          <input type="range" id="jpegQuality" min="0" max="100" value="80">
+          <span id="jpegQualityValue" class="value-display">80</span>%
+        </div>
+      </div>
+      <!-- Slider Row: WEBP Quality -->
+      <div class="slider-row" id="webpSettings" style="display:none;">
+        <div class="slider-label">WEBP Quality</div>
+        <div class="slider-wrapper">
+          <input type="range" id="webpQuality" min="0" max="100" value="80">
+          <span id="webpQualityValue" class="value-display">80</span>%
+        </div>
+      </div>
+      <!-- Buttons -->
+      <div class="button-group">
+        <button id="processButton">Extract Screenshots</button>
+        <button id="downloadAllButton" disabled>Download All</button>
+      </div>
+      <!-- Progress Bar -->
+      <progress id="progressBar" value="0" max="100"></progress>
+    </div>
   </div>
-  
-  <div class="input-group">
-    <label for="intervalInput">Screenshot Interval (seconds):</label>
-    <input type="number" id="intervalInput" value="5" min="1">
-  </div>
-  
-  <div class="input-group">
-    <button id="processButton">Extract Screenshots</button>
-    <button id="downloadAllButton" style="display:none;">Download All</button>
-  </div>
-  
-  <!-- Hidden Video and Canvas Elements -->
-  <video id="video" style="display:none"></video>
-  <canvas id="canvas" style="display:none"></canvas>
-  
-  <!-- Container for Screenshots -->
   <h2>Screenshots</h2>
   <div id="screenshots"></div>
-  
+  <video id="video"></video>
+  <canvas id="canvas"></canvas>
   <script>
+    function updateSliderBackground(slider) {
+      const val = slider.value;
+      const min = slider.min;
+      const max = slider.max;
+      const pct = ((val - min) * 100) / (max - min);
+      slider.style.background =
+        `linear-gradient(to right, #6447ff 0%, #6447ff ${pct}%, #3a3c40 ${pct}%, #3a3c40 100%)`;
+    }
+    const dropZone = document.getElementById('dropZone');
+    const dropZoneText = document.getElementById('dropZoneText');
+    const selectFileButton = document.getElementById('selectFileButton');
     const videoInput = document.getElementById('videoInput');
+    const progressBar = document.getElementById('progressBar');
     const intervalInput = document.getElementById('intervalInput');
+    const intervalValue = document.getElementById('intervalValue');
+    const tabs = document.querySelectorAll('.format-tab');
+    const pngNote = document.getElementById('pngNote');
+    const jpegSettingsRow = document.getElementById('jpegSettings');
+    const webpSettingsRow = document.getElementById('webpSettings');
+    const jpegQuality = document.getElementById('jpegQuality');
+    const jpegQualityValue = document.getElementById('jpegQualityValue');
+    const webpQuality = document.getElementById('webpQuality');
+    const webpQualityValue = document.getElementById('webpQualityValue');
     const processButton = document.getElementById('processButton');
     const downloadAllButton = document.getElementById('downloadAllButton');
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const screenshotsDiv = document.getElementById('screenshots');
-
-    let fileURL;
-
-    // Load the selected video file into the video element.
-    videoInput.addEventListener('change', function() {
-      const file = videoInput.files[0];
-      if (file) {
-        fileURL = URL.createObjectURL(file);
-        video.src = fileURL;
-      }
+    let currentFormat = 'png';
+    [intervalInput, jpegQuality, webpQuality].forEach(s => updateSliderBackground(s));
+    intervalInput.addEventListener('input', () => {
+      intervalValue.textContent = intervalInput.value;
+      updateSliderBackground(intervalInput);
     });
-
-    processButton.addEventListener('click', function() {
+    jpegQuality.addEventListener('input', () => {
+      jpegQualityValue.textContent = jpegQuality.value;
+      updateSliderBackground(jpegQuality);
+    });
+    webpQuality.addEventListener('input', () => {
+      webpQualityValue.textContent = webpQuality.value;
+      updateSliderBackground(webpQuality);
+    });
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentFormat = tab.getAttribute('data-format');
+        if (currentFormat === 'png') {
+          pngNote.style.display = 'flex';
+          jpegSettingsRow.style.display = 'none';
+          webpSettingsRow.style.display = 'none';
+        } else if (currentFormat === 'jpeg') {
+          pngNote.style.display = 'none';
+          jpegSettingsRow.style.display = 'flex';
+          webpSettingsRow.style.display = 'none';
+        } else {
+          pngNote.style.display = 'none';
+          jpegSettingsRow.style.display = 'none';
+          webpSettingsRow.style.display = 'flex';
+        }
+      });
+    });
+    dropZone.addEventListener('click', () => videoInput.click());
+    selectFileButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      videoInput.click();
+    });
+    videoInput.addEventListener('change', () => {
+      const file = videoInput.files[0];
+      if (!file) return;
+      video.src = URL.createObjectURL(file);
+      dropZoneText.textContent = file.name;
+      selectFileButton.textContent = "File selected";
+      selectFileButton.classList.add('file-selected');
+      dropZone.style.backgroundColor = "#272a2e";
+      document.getElementById('uploadIcon').innerHTML = `
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
+          <path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/>
+        </svg>
+      `;
+      downloadAllButton.disabled = true;
+    });
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('hover');
+    });
+    dropZone.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('hover');
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('hover');
+      const file = e.dataTransfer.files[0];
+      if (!file) return;
+      video.src = URL.createObjectURL(file);
+      dropZoneText.textContent = file.name;
+      selectFileButton.textContent = "File selected";
+      selectFileButton.classList.add('file-selected');
+      dropZone.style.backgroundColor = "#272a2e";
+      document.getElementById('uploadIcon').innerHTML = `
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
+          <path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/>
+        </svg>
+      `;
+      downloadAllButton.disabled = true;
+    });
+    processButton.addEventListener('click', () => {
       if (!video.src) {
-        alert("Please select a video file first.");
+        alert("Please select or drop a video file first.");
         return;
       }
-      
-      // Ensure metadata is loaded before processing.
-      video.addEventListener('loadedmetadata', () => {
-        captureScreenshots();
-      }, { once: true });
-      
-      // If metadata is already loaded, start immediately.
+      progressBar.style.visibility = 'visible';
+      progressBar.value = 0;
+      video.addEventListener('loadedmetadata', captureScreenshots, { once: true });
       if (video.readyState >= 1) {
         captureScreenshots();
       }
     });
-
     function captureScreenshots() {
       const interval = parseFloat(intervalInput.value);
       const duration = video.duration;
-      const context = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d');
       let currentTime = 0;
-
-      // Clear any previous screenshots.
+      let quality = 1.0;
+      if (currentFormat === 'jpeg') {
+        quality = parseFloat(jpegQuality.value) / 100;
+      } else if (currentFormat === 'webp') {
+        quality = parseFloat(webpQuality.value) / 100;
+      }
       screenshotsDiv.innerHTML = "";
-      // Hide the download button until screenshots are ready.
-      downloadAllButton.style.display = 'none';
-
-      const captureFrame = () => {
+      downloadAllButton.disabled = true;
+      function captureFrame() {
         video.currentTime = currentTime;
         video.addEventListener('seeked', function onSeeked() {
-          // Set canvas dimensions to match the video.
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-          // Convert the canvas image to a PNG data URL.
-          const imageURL = canvas.toDataURL('image/png');
-
-          // Create an image element to display the screenshot.
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          let imageURL;
+          if (currentFormat === 'png') {
+            imageURL = canvas.toDataURL('image/png');
+          } else if (currentFormat === 'jpeg') {
+            imageURL = canvas.toDataURL('image/jpeg', quality);
+          } else {
+            imageURL = canvas.toDataURL('image/webp', quality);
+          }
+          const a = document.createElement('a');
+          a.href = imageURL;
+          a.target = "_blank";
           const img = document.createElement('img');
           img.src = imageURL;
-          img.width = 320;  // Optionally scale for display.
-          screenshotsDiv.appendChild(img);
-
+          img.style.width = "100%";
+          img.style.height = "auto";
+          a.appendChild(img);
+          screenshotsDiv.appendChild(a);
           video.removeEventListener('seeked', onSeeked);
           currentTime += interval;
+          progressBar.value = Math.min((currentTime / duration) * 100, 100);
           if (currentTime <= duration) {
             captureFrame();
           } else {
-            downloadAllButton.style.display = 'inline-block';
+            downloadAllButton.disabled = false;
+            progressBar.style.visibility = 'hidden';
           }
         }, { once: true });
-      };
-
+      }
       captureFrame();
     }
-
-    // Download all screenshots as a ZIP file.
-    downloadAllButton.addEventListener('click', function() {
+    downloadAllButton.addEventListener('click', () => {
+      if (downloadAllButton.disabled) return;
       const zip = new JSZip();
-      const images = screenshotsDiv.getElementsByTagName('img');
-      if (images.length === 0) {
-        alert("No screenshots to download.");
-        return;
-      }
-      // Loop through images and add them to the zip file.
-      Array.from(images).forEach((img, index) => {
-        // Remove the data URL prefix to get the base64 data.
-        const dataURL = img.src;
-        const base64Data = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-        zip.file(`screenshot${index + 1}.png`, base64Data, { base64: true });
+      const links = screenshotsDiv.getElementsByTagName('a');
+      if (links.length === 0) return;
+      let ext = currentFormat;
+      if (ext === 'jpeg') ext = 'jpg';
+      Array.from(links).forEach((a, index) => {
+        const parts = a.href.split(",");
+        if (parts.length < 2) return;
+        const base64Data = parts[1];
+        zip.file(`screenshot${index + 1}.${ext}`, base64Data, { base64: true });
       });
-      // Generate the ZIP file and trigger a download.
       zip.generateAsync({ type: "blob" })
-        .then(function(content) {
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(content);
-          a.download = "screenshots.zip";
-          document.body.appendChild(a); // Append to body for Firefox
-          a.click();
-          document.body.removeChild(a);
+        .then((content) => {
+          const tempLink = document.createElement('a');
+          tempLink.href = URL.createObjectURL(content);
+          tempLink.download = "screenshots.zip";
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          document.body.removeChild(tempLink);
+        })
+        .catch((err) => {
+          alert("Error generating ZIP: " + err);
         });
     });
   </script>
