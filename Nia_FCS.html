@@ -1,135 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Screenshot Tool</title>
-  <!-- Google Fonts: Doto for h1; Source Code Pro for body text -->
+  <!-- Google Fonts: Inter for UI, Source Code Pro for file info values -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Doto&family=Source+Code+Pro&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
+    :root {
+      --bg-primary: #1a1a1d; /* Darker background */
+      --bg-secondary: #2c2c31; /* Slightly lighter background for elements */
+      --bg-tertiary: #3a3a40; /* Background for inactive tabs/sliders */
+      --text-primary: #f0f0f0; /* Main text */
+      --text-secondary: #a0a0a0; /* Subdued text */
+      --accent-primary: #7c3aed; /* Vibrant Purple */
+      --accent-primary-dark: #6d28d9;
+      --accent-secondary: #10b981; /* Teal/Green for Smart Mode */
+      --accent-secondary-dark: #059669;
+      --accent-tertiary: #f59e0b; /* Amber for Smart Download */
+      --accent-tertiary-dark: #d97706;
+      --border-color: #4a4a52;
+      --border-dashed: #6b6b74;
+      --danger-color: #ef4444;
+      --white: #ffffff;
+      --black: #000000;
+
+      --border-radius-sm: 4px;
+      --border-radius-md: 6px;
+      --border-radius-lg: 8px;
+      --border-radius-full: 9999px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     /* Global Styles */
     body {
-      margin: 0;
-      padding: 20px;
-      background-color: #24272c;
-      color: #f1f1f1;
-      font-family: 'Source Code Pro', "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      padding: 2rem 1.5rem;
+      font-size: 16px; /* Base font size */
     }
+
     h1 {
-      font-family: 'Doto', sans-serif;
-      font-size: 3rem;
+      font-size: clamp(2rem, 5vw, 3rem); /* Responsive font size */
       text-align: center;
-      margin: 10px 0 20px;
-      animation: fadeInUp 1s ease-out;
-      color: #ffffff;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      animation: fadeInDown 0.8s ease-out;
     }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-15px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    hr.separator {
-      border: 0;
-      border-top: 2px dashed #626466;
-      margin: 20px 0;
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    /* URL Input Container */
-    #urlContainer {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    #videoURLInput {
-      width: 260px;
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid #626466;
-      background-color: #1f2226;
-      color: #f1f1f1;
-    }
-    #loadURLButton {
-      padding: 8px 12px;
-      margin-left: 8px;
-      border: none;
-      border-radius: 4px;
-      background-color: #6447ff;
-      color: #fff;
-      cursor: pointer;
-    }
-    /* File Info Area with leader dots */
-    #fileInfo {
-      width: 300px;
-      font-size: 0.9rem;
-      color: #cccccc;
-      opacity: 0.65;
-      margin: 0;
-    }
-    .info-row {
-      display: flex;
-      align-items: center;
-      margin: 2px 0;
-    }
-    .info-label {
-      font-weight: normal;
-      white-space: nowrap;
-    }
-    .info-value {
-      white-space: nowrap;
-      text-align: right;
-    }
-    .leader {
-      flex: 1;
-      margin: 0 5px;
-      border-bottom: 1px dotted rgba(255,255,255,0.2);
-      user-select: none;
-    }
-    /* Mode Tabs – Three main tabs: Automated, Automated (Smart), Manual */
-    .mode-tabs {
-      display: flex;
-      gap: 0;
-      width: 600px;
-      margin: 0 auto 20px;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .mode-tab {
-      flex: 1;
-      background-color: #3a3c40;
-      text-align: center;
-      border: none;
-      padding: 10px 0;
-      color: #f1f1f1;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-family: "Helvetica Neue", Arial, sans-serif;
-    }
-    .mode-tab:hover { background-color: #35363a; }
-    .mode-tab.active {
-      background-color: #ffffff;
-      color: #24272c;
-    }
+
     /* Main Layout */
-    .main-container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-      max-width: 1200px;
-      margin: 40px auto;
+    .app-container {
+      max-width: 1400px;
+      margin: 0 auto;
     }
-    .upload-column {
+
+    .main-content {
+      display: flex;
+      flex-wrap: wrap; /* Allows stacking on mobile */
+      gap: 2.5rem; /* Increased gap */
+      margin-top: 2rem;
+      align-items: flex-start;
+    }
+
+    .input-column {
+      flex: 1 1 320px; /* Flex basis for responsiveness */
+      min-width: 300px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 1.5rem;
+      animation: fadeInUp 0.8s 0.1s ease-out both;
     }
-    .mode-container { width: 600px; }
-    /* Upload/Drop Zone */
+
+    .controls-column {
+      flex: 2 1 500px; /* Flex basis, allows more space */
+      min-width: 300px; /* Minimum width before wrapping */
+      animation: fadeInUp 0.8s 0.2s ease-out both;
+    }
+
+    /* URL Input */
+    .url-input-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem; /* Spacing below URL input */
+      animation: fadeInDown 0.8s 0.1s ease-out both;
+    }
+
+    #videoURLInput {
+      flex-grow: 1;
+      padding: 0.6rem 0.8rem;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    #videoURLInput:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      background-color: var(--bg-primary);
+    }
+
+    #loadURLButton {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: var(--border-radius-md);
+      background-color: var(--accent-primary);
+      color: var(--white);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: background-color 0.2s;
+      white-space: nowrap;
+    }
+    #loadURLButton:hover {
+      background-color: var(--accent-primary-dark);
+    }
+
+    /* Drop Zone */
     #dropZone {
-      width: 300px;
-      padding: 40px 20px;
-      border: 2px dashed #626466;
-      border-radius: 12px;
-      background-color: #1f2226;
+      padding: 2.5rem 1.5rem;
+      border: 2px dashed var(--border-dashed);
+      border-radius: var(--border-radius-lg);
+      background-color: var(--bg-secondary);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -138,732 +151,976 @@
       cursor: pointer;
       transition: background-color 0.2s, border-color 0.2s;
     }
-    #dropZone:hover { background-color: #272a2e; border-color: #8a8a8a; }
-    #uploadIcon { margin-bottom: 16px; }
-    #uploadIcon svg { width: 48px; height: 48px; fill: #f1f1f1; }
-    #dropZoneText { margin-bottom: 16px; font-size: 1rem; }
-    #videoInput { display: none; }
-    #selectFileButton {
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #505050;
-      border: none;
-      border-radius: 9999px;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.2s, border 0.2s;
+    #dropZone:hover {
+      background-color: var(--bg-tertiary);
+      border-color: var(--text-secondary);
     }
-    #dropZone:hover #selectFileButton { background-color: #474747; }
+
+    #uploadIcon {
+      margin-bottom: 1rem;
+      color: var(--text-secondary);
+      transition: color 0.2s;
+    }
+    #dropZone:hover #uploadIcon {
+      color: var(--text-primary);
+    }
+    #uploadIcon svg {
+      width: 48px;
+      height: 48px;
+      fill: currentColor;
+    }
+
+    #dropZoneText {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+    #dropZone.file-loaded #dropZoneText {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    #videoInput { display: none; }
+
+    #selectFileButton {
+      padding: 0.7rem 1.5rem;
+      font-size: 0.95rem;
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-full);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+      font-weight: 500;
+    }
+    #dropZone:hover #selectFileButton {
+      background-color: var(--border-color);
+      border-color: var(--text-secondary);
+    }
     #selectFileButton.file-selected {
       background-color: transparent;
-      border: 1px solid rgba(255,255,255,0.8);
+      border: 1px solid var(--accent-secondary);
+      color: var(--accent-secondary);
+      cursor: default;
     }
-    #selectFileButton.file-selected:hover { border-color: rgba(255,255,255,1); }
-    /* Mode Containers */
-    #autoMode, #autoSmartMode, #manualMode { display: none; }
-    #autoMode { display: block; }
-    /* Manual Mode Video */
-    #manualVideo {
-      width: 100%;
-      max-width: 600px;
-      border: 2px dashed #626466;
-      border-radius: 12px;
-      background-color: #1f2226;
-      margin-bottom: 10px;
+     #selectFileButton.file-selected:hover {
+        background-color: rgba(16, 185, 129, 0.1); /* Subtle hover for selected state */
+     }
+
+    /* File Info Area */
+    #fileInfo {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      background-color: var(--bg-secondary);
+      padding: 1rem 1.2rem;
+      border-radius: var(--border-radius-lg);
     }
-    /* Manual Mode Buttons */
-    .manual-buttons {
+    .info-row {
       display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
+      align-items: baseline;
+      margin-bottom: 0.5rem;
+       white-space: nowrap;
     }
-    #extractManualButton {
-      flex: 1;
-      padding: 12px 24px;
-      font-size: 1rem;
-      background-color: #6447ff;
-      border: none;
-      border-radius: 9999px;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-family: "Helvetica Neue", Arial, sans-serif;
+     .info-row:last-child { margin-bottom: 0; }
+    .info-label {
+      font-weight: 500;
+      color: var(--text-primary);
+      flex-shrink: 0; /* Prevent label from shrinking */
     }
-    #extractManualButton:hover { background-color: #5d40f0; }
-    #downloadManualButton {
-      flex: 1;
-      padding: 12px 24px;
-      font-size: 1rem;
-      background-color: #3b0d9d;
-      border: none;
-      border-radius: 9999px;
-      color: #fff;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-family: "Helvetica Neue", Arial, sans-serif;
+    .info-value {
+      font-family: 'Source Code Pro', monospace;
+      text-align: right;
+      color: var(--text-primary);
+      margin-left: auto; /* Push value to the right */
+      padding-left: 0.5rem; /* Space between leader and value */
+      flex-shrink: 0;
     }
-    #downloadManualButton:hover { background-color: #371098; }
-    #downloadManualButton:disabled {
-      background-color: #3b3b6e;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    #addManualButton {
-      width: 50px;
-      height: 50px;
-      background-color: #505050;
-      border: none;
-      border-radius: 50%;
-      color: #fff;
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-family: "Helvetica Neue", Arial, sans-serif;
-    }
-    #addManualButton:hover { background-color: #474747; }
-    /* Progress Bars */
-    #progressBar, #progressBarSmart {
-      width: 500px;
-      height: 6px;
-      background: #3a3c40;
-      border-radius: 3px;
+    .leader {
+      flex-grow: 1; /* Take up remaining space */
+      margin: 0 0.5rem; /* Space around dots */
       overflow: hidden;
-      margin: 10px 0;
-      display: none;
+      position: relative;
+      bottom: -4px; /* Align dots better vertically */
     }
-    #progressBarFill, #progressBarFillSmart {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #6a82fb, #fc5c7d);
-      transition: width 0.2s;
+    .leader::after {
+        content: '........................................................................................................'; /* Long string of dots */
+        display: block;
+        white-space: nowrap;
+        color: rgba(255, 255, 255, 0.15); /* Subtle dot color */
+        font-size: 0.8em;
+        letter-spacing: 2px; /* Dashed effect */
     }
-    /* Slider Rows (for regular Automated mode) */
+
+    /* Segmented Controls (Tabs) */
+    .segmented-controls {
+      display: flex;
+      border-radius: var(--border-radius-md);
+      overflow: hidden;
+      background-color: var(--bg-secondary);
+      margin-bottom: 1.5rem;
+       border: 1px solid var(--border-color);
+    }
+    .segmented-controls button {
+      flex: 1;
+      background-color: transparent;
+      text-align: center;
+      border: none;
+      padding: 0.7rem 0.5rem; /* Adjusted padding */
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-left: 1px solid var(--border-color);
+    }
+    .segmented-controls button:first-child {
+        border-left: none;
+    }
+    .segmented-controls button:hover {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+    .segmented-controls button.active {
+      background-color: var(--accent-primary);
+      color: var(--white);
+      font-weight: 600;
+    }
+    /* Specific styling for smaller tabs */
+    .format-tabs, .smart-algo-tabs {
+        margin-bottom: 1rem;
+    }
+    .format-tabs button, .smart-algo-tabs button {
+        padding: 0.5rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    .smart-algo-tabs button.active {
+        background-color: var(--accent-secondary); /* Green for smart mode */
+    }
+
+
+    /* Mode Containers */
+    .mode-content { padding: 0.5rem 0; } /* Add some padding within mode containers */
+    #autoMode, #autoSmartMode, #manualMode { display: none; }
+    #autoMode.active, #autoSmartMode.active, #manualMode.active { display: block; }
+
+    /* Sliders */
     .slider-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      width: 500px;
-      margin-bottom: 10px;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap; /* Allow wrapping on small screens */
     }
     .slider-label {
-      width: 140px;
+      width: 120px; /* Fixed width for labels */
       text-align: left;
-      font-size: 0.95rem;
-      white-space: nowrap;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      flex-shrink: 0;
     }
     .slider-wrapper {
       flex: 1;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 1rem; /* Increased gap */
+      min-width: 200px; /* Prevent excessive shrinking */
     }
-    .slider-wrapper input[type="range"] { margin-left: 40px; }
     .value-display {
-      font-weight: normal;
-      min-width: 40px;
+      font-weight: 500;
+      min-width: 45px; /* Ensure space for 100% */
       text-align: right;
+      font-family: 'Source Code Pro', monospace;
+      color: var(--text-primary);
     }
     input[type="range"] {
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
       width: 100%;
-      height: 2px;
-      background: #3a3c40;
-      border-radius: 2px;
+      height: 6px; /* Slightly thicker track */
+      background: var(--bg-tertiary);
+      border-radius: var(--border-radius-full);
       outline: none;
       cursor: pointer;
       transition: background 0.2s;
     }
-    input[type="range"]::-webkit-slider-runnable-track {
-      background: transparent;
-      height: 2px;
-      border-radius: 2px;
-    }
-    input[type="range"]::-moz-range-track {
-      background: transparent;
-      height: 2px;
-      border-radius: 2px;
-    }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      margin-top: -7px;
+      width: 18px; /* Larger thumb */
+      height: 18px;
       border-radius: 50%;
-      background: #ffffff;
+      background: var(--white);
       border: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.1s ease-out;
     }
     input[type="range"]::-moz-range-thumb {
-      width: 16px;
-      height: 16px;
+       width: 18px;
+      height: 18px;
       border-radius: 50%;
-      background: #ffffff;
+      background: var(--white);
       border: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.1s ease-out;
     }
-    /* Format Tabs */
-    .format-tabs {
-      display: flex;
-      gap: 0;
-      width: 500px;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .format-tab {
-      flex: 1;
-      background-color: #3a3c40;
-      text-align: center;
-      border: none;
-      padding: 8px 0;
-      color: #f1f1f1;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-family: "Helvetica Neue", Arial, sans-serif;
-      font-size: 0.95rem;
-    }
-    .format-tab:not(:first-child) { border-left: 1px solid rgba(255,255,255,0.15); }
-    .format-tab:hover { background-color: #35363a; }
-    .format-tab.active { background-color: #ffffff; color: #24272c; }
-    /* PNG Note */
+     input[type="range"]:active::-webkit-slider-thumb,
+     input[type="range"]:active::-moz-range-thumb {
+         transform: scale(1.1); /* Slight scale effect on drag */
+     }
+     input[type="range"]:focus-visible {
+         outline: 2px solid var(--accent-primary);
+         outline-offset: 2px;
+     }
+
+    /* Format Note */
     #pngNote {
-      font-size: 0.95rem;
-      opacity: 0.8;
-      width: 500px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-align: center;
+      width: 100%;
       min-height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
+       margin-bottom: 1rem;
     }
-    /* Automated Mode Buttons */
+
+    /* Buttons */
     .button-group {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      width: 500px;
+      gap: 0.8rem; /* Spacing between buttons */
+      margin-top: 1.5rem;
     }
-    #processButton,
-    #downloadAllButton,
-    #processSmartButton,
-    #downloadAllSmartButton {
+    .action-button {
       width: 100%;
-      padding: 12px 24px;
+      padding: 0.8rem 1.5rem;
       font-size: 1rem;
       border: none;
-      border-radius: 9999px;
-      color: #fff;
+      border-radius: var(--border-radius-full);
+      color: var(--white);
       cursor: pointer;
-      transition: background-color 0.2s, box-shadow 0.2s;
+      transition: background-color 0.2s, opacity 0.2s;
       text-align: center;
-      font-family: "Helvetica Neue", Arial, sans-serif;
+      font-weight: 600;
     }
-    #processButton { background-color: #6447ff; }
-    #processButton:hover:enabled { background-color: #5d40f0; }
-    #downloadAllButton { background-color: #3b0d9d; }
-    #downloadAllButton:hover:enabled { background-color: #371098; }
-    #downloadAllButton:disabled {
-      background-color: #3b3b6e;
+    .action-button:disabled {
+      opacity: 0.5;
       cursor: not-allowed;
-      opacity: 0.6;
     }
-    #processSmartButton { background-color: #4caf50; }
-    #processSmartButton:hover:enabled { background-color: #43a047; }
-    #downloadAllSmartButton { background-color: #f57c00; }
-    #downloadAllSmartButton:hover:enabled { background-color: #ef6c00; }
-    #downloadAllSmartButton:disabled {
-      background-color: #b38f5e;
-      cursor: not-allowed;
-      opacity: 0.6;
+
+    #processButton { background-color: var(--accent-primary); }
+    #processButton:hover:enabled { background-color: var(--accent-primary-dark); }
+    #processButton:disabled { background-color: var(--accent-primary); }
+
+    #downloadAllButton { background-color: var(--bg-tertiary); color: var(--text-primary); }
+    #downloadAllButton:hover:enabled { background-color: var(--border-color); }
+    #downloadAllButton:disabled { background-color: var(--bg-tertiary); }
+
+    #processSmartButton { background-color: var(--accent-secondary); }
+    #processSmartButton:hover:enabled { background-color: var(--accent-secondary-dark); }
+    #processSmartButton:disabled { background-color: var(--accent-secondary); }
+
+    #downloadAllSmartButton { background-color: var(--accent-tertiary); color: var(--bg-primary); }
+    #downloadAllSmartButton:hover:enabled { background-color: var(--accent-tertiary-dark); }
+    #downloadAllSmartButton:disabled { background-color: var(--accent-tertiary); }
+
+    /* Manual Mode */
+    #manualVideo {
+      width: 100%;
+      border-radius: var(--border-radius-lg);
+      background-color: var(--black); /* Black background for video player */
+      margin-bottom: 1rem;
+      aspect-ratio: 16 / 9; /* Maintain aspect ratio */
+      border: 1px solid var(--border-color);
     }
-    /* Smart Mode Algorithm Tabs */
-    .smart-algo-tabs {
+    .manual-buttons {
       display: flex;
-      gap: 0;
-      width: 500px;
-      margin: 10px 0;
-      border-radius: 6px;
-      overflow: hidden;
+      gap: 0.8rem;
+      align-items: center; /* Align buttons vertically */
     }
-    .smart-tab {
-      flex: 1;
-      background-color: #3a3c40;
-      text-align: center;
-      border: none;
-      padding: 6px 0;
-      color: #f1f1f1;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-family: "Helvetica Neue", Arial, sans-serif;
+    #extractManualButton {
+      flex-grow: 1; /* Take available space */
+      padding: 0.7rem 1.2rem;
       font-size: 0.9rem;
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius-md);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      font-weight: 500;
     }
-    .smart-tab:not(:first-child) { border-left: 1px solid rgba(255,255,255,0.15); }
-    .smart-tab:hover { background-color: #35363a; }
-    .smart-tab.active { background-color: #ffffff; color: #24272c; }
-    /* Screenshots Grid with hover overlays */
+    #extractManualButton:hover { background-color: var(--border-color); }
+
+    #downloadManualButton {
+        flex-grow: 1;
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+        background-color: var(--accent-primary);
+        border: none;
+        border-radius: var(--border-radius-md);
+        color: var(--white);
+        font-weight: 500;
+    }
+     #downloadManualButton:hover:enabled { background-color: var(--accent-primary-dark); }
+     #downloadManualButton:disabled { background-color: var(--accent-primary); opacity: 0.5; cursor: not-allowed; }
+
+    #addManualButton {
+      width: 44px; /* Fixed size */
+      height: 44px;
+      background-color: var(--accent-primary);
+      border: none;
+      border-radius: 50%;
+      color: var(--white);
+      font-size: 1.8rem;
+      line-height: 1; /* Adjust line height for '+' */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      flex-shrink: 0; /* Prevent shrinking */
+    }
+    #addManualButton:hover { background-color: var(--accent-primary-dark); }
+    #addManualButton:active { transform: scale(0.95); }
+
+    /* Progress Bars */
+    .progress-bar-container {
+        width: 100%; /* Full width within parent */
+        height: 8px;
+        background-color: var(--bg-secondary);
+        /* Dashed background effect for the track */
+        background-image: repeating-linear-gradient(
+            -45deg,
+            var(--bg-tertiary),
+            var(--bg-tertiary) 3px,
+            transparent 3px,
+            transparent 6px
+        );
+        border-radius: var(--border-radius-full);
+        overflow: hidden;
+        margin-top: 1rem; /* Space above progress bar */
+        display: none; /* Hidden by default */
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        border-radius: var(--border-radius-full);
+        transition: width 0.3s ease-out;
+    }
+    /* Specific gradient for smart mode */
+     #progressBarSmart .progress-bar-fill {
+         background: linear-gradient(90deg, var(--accent-secondary), var(--accent-tertiary));
+     }
+
+
+    /* Separator */
+    hr.separator {
+      border: 0;
+      border-top: 2px dashed var(--border-dashed);
+      margin: 3rem 0 2rem; /* More vertical spacing */
+      animation: fadeInUp 0.8s 0.3s ease-out both;
+    }
+
+    /* Screenshots Grid */
+    #screenshots {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive columns */
+      gap: 0.8rem; /* Gap between items */
+      width: 100%;
+      animation: fadeInUp 0.8s 0.4s ease-out both;
+    }
     .screenshot-container {
       position: relative;
+      overflow: hidden;
+      border-radius: var(--border-radius-md);
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-secondary);
+      transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
     }
-    .screenshot-overlay {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.5);
-      color: #fff;
-      font-size: 0.8rem;
-      padding: 2px 4px;
-      display: none;
+     .screenshot-container:hover {
+         transform: translateY(-3px);
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+     }
+
+    .screenshot-container a {
+      display: block;
+      line-height: 0; /* Remove potential whitespace below image */
     }
-    .delete-btn {
+    .screenshot-container img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9; /* Maintain aspect ratio */
+      object-fit: cover;
+      border-radius: var(--border-radius-md); /* Match container */
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .screenshot-overlay, .delete-btn {
       position: absolute;
-      top: 2px;
-      right: 2px;
-      background: rgba(255,0,0,0.7);
-      border: none;
-      color: #fff;
-      font-size: 0.8rem;
-      padding: 2px 4px;
-      cursor: pointer;
-      display: none;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+      pointer-events: none; /* Allow clicks to pass through initially */
     }
     .screenshot-container:hover .screenshot-overlay,
     .screenshot-container:hover .delete-btn {
-      display: block;
+      opacity: 1;
+      pointer-events: auto; /* Enable interaction on hover */
     }
-    #screenshots {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2px;
-      width: 100%;
-      box-sizing: border-box;
-      padding: 0 10px;
-      margin-top: 20px;
+
+    .screenshot-overlay {
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      color: var(--white);
+      font-size: 0.8rem;
+      padding: 1rem 0.6rem 0.4rem; /* Gradient padding */
+      text-align: right;
+       font-family: 'Source Code Pro', monospace;
     }
-    #screenshots a {
-      border: 1px solid #3a3c40;
-      display: block;
-      border-radius: 4px;
-      overflow: hidden;
+
+    .delete-btn {
+      top: 6px;
+      right: 6px;
+      background: rgba(239, 68, 68, 0.8); /* Danger color with alpha */
+      border: none;
+      color: var(--white);
+      font-size: 0.9rem;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      backdrop-filter: blur(2px);
     }
-    #screenshots img {
-      display: block;
-      width: 100%;
-      max-width: 355px;
-      height: auto;
-      max-height: 200px;
-      object-fit: cover;
-      border-radius: 4px;
-      animation: fadeIn 0.5s ease-in-out;
+    .delete-btn:hover {
+      background: var(--danger-color);
     }
+
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
+
+    /* Hidden Elements */
     #video, #canvas { display: none; }
+
+    /* Responsive Adjustments */
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+        gap: 2rem;
+      }
+      .input-column, .controls-column {
+        flex-basis: auto; /* Allow columns to take full width */
+        width: 100%;
+      }
+      h1 { margin-bottom: 1.5rem; }
+      hr.separator { margin: 2rem 0 1.5rem; }
+    }
+
+     @media (max-width: 600px) {
+        body { padding: 1.5rem 1rem; }
+        h1 { font-size: 1.8rem; }
+        .segmented-controls button { font-size: 0.85rem; padding: 0.6rem 0.4rem; }
+        .action-button { font-size: 0.9rem; padding: 0.7rem 1.2rem;}
+        #screenshots { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.6rem;}
+        .slider-label { width: 100px; }
+        .slider-wrapper { gap: 0.8rem; }
+        .manual-buttons { flex-wrap: wrap; } /* Allow manual buttons to wrap */
+        #extractManualButton, #downloadManualButton { flex-basis: calc(50% - 0.4rem); } /* Roughly 2 per row */
+        #addManualButton { margin-left: auto; /* Push to right if wrapping */}
+     }
+
   </style>
 </head>
 <body>
-  <h1>Video Screenshot Tool</h1>
-  <!-- URL Input for Direct Video Links -->
-  <div id="urlContainer">
-    <input type="text" id="videoURLInput" placeholder="Enter video URL (e.g., https://example.com/video.mp4)">
-    <button id="loadURLButton" type="button">Load Video</button>
-  </div>
-  <!-- Main Mode Tabs: Automated, Automated (Smart), Manual -->
-  <div class="mode-tabs">
-    <button class="mode-tab active" data-mode="auto">Automated</button>
-    <button class="mode-tab" data-mode="autoSmart">Automated (Smart)</button>
-    <button class="mode-tab" data-mode="manual">Manual</button>
-  </div>
-  <div class="main-container">
-    <!-- Left Column: Upload Zone & File Info -->
-    <div class="upload-column">
-      <div id="dropZone">
-        <div id="uploadIcon">
-          <svg viewBox="0 0 24 24">
-            <path d="M12 2l5.5 9h-4v9h-3v-9h-4l5.5-9z"/>
-          </svg>
+
+  <div class="app-container">
+    <h1>Video Screenshot Tool</h1>
+
+    <div class="url-input-container">
+      <input type="text" id="videoURLInput" placeholder="Enter direct video URL (e.g., .../video.mp4)">
+      <button id="loadURLButton" type="button">Load</button>
+    </div>
+
+    <div class="main-content">
+      <!-- Left Column: Upload & File Info -->
+      <div class="input-column">
+        <div id="dropZone">
+          <div id="uploadIcon">
+            <!-- Default Upload Icon -->
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+            </svg>
+          </div>
+          <div id="dropZoneText">Drag & drop video file or</div>
+          <button id="selectFileButton" type="button">Select File</button>
+          <input type="file" id="videoInput" accept="video/*">
         </div>
-        <div id="dropZoneText">Drag and drop a video file to upload</div>
-        <button id="selectFileButton" type="button">Select file</button>
-        <input type="file" id="videoInput" accept="video/*">
+
+        <div id="fileInfo">
+          <div class="info-row">
+            <div class="info-label">Resolution</div>
+            <span class="leader"></span>
+            <div class="info-value" id="resolutionValue">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Duration</div>
+            <span class="leader"></span>
+            <div class="info-value" id="lengthValue">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Aspect Ratio</div>
+            <span class="leader"></span>
+            <div class="info-value" id="aspectRatioValue">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Bitrate</div>
+            <span class="leader"></span>
+            <div class="info-value" id="bitrateValue">-</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Images</div>
+            <span class="leader"></span>
+            <div class="info-value" id="imageCountValue">0</div>
+          </div>
+        </div>
       </div>
-      <div id="fileInfo">
-        <div class="info-row">
-          <div class="info-label">Resolution</div>
-          <span class="leader"></span>
-          <div class="info-value" id="resolutionValue">-</div>
+
+      <!-- Right Column: Controls & Modes -->
+      <div class="controls-column">
+        <!-- Mode Tabs -->
+        <div class="segmented-controls mode-tabs">
+          <button class="mode-tab active" data-mode="auto">Automated</button>
+          <button class="mode-tab" data-mode="autoSmart">Smart Auto</button>
+          <button class="mode-tab" data-mode="manual">Manual</button>
         </div>
-        <div class="info-row">
-          <div class="info-label">Duration</div>
-          <span class="leader"></span>
-          <div class="info-value" id="lengthValue">-</div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">Aspect Ratio</div>
-          <span class="leader"></span>
-          <div class="info-value" id="aspectRatioValue">-</div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">Bitrate (est.)</div>
-          <span class="leader"></span>
-          <div class="info-value" id="bitrateValue">-</div>
-        </div>
-        <div class="info-row">
-          <div class="info-label">Images</div>
-          <span class="leader"></span>
-          <div class="info-value" id="imageCountValue">0</div>
+
+        <!-- Mode Specific Content -->
+        <div class="mode-content">
+          <!-- Automated (Regular) Mode -->
+          <div id="autoMode" class="active">
+            <div class="slider-row">
+              <div class="slider-label">Interval</div>
+              <div class="slider-wrapper">
+                <input type="range" id="intervalInput" min="1" max="30" value="10" step="1">
+                <span id="intervalValue" class="value-display">10s</span>
+              </div>
+            </div>
+            <div class="segmented-controls format-tabs">
+              <button class="format-tab active" data-format="png">PNG</button>
+              <button class="format-tab" data-format="jpeg">JPEG</button>
+              <button class="format-tab" data-format="webp">WEBP</button>
+            </div>
+            <div id="pngNote">Lossless quality, largest file size.</div>
+            <div class="slider-row" id="jpegSettings" style="display:none;">
+              <div class="slider-label">JPEG Quality</div>
+              <div class="slider-wrapper">
+                <input type="range" id="jpegQuality" min="10" max="100" value="85" step="5">
+                <span id="jpegQualityValue" class="value-display">85%</span>
+              </div>
+            </div>
+            <div class="slider-row" id="webpSettings" style="display:none;">
+              <div class="slider-label">WEBP Quality</div>
+              <div class="slider-wrapper">
+                <input type="range" id="webpQuality" min="10" max="100" value="85" step="5">
+                <span id="webpQualityValue" class="value-display">85%</span>
+              </div>
+            </div>
+            <div class="button-group">
+              <button id="processButton" class="action-button">Extract Screenshots</button>
+              <button id="downloadAllButton" class="action-button" disabled>Download All (.zip)</button>
+            </div>
+            <div id="progressBar" class="progress-bar-container">
+              <div id="progressBarFill" class="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Automated (Smart) Mode -->
+          <div id="autoSmartMode">
+             <div class="segmented-controls smart-algo-tabs">
+                <button class="smart-tab active" data-algo="histogram">Histogram Diff</button>
+                <button class="smart-tab" data-algo="pixeldiff">Pixel Diff</button>
+                <button class="smart-tab" data-algo="ssim">Low SSIM</button>
+             </div>
+             <!-- Re-use format tabs structure -->
+             <div class="segmented-controls format-tabs" id="smartFormatTabs">
+                 <button class="format-tab active" data-format="png">PNG</button>
+                 <button class="format-tab" data-format="jpeg">JPEG</button>
+                 <button class="format-tab" data-format="webp">WEBP</button>
+             </div>
+             <div id="pngNoteSmart">Lossless quality, largest file size.</div>
+             <div class="slider-row" id="jpegSettingsSmart" style="display:none;">
+               <div class="slider-label">JPEG Quality</div>
+               <div class="slider-wrapper">
+                 <input type="range" id="jpegQualitySmart" min="10" max="100" value="85" step="5">
+                 <span id="jpegQualityValueSmart" class="value-display">85%</span>
+               </div>
+             </div>
+             <div class="slider-row" id="webpSettingsSmart" style="display:none;">
+               <div class="slider-label">WEBP Quality</div>
+               <div class="slider-wrapper">
+                 <input type="range" id="webpQualitySmart" min="10" max="100" value="85" step="5">
+                 <span id="webpQualityValueSmart" class="value-display">85%</span>
+               </div>
+             </div>
+             <div class="button-group">
+               <button id="processSmartButton" class="action-button">Extract Smart Shots</button>
+               <button id="downloadAllSmartButton" class="action-button" disabled>Download All (.zip)</button>
+             </div>
+             <div id="progressBarSmart" class="progress-bar-container">
+               <div id="progressBarFillSmart" class="progress-bar-fill"></div>
+             </div>
+          </div>
+
+          <!-- Manual Mode -->
+          <div id="manualMode">
+            <video id="manualVideo" controls></video>
+            <div class="manual-buttons">
+              <button id="extractManualButton" type="button">Quick Save Frame</button>
+              <button id="downloadManualButton" type="button" disabled>Download Added</button>
+              <button id="addManualButton" title="Add current frame to download list" type="button">+</button>
+            </div>
+             <!-- Note: Manual mode uses the format selected in the *currently visible* format tabs (Auto or Smart) -->
+          </div>
         </div>
       </div>
     </div>
-    <!-- Right Column: Mode Containers -->
-    <div class="mode-container">
-      <!-- Automated (Regular) Mode -->
-      <div id="autoMode">
-        <div class="slider-row">
-          <div class="slider-label">Screenshot Interval</div>
-          <div class="slider-wrapper">
-            <input type="range" id="intervalInput" min="1" max="20" value="10">
-            <span id="intervalValue" class="value-display">10</span>s
-          </div>
-        </div>
-        <div class="format-tabs">
-          <button class="format-tab active" data-format="png">PNG</button>
-          <button class="format-tab" data-format="jpeg">JPEG</button>
-          <button class="format-tab" data-format="webp">WEBP</button>
-        </div>
-        <div id="pngNote">Lossless quality, largest file size</div>
-        <div class="slider-row" id="jpegSettings" style="display:none;">
-          <div class="slider-label">JPEG Quality</div>
-          <div class="slider-wrapper">
-            <input type="range" id="jpegQuality" min="0" max="100" value="80">
-            <span id="jpegQualityValue" class="value-display">80</span>%
-          </div>
-        </div>
-        <div class="slider-row" id="webpSettings" style="display:none;">
-          <div class="slider-label">WEBP Quality</div>
-          <div class="slider-wrapper">
-            <input type="range" id="webpQuality" min="0" max="100" value="80">
-            <span id="webpQualityValue" class="value-display">80</span>%
-          </div>
-        </div>
-        <div class="button-group">
-          <button id="processButton">Extract Screenshots</button>
-          <button id="downloadAllButton" disabled>Download All</button>
-        </div>
-        <div id="progressBar">
-          <div id="progressBarFill"></div>
-        </div>
-      </div>
-      <!-- Automated (Smart) Mode -->
-      <div id="autoSmartMode">
-        <!-- Smart Mode Algorithm Selector Tabs: Histogram, Pixel Diff, SSIM -->
-        <div class="smart-algo-tabs">
-          <button class="smart-tab active" data-algo="histogram">Histogram</button>
-          <button class="smart-tab" data-algo="pixeldiff">Pixel Diff</button>
-          <button class="smart-tab" data-algo="ssim">SSIM</button>
-        </div>
-        <div id="pngNote">Lossless quality, largest file size</div>
-        <div class="slider-row" id="jpegSettingsSmart" style="display:none;">
-          <div class="slider-label">JPEG Quality</div>
-          <div class="slider-wrapper">
-            <input type="range" id="jpegQualitySmart" min="0" max="100" value="80">
-            <span id="jpegQualityValueSmart" class="value-display">80</span>%
-          </div>
-        </div>
-        <div class="slider-row" id="webpSettingsSmart" style="display:none;">
-          <div class="slider-label">WEBP Quality</div>
-          <div class="slider-wrapper">
-            <input type="range" id="webpQualitySmart" min="0" max="100" value="80">
-            <span id="webpQualityValueSmart" class="value-display">80</span>%
-          </div>
-        </div>
-        <div class="button-group">
-          <button id="processSmartButton">Extract Smart Screenshots</button>
-          <button id="downloadAllSmartButton" disabled>Download All</button>
-        </div>
-        <div id="progressBarSmart">
-          <div id="progressBarFillSmart"></div>
-        </div>
-      </div>
-      <!-- Manual Mode -->
-      <div id="manualMode">
-        <video id="manualVideo" controls></video>
-        <div class="manual-buttons">
-          <button id="extractManualButton" type="button">Quick Save Frame</button>
-          <button id="downloadManualButton" type="button" disabled>Download All</button>
-          <button id="addManualButton" type="button">+</button>
-        </div>
-      </div>
+
+    <hr class="separator">
+
+    <div id="screenshots">
+      <!-- Screenshot previews will be appended here -->
     </div>
   </div>
-  <hr class="separator">
-  <div id="screenshots"></div>
+
+  <!-- Hidden elements for processing -->
   <video id="video" style="display:none;"></video>
   <canvas id="canvas"></canvas>
+
   <script>
-    // --- Helper Functions ---
-    function updateSliderBackground(slider) {
-      const val = slider.value;
-      const min = slider.min;
-      const max = slider.max;
-      const pct = ((val - min) * 100) / (max - min);
-      slider.style.background = `linear-gradient(to right, #6447ff 0%, #6447ff ${pct}%, #3a3c40 ${pct}%, #3a3c40 100%)`;
-    }
-    // Format time (mm:ss)
-    function formatTime(seconds) {
-      const s = Math.floor(seconds);
-      const m = Math.floor(s / 60);
-      const sec = s % 60;
-      return m + ":" + (sec < 10 ? "0" + sec : sec);
-    }
-    // Compute normalized histogram from image data (grayscale)
-    function computeHistogram(imageData, sampleFactor) {
-      const data = imageData.data;
-      const hist = new Array(256).fill(0);
-      let count = 0;
-      for (let i = 0; i < data.length; i += 4 * sampleFactor) {
-        const r = data[i], g = data[i + 1], b = data[i + 2];
-        const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-        hist[gray]++;
-        count++;
-      }
-      return hist.map(val => val / count);
-    }
-    // Compute histogram difference (L1 norm)
-    function histogramDifference(hist1, hist2) {
-      return hist1.reduce((acc, val, i) => acc + Math.abs(val - hist2[i]), 0);
-    }
-    // Compute simple pixel difference between two arrays
-    function computePixelDiff(data1, data2) {
-      let diff = 0;
-      for (let i = 0; i < data1.length; i++) {
-        diff += Math.abs(data1[i] - data2[i]);
-      }
-      return diff / data1.length;
-    }
-    // Compute a simplified SSIM between two imageData objects
-    function computeSSIM(imageData1, imageData2, sampleFactor) {
-      let arr1 = [];
-      let arr2 = [];
-      const data1 = imageData1.data;
-      const data2 = imageData2.data;
-      for (let i = 0; i < data1.length; i += 4 * sampleFactor) {
-        const r = data1[i], g = data1[i+1], b = data1[i+2];
-        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-        arr1.push(gray);
-      }
-      for (let i = 0; i < data2.length; i += 4 * sampleFactor) {
-        const r = data2[i], g = data2[i+1], b = data2[i+2];
-        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-        arr2.push(gray);
-      }
-      const n = arr1.length;
-      const mu1 = arr1.reduce((a, b) => a + b, 0) / n;
-      const mu2 = arr2.reduce((a, b) => a + b, 0) / n;
-      const sigma1_sq = arr1.reduce((a, b) => a + Math.pow(b - mu1, 2), 0) / n;
-      const sigma2_sq = arr2.reduce((a, b) => a + Math.pow(b - mu2, 2), 0) / n;
-      let sigma12 = 0;
-      for (let i = 0; i < n; i++) {
-        sigma12 += (arr1[i] - mu1) * (arr2[i] - mu2);
-      }
-      sigma12 /= n;
-      const L = 255;
-      const C1 = Math.pow(0.01 * L, 2);
-      const C2 = Math.pow(0.03 * L, 2);
-      const ssim = ((2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)) /
-                   ((mu1 * mu1 + mu2 * mu2 + C1) * (sigma1_sq + sigma2_sq + C2));
-      return ssim;
-    }
-    // Create a screenshot container with overlay and delete button
-    function createScreenshotElement(blob, timestamp) {
-      const container = document.createElement('div');
-      container.className = "screenshot-container";
-      
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.target = "_blank";
-      
-      const img = document.createElement('img');
-      img.src = a.href;
-      a.appendChild(img);
-      container.appendChild(a);
-      
-      // Create overlay to show timestamp
-      const overlay = document.createElement('div');
-      overlay.className = "screenshot-overlay";
-      overlay.textContent = formatTime(timestamp);
-      container.appendChild(overlay);
-      
-      // Create delete button
-      const delBtn = document.createElement('button');
-      delBtn.className = "delete-btn";
-      delBtn.textContent = "✕";
-      delBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        container.remove();
-        updateImageCount();
-      });
-      container.appendChild(delBtn);
-      
-      return container;
-    }
-    // --- Mode Tabs Setup ---
-    const modeTabs = document.querySelectorAll('.mode-tab');
-    const autoMode = document.getElementById('autoMode');
-    const autoSmartMode = document.getElementById('autoSmartMode');
-    const manualMode = document.getElementById('manualMode');
-    modeTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        modeTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        const mode = tab.getAttribute('data-mode');
-        if (mode === 'auto') {
-          autoMode.style.display = 'block';
-          autoSmartMode.style.display = 'none';
-          manualMode.style.display = 'none';
-        } else if (mode === 'autoSmart') {
-          autoMode.style.display = 'none';
-          autoSmartMode.style.display = 'block';
-          manualMode.style.display = 'none';
-        } else {
-          autoMode.style.display = 'none';
-          autoSmartMode.style.display = 'none';
-          manualMode.style.display = 'block';
-        }
-      });
-    });
-    // --- Smart Mode Algorithm Tabs Setup ---
-    const smartAlgoTabs = document.querySelectorAll('.smart-tab');
-    let smartAlgorithm = 'histogram'; // default
-    smartAlgoTabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        smartAlgoTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        smartAlgorithm = tab.getAttribute('data-algo');
-      });
-    });
-    // --- Common Elements ---
+    // --- DOM Element References ---
     const dropZone = document.getElementById('dropZone');
     const dropZoneText = document.getElementById('dropZoneText');
+    const uploadIcon = document.getElementById('uploadIcon');
     const selectFileButton = document.getElementById('selectFileButton');
     const videoInput = document.getElementById('videoInput');
-    const progressBar = document.getElementById('progressBar');
-    const progressBarFill = document.getElementById('progressBarFill');
+    const videoURLInput = document.getElementById('videoURLInput');
+    const loadURLButton = document.getElementById('loadURLButton');
+
+    const fileInfo = document.getElementById('fileInfo');
+    const resolutionValue = document.getElementById('resolutionValue');
+    const lengthValue = document.getElementById('lengthValue');
+    const aspectRatioValue = document.getElementById('aspectRatioValue');
+    const bitrateValue = document.getElementById('bitrateValue');
+    const imageCountValue = document.getElementById('imageCountValue');
+
+    const modeTabs = document.querySelectorAll('.mode-tab');
+    const autoModeDiv = document.getElementById('autoMode');
+    const autoSmartModeDiv = document.getElementById('autoSmartMode');
+    const manualModeDiv = document.getElementById('manualMode');
+
     const intervalInput = document.getElementById('intervalInput');
     const intervalValue = document.getElementById('intervalValue');
-    const tabsFormat = document.querySelectorAll('.format-tab');
-    const pngNote = document.getElementById('pngNote');
-    const jpegSettingsRow = document.getElementById('jpegSettings');
-    const webpSettingsRow = document.getElementById('webpSettings');
-    // Smart mode quality controls
+    const formatTabsAuto = document.querySelectorAll('#autoMode .format-tab');
+    const pngNoteAuto = document.getElementById('pngNote');
+    const jpegSettingsAuto = document.getElementById('jpegSettings');
+    const webpSettingsAuto = document.getElementById('webpSettings');
+    const jpegQualityAuto = document.getElementById('jpegQuality');
+    const jpegQualityValueAuto = document.getElementById('jpegQualityValue');
+    const webpQualityAuto = document.getElementById('webpQuality');
+    const webpQualityValueAuto = document.getElementById('webpQualityValue');
+    const processButton = document.getElementById('processButton');
+    const downloadAllButton = document.getElementById('downloadAllButton');
+    const progressBarAuto = document.getElementById('progressBar');
+    const progressBarFillAuto = document.getElementById('progressBarFill');
+
+    const smartAlgoTabs = document.querySelectorAll('.smart-tab');
+    const formatTabsSmart = document.querySelectorAll('#smartFormatTabs .format-tab');
+    const pngNoteSmart = document.getElementById('pngNoteSmart');
+    const jpegSettingsSmart = document.getElementById('jpegSettingsSmart');
+    const webpSettingsSmart = document.getElementById('webpSettingsSmart');
     const jpegQualitySmart = document.getElementById('jpegQualitySmart');
     const jpegQualityValueSmart = document.getElementById('jpegQualityValueSmart');
     const webpQualitySmart = document.getElementById('webpQualitySmart');
     const webpQualityValueSmart = document.getElementById('webpQualityValueSmart');
-    const processButton = document.getElementById('processButton');
-    const downloadAllButton = document.getElementById('downloadAllButton');
     const processSmartButton = document.getElementById('processSmartButton');
     const downloadAllSmartButton = document.getElementById('downloadAllSmartButton');
     const progressBarSmart = document.getElementById('progressBarSmart');
-    const video = document.getElementById('video');
+    const progressBarFillSmart = document.getElementById('progressBarFillSmart');
+
     const manualVideo = document.getElementById('manualVideo');
-    const canvas = document.getElementById('canvas');
+    const extractManualButton = document.getElementById('extractManualButton');
+    const addManualButton = document.getElementById('addManualButton');
+    const downloadManualButton = document.getElementById('downloadManualButton');
+
     const screenshotsDiv = document.getElementById('screenshots');
-    const resolutionValue = document.getElementById('resolutionValue');
-    const lengthValue = document.getElementById('lengthValue');
-    const imageCountValue = document.getElementById('imageCountValue');
-    // Ensure Aspect Ratio row exists
-    if (!document.getElementById('aspectRatioValue')) {
-      const aspectRow = document.createElement('div');
-      aspectRow.className = 'info-row';
-      aspectRow.innerHTML = `<div class="info-label">Aspect Ratio</div><span class="leader"></span><div class="info-value" id="aspectRatioValue">-</div>`;
-      const fileInfo = document.getElementById('fileInfo');
-      const durationRow = fileInfo.querySelector('.info-row:nth-child(2)');
-      durationRow.parentElement.insertBefore(aspectRow, durationRow.nextSibling);
-    }
-    const aspectRatioValue = document.getElementById('aspectRatioValue');
-    let autoScreenshotBlobs = [];
-    let manualScreenshotBlobs = [];
-    function updateImageCount() {
-      const count = screenshotsDiv.childElementCount;
-      imageCountValue.textContent = count;
-    }
-    [intervalInput, jpegQuality, webpQuality, jpegQualitySmart, webpQualitySmart].forEach(s => updateSliderBackground(s));
-    intervalInput.addEventListener('input', () => {
-      intervalValue.textContent = intervalInput.value;
-      updateSliderBackground(intervalInput);
-    });
-    jpegQuality.addEventListener('input', () => {
-      document.getElementById('jpegQualityValue').textContent = jpegQuality.value;
-      updateSliderBackground(jpegQuality);
-    });
-    webpQuality.addEventListener('input', () => {
-      document.getElementById('webpQualityValue').textContent = webpQuality.value;
-      updateSliderBackground(webpQuality);
-    });
-    jpegQualitySmart.addEventListener('input', () => {
-      document.getElementById('jpegQualityValueSmart').textContent = jpegQualitySmart.value;
-      updateSliderBackground(jpegQualitySmart);
-    });
-    webpQualitySmart.addEventListener('input', () => {
-      document.getElementById('webpQualityValueSmart').textContent = webpQualitySmart.value;
-      updateSliderBackground(webpQualitySmart);
-    });
-    let currentFormat = 'png';
-    tabsFormat.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabsFormat.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        currentFormat = tab.getAttribute('data-format');
-        if (currentFormat === 'png') {
-          pngNote.style.display = 'flex';
-          jpegSettingsRow.style.display = 'none';
-          webpSettingsRow.style.display = 'none';
-          if(document.getElementById('jpegSettingsSmart')) document.getElementById('jpegSettingsSmart').style.display = 'none';
-          if(document.getElementById('webpSettingsSmart')) document.getElementById('webpSettingsSmart').style.display = 'none';
-        } else if (currentFormat === 'jpeg') {
-          pngNote.style.display = 'none';
-          jpegSettingsRow.style.display = 'flex';
-          webpSettingsRow.style.display = 'none';
-          if(document.getElementById('jpegSettingsSmart')) document.getElementById('jpegSettingsSmart').style.display = 'flex';
-          if(document.getElementById('webpSettingsSmart')) document.getElementById('webpSettingsSmart').style.display = 'none';
-        } else {
-          pngNote.style.display = 'none';
-          jpegSettingsRow.style.display = 'none';
-          webpSettingsRow.style.display = 'flex';
-          if(document.getElementById('jpegSettingsSmart')) document.getElementById('jpegSettingsSmart').style.display = 'none';
-          if(document.getElementById('webpSettingsSmart')) document.getElementById('webpSettingsSmart').style.display = 'flex';
-        }
-      });
-    });
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+
+    // --- State Variables ---
+    let currentMode = 'auto'; // 'auto', 'autoSmart', 'manual'
+    let currentFormat = 'png'; // 'png', 'jpeg', 'webp'
+    let smartAlgorithm = 'histogram'; // 'histogram', 'pixeldiff', 'ssim'
     let uploadedFile = null;
+    let currentVideoDuration = 0;
+    let processingActive = false;
+    let screenshotBlobs = []; // Used for Auto and Smart Auto downloads
+    let manualScreenshotBlobs = []; // Used for Manual download
+
+    // --- Helper Functions ---
+
+    // Update slider background fill
+    function updateSliderBackground(slider) {
+      if (!slider) return;
+      const val = slider.value;
+      const min = slider.min;
+      const max = slider.max;
+      const pct = ((val - min) * 100) / (max - min);
+      slider.style.background = `linear-gradient(to right, var(--accent-primary) 0%, var(--accent-primary) ${pct}%, var(--bg-tertiary) ${pct}%, var(--bg-tertiary) 100%)`;
+       // Special color for smart mode sliders
+       if (slider.id.includes('Smart')) {
+            slider.style.background = `linear-gradient(to right, var(--accent-secondary) 0%, var(--accent-secondary) ${pct}%, var(--bg-tertiary) ${pct}%, var(--bg-tertiary) 100%)`;
+       }
+    }
+
+    // Format time (mm:ss)
+    function formatTime(seconds) {
+        if (isNaN(seconds) || seconds < 0) return "0:00";
+        const s = Math.floor(seconds);
+        const m = Math.floor(s / 60);
+        const sec = s % 60;
+        return m + ":" + (sec < 10 ? "0" + sec : sec);
+    }
+
+    // Calculate greatest common divisor for aspect ratio
+    function gcd(a, b) { return b ? gcd(b, a % b) : a; }
+
+    // Update File Info Display
+    function updateFileInfoDisplay() {
+        if (!video.duration || !video.videoWidth || !video.videoHeight) {
+            resolutionValue.textContent = "-";
+            lengthValue.textContent = "-";
+            aspectRatioValue.textContent = "-";
+            bitrateValue.textContent = "-";
+            return;
+        }
+        currentVideoDuration = video.duration;
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+        resolutionValue.textContent = `${width}x${height}`;
+        lengthValue.textContent = formatTime(currentVideoDuration);
+        const divisor = gcd(width, height);
+        aspectRatioValue.textContent = `${width / divisor}:${height / divisor}`;
+
+        if (uploadedFile && uploadedFile.size > 0 && currentVideoDuration > 0) {
+            const bitrateKbps = Math.round((uploadedFile.size * 8) / currentVideoDuration / 1000);
+            bitrateValue.textContent = `${bitrateKbps} kbps`;
+        } else {
+            bitrateValue.textContent = "N/A";
+        }
+    }
+
+    // Update Image Count Display
+    function updateImageCount() {
+        const count = screenshotsDiv.childElementCount;
+        imageCountValue.textContent = count;
+        // Enable/disable relevant download buttons
+        const hasAutoScreenshots = currentMode !== 'manual' && count > 0;
+        const hasManualScreenshots = currentMode === 'manual' && manualScreenshotBlobs.length > 0;
+
+        downloadAllButton.disabled = !hasAutoScreenshots || processingActive;
+        downloadAllSmartButton.disabled = !hasAutoScreenshots || processingActive;
+        downloadManualButton.disabled = !hasManualScreenshots || processingActive;
+    }
+
+     // Reset UI elements related to processing
+    function resetProcessingUI(mode = 'auto') {
+        processingActive = false;
+        if (mode === 'auto' || mode === 'all') {
+            progressBarAuto.style.display = 'none';
+            progressBarFillAuto.style.width = '0%';
+            processButton.disabled = !video.src;
+            downloadAllButton.disabled = screenshotBlobs.length === 0;
+        }
+        if (mode === 'autoSmart' || mode === 'all') {
+            progressBarSmart.style.display = 'none';
+            progressBarFillSmart.style.width = '0%';
+            processSmartButton.disabled = !video.src;
+            downloadAllSmartButton.disabled = screenshotBlobs.length === 0;
+        }
+         if (mode === 'manual' || mode === 'all') {
+             downloadManualButton.disabled = manualScreenshotBlobs.length === 0;
+             addManualButton.disabled = !video.src;
+             extractManualButton.disabled = !video.src;
+         }
+    }
+
+     // Set UI state during processing
+     function setProcessingUI(mode = 'auto') {
+         processingActive = true;
+         if (mode === 'auto') {
+             progressBarAuto.style.display = 'block';
+             processButton.disabled = true;
+             downloadAllButton.disabled = true;
+         } else if (mode === 'autoSmart') {
+             progressBarSmart.style.display = 'block';
+             processSmartButton.disabled = true;
+             downloadAllSmartButton.disabled = true;
+         }
+          // Disable other mode buttons too
+          processButton.disabled = true;
+          processSmartButton.disabled = true;
+          addManualButton.disabled = true;
+          extractManualButton.disabled = true;
+          downloadManualButton.disabled = true;
+     }
+
+    // --- Image Processing Functions (Simplified from original) ---
+    function computeHistogram(imageData, sampleFactor = 4) {
+      const data = imageData.data;
+      const hist = new Array(256).fill(0);
+      let count = 0;
+      for (let i = 0; i < data.length; i += 4 * sampleFactor) {
+        const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
+        hist[gray]++;
+        count++;
+      }
+      // Normalize
+      if (count === 0) return hist;
+      return hist.map(val => val / count);
+    }
+    function histogramDifference(hist1, hist2) {
+      if (!hist1 || !hist2 || hist1.length !== hist2.length) return 1; // Max difference if invalid
+      return hist1.reduce((acc, val, i) => acc + Math.abs(val - hist2[i]), 0);
+    }
+    function computePixelDiff(data1, data2, sampleFactor = 4) {
+        let diff = 0;
+        let count = 0;
+        const step = 4 * sampleFactor;
+        for (let i = 0; i < data1.length; i += step) {
+            // Simple RGB difference average
+            diff += Math.abs(data1[i] - data2[i]);     // R
+            diff += Math.abs(data1[i+1] - data2[i+1]); // G
+            diff += Math.abs(data1[i+2] - data2[i+2]); // B
+            count++;
+        }
+        return count > 0 ? (diff / (count * 3)) : 0; // Average difference per channel per sampled pixel
+    }
+    function computeSSIM(imageData1, imageData2, sampleFactor = 4) {
+        // Very simplified SSIM - based on grayscale average difference as a proxy
+        // A proper SSIM is more complex. This is just for demonstration.
+        const data1 = imageData1.data;
+        const data2 = imageData2.data;
+        let sum1 = 0, sum2 = 0, count = 0;
+        const step = 4 * sampleFactor;
+
+        for (let i = 0; i < data1.length; i += step) {
+            sum1 += (0.299 * data1[i] + 0.587 * data1[i + 1] + 0.114 * data1[i + 2]);
+            sum2 += (0.299 * data2[i] + 0.587 * data2[i + 1] + 0.114 * data2[i + 2]);
+            count++;
+        }
+        if (count === 0) return 1; // No difference if no pixels
+        const avg1 = sum1 / count;
+        const avg2 = sum2 / count;
+        // Inverse relationship: Higher difference means lower similarity (closer to 0)
+        // Normalize difference to 0-1 range (roughly)
+        const maxDiff = 255;
+        const avgDiff = Math.abs(avg1 - avg2);
+        return Math.max(0, 1 - (avgDiff / maxDiff)); // Closer to 1 means more similar
+    }
+
+    // Create Screenshot Thumbnail Element
+    function createScreenshotElement(blob, timestamp) {
+      const container = document.createElement('div');
+      container.className = "screenshot-container";
+
+      const a = document.createElement('a');
+      const blobUrl = URL.createObjectURL(blob);
+      a.href = blobUrl;
+      a.target = "_blank"; // Open in new tab
+
+      const img = document.createElement('img');
+      img.src = blobUrl;
+      img.alt = `Screenshot at ${formatTime(timestamp)}`;
+      img.onload = () => { // Ensure blob URL isn't revoked too early if loading is slow
+          // Optional: could revoke older blob URLs here if memory becomes an issue
+      };
+      img.onerror = () => { console.error("Error loading screenshot image"); }
+      a.appendChild(img);
+      container.appendChild(a);
+
+      // Overlay for timestamp (only show if timestamp > 0, for non-manual)
+      if (timestamp > 0 || currentMode !== 'manual') {
+          const overlay = document.createElement('div');
+          overlay.className = "screenshot-overlay";
+          overlay.textContent = formatTime(timestamp);
+          container.appendChild(overlay);
+      }
+
+      // Delete button
+      const delBtn = document.createElement('button');
+      delBtn.className = "delete-btn";
+      delBtn.innerHTML = "×"; // Use HTML entity for 'x'
+      delBtn.title = "Remove this screenshot";
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent link click
+        // IMPORTANT: This only removes the visual element.
+        // For a full implementation, you'd need to find the corresponding blob
+        // in the `screenshotBlobs` or `manualScreenshotBlobs` array and remove it.
+        // This simple version just updates the UI count.
+        URL.revokeObjectURL(blobUrl); // Clean up blob URL
+        container.remove();
+        updateImageCount();
+      });
+      container.appendChild(delBtn);
+
+      return container;
+    }
+
+    // Get current format settings (type and quality)
+    function getCurrentFormatSettings() {
+        let type = `image/${currentFormat}`;
+        let quality = 1.0; // Default for PNG
+
+        if (currentFormat === 'jpeg') {
+             const qualitySlider = (currentMode === 'autoSmart') ? jpegQualitySmart : jpegQualityAuto;
+             quality = parseFloat(qualitySlider.value) / 100;
+        } else if (currentFormat === 'webp') {
+             const qualitySlider = (currentMode === 'autoSmart') ? webpQualitySmart : webpQualityAuto;
+             quality = parseFloat(qualitySlider.value) / 100;
+        }
+        return { type, quality };
+    }
+
+
+    // --- Event Listeners ---
+
+    // Video Loaded Metadata
+    video.addEventListener('loadedmetadata', () => {
+        updateFileInfoDisplay();
+        resetProcessingUI('all'); // Enable buttons now that video is loaded
+    });
+     manualVideo.addEventListener('loadedmetadata', updateFileInfoDisplay); // Also update for manual player
+
+    // File Input Change
     videoInput.addEventListener('change', () => {
       const file = videoInput.files[0];
       if (!file) return;
-      uploadedFile = file;
-      const fileURL = URL.createObjectURL(file);
-      video.src = fileURL;
-      manualVideo.src = fileURL;
-      dropZoneText.textContent = file.name;
-      selectFileButton.textContent = "File selected";
-      selectFileButton.classList.add('file-selected');
-      dropZone.style.backgroundColor = "#272a2e";
-      document.getElementById('uploadIcon').innerHTML = `
-        <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
-          <path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/>
-        </svg>
-      `;
-      downloadAllButton.disabled = true;
-      document.getElementById('downloadManualButton').disabled = true;
+      handleFileLoad(file);
     });
-    dropZone.addEventListener('click', () => videoInput.click());
-    selectFileButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      videoInput.click();
-    });
+
+    // Drag and Drop
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('hover');
@@ -876,254 +1133,506 @@
       e.preventDefault();
       dropZone.classList.remove('hover');
       const file = e.dataTransfer.files[0];
-      if (!file) return;
+      if (file && file.type.startsWith('video/')) {
+         handleFileLoad(file);
+      } else {
+         alert("Please drop a valid video file.");
+      }
+    });
+
+    // Click Drop Zone to trigger File Input
+    dropZone.addEventListener('click', (e) => {
+        if (e.target.id !== 'selectFileButton') { // Don't trigger if button itself is clicked
+            videoInput.click();
+        }
+    });
+    selectFileButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent dropZone click listener
+        videoInput.click();
+    });
+
+    // Load Video from URL
+    loadURLButton.addEventListener('click', () => {
+      const url = videoURLInput.value.trim();
+      if (!url) {
+        alert("Please enter a video URL.");
+        return;
+      }
+       // Basic check for common video extensions (could be improved)
+       if (!/\.(mp4|webm|ogg|mov)$/i.test(url)) {
+           console.warn("URL might not be a direct video link. Trying anyway.");
+       }
+      try {
+        // Use CORS proxy if needed, or rely on server CORS headers
+        // Simple direct load:
+        video.src = url;
+        manualVideo.src = url;
+        uploadedFile = null; // Clear file info if loading URL
+        updateDropZoneUI(true, "URL Loaded"); // Indicate URL load visually
+        resetUIOnNewVideo();
+      } catch (error) {
+         console.error("Error loading video from URL:", error);
+         alert("Could not load video from URL. Check the link and CORS policy.");
+      }
+    });
+    videoURLInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loadURLButton.click();
+      }
+    });
+
+    // Handle File Load (from input or drop)
+    function handleFileLoad(file) {
       uploadedFile = file;
       const fileURL = URL.createObjectURL(file);
       video.src = fileURL;
       manualVideo.src = fileURL;
-      dropZoneText.textContent = file.name;
-      selectFileButton.textContent = "File selected";
-      selectFileButton.classList.add('file-selected');
-      dropZone.style.backgroundColor = "#272a2e";
-      document.getElementById('uploadIcon').innerHTML = `
-        <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
-          <path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/>
-        </svg>
-      `;
-      downloadAllButton.disabled = true;
-      document.getElementById('downloadManualButton').disabled = true;
-    });
-    // --- URL Input Handling ---
-    const videoURLInput = document.getElementById('videoURLInput');
-    const loadURLButton = document.getElementById('loadURLButton');
-    loadURLButton.addEventListener('click', () => {
-      const url = videoURLInput.value.trim();
-      if (!url) { alert("Please enter a video URL."); return; }
-      video.src = url;
-      manualVideo.src = url;
-      dropZoneText.textContent = "Loaded URL: " + url;
-      selectFileButton.textContent = "URL Loaded";
-      selectFileButton.classList.add('file-selected');
-      dropZone.style.backgroundColor = "#272a2e";
-      document.getElementById('uploadIcon').innerHTML = `
-        <svg viewBox="0 0 24 24" width="48" height="48" fill="#ffffff">
-          <path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/>
-        </svg>
-      `;
-    });
-    videoURLInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') loadURLButton.click();
-    });
-    video.addEventListener('loadedmetadata', () => {
-      if (uploadedFile || video.src) {
-        const totalSec = Math.floor(video.duration);
-        const min = Math.floor(totalSec / 60);
-        const sec = totalSec % 60;
-        const width = video.videoWidth;
-        const height = video.videoHeight;
-        resolutionValue.textContent = `${width}x${height}`;
-        lengthValue.textContent = `${min} min ${sec} s`;
-        const bitrateMbps = uploadedFile ? Math.round((uploadedFile.size * 8) / video.duration / 1000000) : '-';
-        document.getElementById('bitrateValue').textContent = `${bitrateMbps} Mbps`;
-        function gcd(a, b) { return b ? gcd(b, a % b) : a; }
-        const divisor = gcd(width, height);
-        const aspectRatio = `${width / divisor}:${height / divisor}`;
-        aspectRatioValue.textContent = aspectRatio;
-      }
-    });
-    // --- Regular Automated Mode Extraction ---
-    processButton.addEventListener('click', () => {
-      if (!video.src) { alert("Please select or drop a video file first."); return; }
-      progressBar.style.display = 'block';
-      progressBarFill.style.width = '0%';
-      video.addEventListener('loadedmetadata', captureAutoScreenshots, { once: true });
-      if (video.readyState >= 1) { captureAutoScreenshots(); }
-    });
-    function captureAutoScreenshots() {
-      autoScreenshotBlobs = [];
-      const interval = parseFloat(intervalInput.value);
-      const duration = video.duration;
-      const ctx = canvas.getContext('2d');
-      let currentTime = 0;
-      let quality = 1.0;
-      if (currentFormat === 'jpeg') { quality = parseFloat(jpegQuality.value) / 100; }
-      else if (currentFormat === 'webp') { quality = parseFloat(webpQuality.value) / 100; }
-      screenshotsDiv.innerHTML = "";
+      updateDropZoneUI(true, file.name); // Show filename, update style
+      resetUIOnNewVideo();
+    }
+
+    // Reset relevant UI parts when a new video is loaded
+    function resetUIOnNewVideo() {
+      screenshotsDiv.innerHTML = ''; // Clear previous screenshots
+      screenshotBlobs = [];
+      manualScreenshotBlobs = [];
       updateImageCount();
-      downloadAllButton.disabled = true;
-      function captureFrame() {
-        const timestamp = currentTime;
-        video.currentTime = currentTime;
-        video.addEventListener('seeked', function onSeeked() {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          let type = 'image/png';
-          if (currentFormat === 'jpeg') { type = 'image/jpeg'; }
-          else if (currentFormat === 'webp') { type = 'image/webp'; }
-          canvas.toBlob((blob) => {
-            autoScreenshotBlobs.push(blob);
-            const container = createScreenshotElement(blob, timestamp);
-            screenshotsDiv.appendChild(container);
-            updateImageCount();
-            video.removeEventListener('seeked', onSeeked);
-            currentTime += interval;
-            progressBarFill.style.width = Math.min((currentTime / duration) * 100, 100) + '%';
-            if (currentTime <= duration) { setTimeout(captureFrame, 100); }
-            else { downloadAllButton.disabled = false; progressBar.style.display = 'none'; }
-          }, type, quality);
-        }, { once: true });
-      }
-      captureFrame();
+      resetProcessingUI('all'); // Reset progress and buttons
+      // Reset file info display until metadata loads
+      resolutionValue.textContent = "Loading...";
+      lengthValue.textContent = "-";
+      aspectRatioValue.textContent = "-";
+      bitrateValue.textContent = "-";
     }
-    // --- Automated (Smart) Mode Extraction with selectable algorithm ---
-    processSmartButton.addEventListener('click', () => {
-      if (!video.src) { alert("Please select or drop a video file first."); return; }
-      progressBarSmart.style.display = 'block';
-      progressBarFillSmart.style.width = '0%';
-      captureSmartScreenshots();
-    });
-    function captureSmartScreenshots() {
-      autoScreenshotBlobs = [];
-      const smartInterval = 1; // sample every 1 second now
-      const duration = video.duration;
-      const ctx = canvas.getContext('2d');
-      let currentTime = 0;
-      const sampleFactor = 4;
-      let prevHist = null;
-      let prevPixelData = null;
-      let prevImageData = null;
-      const histThreshold = 0.40;
-      const pixelThreshold = 40;
-      const ssimThreshold = 0.10;
-      function captureFrame() {
-        if (currentTime > duration) {
-          progressBarSmart.style.display = 'none';
-          downloadAllSmartButton.disabled = false;
-          return;
-        }
-        const timestamp = currentTime;
-        video.currentTime = currentTime;
-        video.addEventListener('seeked', function onSeeked() {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const frameImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          let capture = false;
-          if (smartAlgorithm === "histogram") {
-            const currHist = computeHistogram(frameImageData, sampleFactor);
-            if (!prevHist || histogramDifference(currHist, prevHist) >= histThreshold) {
-              capture = true;
-              prevHist = currHist;
-            }
-          } else if (smartAlgorithm === "pixeldiff") {
-            if (!prevPixelData) { capture = true; }
-            else {
-              const diff = computePixelDiff(frameImageData.data, prevPixelData);
-              if (diff >= pixelThreshold) { capture = true; }
-            }
-            if (capture) { prevPixelData = frameImageData.data.slice(); }
-          } else if (smartAlgorithm === "ssim") {
-            if (!prevImageData) {
-              capture = true;
-              prevImageData = frameImageData;
-            } else {
-              const ssimValue = computeSSIM(prevImageData, frameImageData, sampleFactor);
-              if (ssimValue < ssimThreshold) { capture = true; }
-              prevImageData = frameImageData;
-            }
-          }
-          if (capture) {
-            canvas.toBlob((blob) => {
-              autoScreenshotBlobs.push(blob);
-              const container = createScreenshotElement(blob, timestamp);
-              screenshotsDiv.appendChild(container);
-              updateImageCount();
-              video.removeEventListener('seeked', onSeeked);
-              currentTime += smartInterval;
-              progressBarFillSmart.style.width = Math.min((currentTime / duration) * 100, 100) + '%';
-              setTimeout(captureFrame, 100);
-            }, (currentFormat === 'jpeg') ? 'image/jpeg' : (currentFormat === 'webp') ? 'image/webp' : 'image/png',
-            currentFormat === 'jpeg'
-              ? parseFloat(jpegQualityValueSmart.textContent) / 100
-              : currentFormat === 'webp'
-              ? parseFloat(webpQualityValueSmart.textContent) / 100
-              : 1.0);
-          } else {
-            video.removeEventListener('seeked', onSeeked);
-            currentTime += smartInterval;
-            progressBarFillSmart.style.width = Math.min((currentTime / duration) * 100, 100) + '%';
-            setTimeout(captureFrame, 100);
-          }
-        }, { once: true });
+
+
+    // Update Drop Zone Appearance
+    function updateDropZoneUI(isFileLoaded, text) {
+      dropZoneText.textContent = text;
+      if (isFileLoaded) {
+        dropZone.classList.add('file-loaded');
+        selectFileButton.textContent = "File Loaded";
+        selectFileButton.classList.add('file-selected');
+        uploadIcon.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="var(--accent-secondary)"> <!-- Green check -->
+            <path d="M9 16.17l-3.88-3.88L4 13.41 9 18.41l12-12-1.41-1.42z"/>
+          </svg>`;
+      } else {
+        // Reset to default
+        dropZone.classList.remove('file-loaded');
+        selectFileButton.textContent = "Select File";
+        selectFileButton.classList.remove('file-selected');
+         uploadIcon.innerHTML = `
+           <svg viewBox="0 0 24 24" fill="currentColor">
+             <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+           </svg>`;
+         dropZoneText.textContent = "Drag & drop video file or";
       }
-      captureFrame();
     }
-    // --- Manual Mode Functions ---
-    const extractManualButton = document.getElementById('extractManualButton');
-    extractManualButton.textContent = "Quick Save Frame";
-    extractManualButton.addEventListener('click', () => {
-      if (!manualVideo.src) { alert("Please select or drop a video file first."); return; }
-      const ctx = canvas.getContext('2d');
-      canvas.width = manualVideo.videoWidth;
-      canvas.height = manualVideo.videoHeight;
-      ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
-      let type = 'image/png';
-      let extension = 'png';
-      if (currentFormat === 'jpeg') { type = 'image/jpeg'; extension = 'jpg'; }
-      else if (currentFormat === 'webp') { type = 'image/webp'; extension = 'webp'; }
-      canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const tempLink = document.createElement('a');
-        tempLink.href = url;
-        tempLink.download = `quick_frame.${extension}`;
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
-      }, type);
-    });
-    const addManualButton = document.getElementById('addManualButton');
-    addManualButton.addEventListener('click', () => {
-      if (!manualVideo.src) { alert("Please select or drop a video file first."); return; }
-      const ctx = canvas.getContext('2d');
-      canvas.width = manualVideo.videoWidth;
-      canvas.height = manualVideo.videoHeight;
-      ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
-      let type = 'image/png';
-      if (currentFormat === 'jpeg') { type = 'image/jpeg'; }
-      else if (currentFormat === 'webp') { type = 'image/webp'; }
-      canvas.toBlob((blob) => {
-        manualScreenshotBlobs.push(blob);
-        const container = createScreenshotElement(blob, 0);
-        screenshotsDiv.appendChild(container);
+
+    // Mode Tab Switching
+    modeTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (processingActive) return; // Don't switch during processing
+
+        currentMode = tab.getAttribute('data-mode');
+        modeTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        autoModeDiv.classList.toggle('active', currentMode === 'auto');
+        autoSmartModeDiv.classList.toggle('active', currentMode === 'autoSmart');
+        manualModeDiv.classList.toggle('active', currentMode === 'manual');
+
+        // Update download button states based on current mode and existing screenshots
         updateImageCount();
-        document.getElementById('downloadManualButton').disabled = false;
-      }, type);
-    });
-    const downloadManualButton = document.getElementById('downloadManualButton');
-    downloadManualButton.addEventListener('click', () => {
-      if (downloadManualButton.disabled) return;
-      const zip = new JSZip();
-      let ext = currentFormat;
-      if (ext === 'jpeg') ext = 'jpg';
-      manualScreenshotBlobs.forEach((blob, index) => {
-        zip.file(`screenshot${index + 1}.${ext}`, blob);
       });
-      zip.generateAsync({ type: "blob" })
-        .then((content) => {
-          const tempLink = document.createElement('a');
-          tempLink.href = URL.createObjectURL(content);
-          tempLink.download = "screenshots.zip";
-          document.body.appendChild(tempLink);
-          tempLink.click();
-          document.body.removeChild(tempLink);
-        })
-        .catch((err) => { alert("Error generating ZIP: " + err); });
     });
-    function updateImageCount() {
-      const count = screenshotsDiv.childElementCount;
-      imageCountValue.textContent = count;
+
+    // Slider Input Handlers
+    [intervalInput, jpegQualityAuto, webpQualityAuto, jpegQualitySmart, webpQualitySmart].forEach(slider => {
+        if(slider) { // Check if slider exists
+            slider.addEventListener('input', () => {
+                const displayId = slider.id + 'Value';
+                const displaySpan = document.getElementById(displayId);
+                if (displaySpan) {
+                    let suffix = slider.id.includes('Quality') ? '%' : 's';
+                    displaySpan.textContent = slider.value + suffix;
+                }
+                updateSliderBackground(slider);
+            });
+            // Initial update
+            updateSliderBackground(slider);
+             const displayId = slider.id + 'Value';
+             const displaySpan = document.getElementById(displayId);
+             if (displaySpan) {
+                 let suffix = slider.id.includes('Quality') ? '%' : 's';
+                 displaySpan.textContent = slider.value + suffix;
+             }
+        }
+    });
+
+    // Format Tab Handlers (Both Auto and Smart Auto)
+    function setupFormatTabs(tabs, pngNoteEl, jpegSettingsEl, webpSettingsEl) {
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                if (processingActive) return;
+                currentFormat = tab.getAttribute('data-format');
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                pngNoteEl.style.display = (currentFormat === 'png') ? 'flex' : 'none';
+                jpegSettingsEl.style.display = (currentFormat === 'jpeg') ? 'flex' : 'none';
+                webpSettingsEl.style.display = (currentFormat === 'webp') ? 'flex' : 'none';
+            });
+        });
+         // Initial state based on default active tab
+        const activeTab = Array.from(tabs).find(t => t.classList.contains('active'));
+        if (activeTab) {
+            currentFormat = activeTab.getAttribute('data-format');
+            pngNoteEl.style.display = (currentFormat === 'png') ? 'flex' : 'none';
+            jpegSettingsEl.style.display = (currentFormat === 'jpeg') ? 'flex' : 'none';
+            webpSettingsEl.style.display = (currentFormat === 'webp') ? 'flex' : 'none';
+        }
     }
+    setupFormatTabs(formatTabsAuto, pngNoteAuto, jpegSettingsAuto, webpSettingsAuto);
+    setupFormatTabs(formatTabsSmart, pngNoteSmart, jpegSettingsSmart, webpSettingsSmart);
+
+
+    // Smart Algorithm Tab Handler
+    smartAlgoTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+          if (processingActive) return;
+          smartAlgorithm = tab.getAttribute('data-algo');
+          smartAlgoTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+      });
+    });
+
+
+    // --- Core Processing Logic ---
+
+    // Generic Frame Capture Function
+    function captureFrameAtTime(time, callback) {
+        if (!video.src || video.readyState < 1 /* HAVE_METADATA */) {
+             console.error("Video not ready for capture");
+             callback(null); // Indicate failure
+             return;
+        }
+
+        const onSeeked = () => {
+            video.removeEventListener('seeked', onSeeked);
+            try {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const { type, quality } = getCurrentFormatSettings();
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        callback(blob);
+                    } else {
+                        console.error("Canvas toBlob failed");
+                        callback(null);
+                    }
+                }, type, quality);
+            } catch (error) {
+                console.error("Error drawing video frame to canvas:", error);
+                callback(null);
+            }
+        };
+
+        const onError = (e) => {
+             console.error("Video seeking error:", e);
+             video.removeEventListener('seeked', onSeeked);
+             video.removeEventListener('error', onError);
+             callback(null); // Indicate failure
+        }
+
+        video.addEventListener('seeked', onSeeked);
+        video.addEventListener('error', onError, { once: true }); // Catch potential video errors
+
+        // Prevent seeking beyond duration or before 0
+        video.currentTime = Math.max(0, Math.min(time, currentVideoDuration));
+    }
+
+
+    // Automated Mode - Interval Based
+    processButton.addEventListener('click', () => {
+      if (!video.src || processingActive) {
+        alert("Please load a video first, or wait for current processing to finish.");
+        return;
+      }
+      setProcessingUI('auto');
+      screenshotsDiv.innerHTML = ''; // Clear previous results
+      screenshotBlobs = [];
+      updateImageCount();
+
+      const interval = parseFloat(intervalInput.value);
+      let currentTime = 0;
+      const totalDuration = currentVideoDuration;
+
+      function processNextFrame() {
+        if (currentTime > totalDuration) {
+            console.log("Automated capture finished.");
+            resetProcessingUI('auto');
+            return;
+        }
+
+        const timestamp = currentTime; // Capture timestamp before async operation
+        captureFrameAtTime(timestamp, (blob) => {
+            if (blob) {
+                screenshotBlobs.push({ blob, timestamp });
+                const container = createScreenshotElement(blob, timestamp);
+                screenshotsDiv.appendChild(container);
+                updateImageCount();
+            } else {
+                 console.warn(`Failed to capture frame at ${formatTime(timestamp)}`);
+            }
+
+            // Update progress and schedule next frame
+            currentTime += interval;
+            const progress = Math.min((currentTime / totalDuration) * 100, 100);
+            progressBarFillAuto.style.width = `${progress}%`;
+
+            // Use setTimeout to avoid blocking the UI thread heavily
+            setTimeout(processNextFrame, 50); // Small delay between captures
+        });
+      }
+
+      // Start processing
+      processNextFrame();
+    });
+
+
+    // Automated Smart Mode - Scene Change Based
+    processSmartButton.addEventListener('click', () => {
+      if (!video.src || processingActive) {
+         alert("Please load a video first, or wait for current processing to finish.");
+         return;
+      }
+      setProcessingUI('autoSmart');
+      screenshotsDiv.innerHTML = '';
+      screenshotBlobs = [];
+      updateImageCount();
+
+      const smartInterval = 1.0; // Check every second
+      const sampleFactor = 8; // Use a higher sample factor for performance
+      const histThreshold = 0.35; // Adjust as needed
+      const pixelThreshold = 35;  // Average pixel diff threshold
+      const ssimThreshold = 0.90; // SSIM threshold (closer to 1 is *more* similar)
+
+      let currentTime = 0;
+      const totalDuration = currentVideoDuration;
+      let previousImageData = null; // Store full ImageData for comparison
+      let previousHist = null;
+      let previousPixelData = null; // Store just data array for pixel diff
+
+      function processNextSmartFrame() {
+          if (currentTime > totalDuration) {
+              console.log("Smart capture finished.");
+              resetProcessingUI('autoSmart');
+              return;
+          }
+
+          const timestamp = currentTime;
+          captureFrameAtTime(timestamp, (blob) => {
+                if (!blob) {
+                    console.warn(`Failed to capture frame at ${formatTime(timestamp)} for comparison.`);
+                     // Skip this frame and move to the next
+                    currentTime += smartInterval;
+                    const progress = Math.min((currentTime / totalDuration) * 100, 100);
+                    progressBarFillSmart.style.width = `${progress}%`;
+                    setTimeout(processNextSmartFrame, 50);
+                    return;
+                }
+
+                // Need ImageData for comparison functions
+                 const tempCanvas = document.createElement('canvas');
+                 const tempCtx = tempCanvas.getContext('2d');
+                 const img = new Image();
+                 img.onload = () => {
+                     tempCanvas.width = img.width;
+                     tempCanvas.height = img.height;
+                     tempCtx.drawImage(img, 0, 0);
+                     const currentImageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                     URL.revokeObjectURL(img.src); // Clean up URL
+
+                     let captureThisFrame = false;
+
+                     // Always capture the first frame
+                     if (previousImageData === null) {
+                         captureThisFrame = true;
+                     } else {
+                         // Compare with previous frame based on selected algorithm
+                         if (smartAlgorithm === "histogram") {
+                             const currentHist = computeHistogram(currentImageData, sampleFactor);
+                             if (!previousHist || histogramDifference(currentHist, previousHist) >= histThreshold) {
+                                 captureThisFrame = true;
+                             }
+                             previousHist = currentHist; // Update for next comparison
+                         } else if (smartAlgorithm === "pixeldiff") {
+                              const diff = computePixelDiff(currentImageData.data, previousPixelData, sampleFactor);
+                              if (diff >= pixelThreshold) {
+                                 captureThisFrame = true;
+                              }
+                         } else if (smartAlgorithm === "ssim") {
+                             const ssimValue = computeSSIM(previousImageData, currentImageData, sampleFactor);
+                             // Capture if similarity is LOW (below threshold)
+                             if (ssimValue < ssimThreshold) {
+                                 captureThisFrame = true;
+                             }
+                         }
+                     }
+
+                     // If frame is deemed significant, add it
+                     if (captureThisFrame) {
+                         screenshotBlobs.push({ blob, timestamp });
+                         const container = createScreenshotElement(blob, timestamp);
+                         screenshotsDiv.appendChild(container);
+                         updateImageCount();
+                         // Update the "previous" frame data only if we captured this one
+                         previousImageData = currentImageData;
+                         if (smartAlgorithm === 'pixeldiff') {
+                            previousPixelData = currentImageData.data.slice(); // Need a copy for pixel diff
+                         }
+                         // `previousHist` is updated regardless in the histogram logic above
+                     } else {
+                         // If not captured, we still need to release the blob URL
+                         // (The blob itself isn't stored in screenshotBlobs)
+                         // URL.revokeObjectURL(URL.createObjectURL(blob)); // This seems wrong, blob isn't URL yet
+                         // No need to revoke if not added to the grid
+                     }
+
+                     // Update progress and move to next frame
+                     currentTime += smartInterval;
+                     const progress = Math.min((currentTime / totalDuration) * 100, 100);
+                     progressBarFillSmart.style.width = `${progress}%`;
+                     setTimeout(processNextSmartFrame, 50); // Schedule next check
+                 };
+                 img.onerror = () => {
+                     console.error("Failed to load blob into image for comparison.");
+                     URL.revokeObjectURL(img.src);
+                     currentTime += smartInterval; // Move on
+                     const progress = Math.min((currentTime / totalDuration) * 100, 100);
+                     progressBarFillSmart.style.width = `${progress}%`;
+                     setTimeout(processNextSmartFrame, 50);
+                 }
+                 img.src = URL.createObjectURL(blob); // Create temporary URL to load blob into Image
+          });
+      }
+      processNextSmartFrame(); // Start the smart loop
+    });
+
+
+    // Manual Mode - Quick Save
+    extractManualButton.addEventListener('click', () => {
+        if (!manualVideo.src || manualVideo.readyState < 1 || processingActive) return;
+
+        const { type, quality } = getCurrentFormatSettings();
+        const ctx = canvas.getContext('2d');
+        canvas.width = manualVideo.videoWidth;
+        canvas.height = manualVideo.videoHeight;
+        ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+            if (blob) {
+                const tempLink = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                tempLink.href = url;
+                const extension = currentFormat === 'jpeg' ? 'jpg' : currentFormat;
+                tempLink.download = `quick_frame_${formatTime(manualVideo.currentTime).replace(':','-')}.${extension}`;
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+                URL.revokeObjectURL(url); // Clean up
+            } else {
+                alert("Error capturing frame for quick save.");
+            }
+        }, type, quality);
+    });
+
+    // Manual Mode - Add to Collection
+    addManualButton.addEventListener('click', () => {
+         if (!manualVideo.src || manualVideo.readyState < 1 || processingActive) return;
+
+        const { type, quality } = getCurrentFormatSettings();
+        const ctx = canvas.getContext('2d');
+        canvas.width = manualVideo.videoWidth;
+        canvas.height = manualVideo.videoHeight;
+        ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
+        const timestamp = manualVideo.currentTime; // Record time for potential future use
+
+        canvas.toBlob((blob) => {
+            if (blob) {
+                manualScreenshotBlobs.push({ blob, timestamp });
+                const container = createScreenshotElement(blob, timestamp);
+                screenshotsDiv.appendChild(container);
+                updateImageCount(); // This will enable the downloadManualButton
+            } else {
+                 alert("Error capturing frame to add.");
+            }
+        }, type, quality);
+    });
+
+    // --- Download Functions ---
+
+    // Generic Download All (ZIP)
+    function downloadBlobsAsZip(blobDataArray, baseFilename = "screenshots") {
+        if (!blobDataArray || blobDataArray.length === 0) {
+            alert("No screenshots to download.");
+            return;
+        }
+        if (!window.JSZip) {
+            alert("Error: JSZip library not loaded.");
+            return;
+        }
+
+        const zip = new JSZip();
+        const { type } = getCurrentFormatSettings(); // Use current format for extension
+        const extension = type.split('/')[1] === 'jpeg' ? 'jpg' : type.split('/')[1];
+
+        blobDataArray.forEach((item, index) => {
+            // Use timestamp in filename if available and meaningful
+             const timeSuffix = (item.timestamp !== undefined && item.timestamp >= 0)
+                 ? `_${formatTime(item.timestamp).replace(':','-')}`
+                 : `_${index + 1}`;
+            const filename = `${baseFilename}${timeSuffix}.${extension}`;
+            zip.file(filename, item.blob);
+        });
+
+        zip.generateAsync({ type: "blob" })
+            .then((content) => {
+                const tempLink = document.createElement('a');
+                const url = URL.createObjectURL(content);
+                tempLink.href = url;
+                tempLink.download = `${baseFilename}.zip`;
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+                URL.revokeObjectURL(url);
+            })
+            .catch((err) => {
+                console.error("Error generating ZIP:", err);
+                alert("Error creating ZIP file: " + err.message);
+            });
+    }
+
+    // Attach download functions to buttons
+    downloadAllButton.addEventListener('click', () => {
+         if (!processingActive) downloadBlobsAsZip(screenshotBlobs, "auto_screenshots");
+    });
+    downloadAllSmartButton.addEventListener('click', () => {
+         if (!processingActive) downloadBlobsAsZip(screenshotBlobs, "smart_screenshots");
+    });
+    downloadManualButton.addEventListener('click', () => {
+         if (!processingActive) downloadBlobsAsZip(manualScreenshotBlobs, "manual_screenshots");
+    });
+
+    // --- Initial Setup ---
+    resetProcessingUI('all'); // Set initial button states
+    updateDropZoneUI(false, "Drag & drop video file or"); // Set initial drop zone text/icon
+
   </script>
+
 </body>
 </html>
