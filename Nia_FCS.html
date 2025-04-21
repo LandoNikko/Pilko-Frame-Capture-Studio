@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Video Screenshot Tool</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    img { margin: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+  <h1>Video Screenshot Tool</h1>
+  
+  <!-- File Input for Video -->
+  <label for="videoInput">Select Video (MP4):</label>
+  <input type="file" id="videoInput" accept="video/mp4"><br><br>
+  
+  <!-- Interval Input -->
+  <label for="intervalInput">Screenshot Interval (seconds):</label>
+  <input type="number" id="intervalInput" value="5" min="1"><br><br>
+  
+  <!-- Process Button -->
+  <button id="processButton">Extract Screenshots</button>
+  
+  <!-- Hidden Video and Canvas Elements -->
+  <video id="video" style="display:none"></video>
+  <canvas id="canvas" style="display:none"></canvas>
+  
+  <!-- Container for Screenshots -->
+  <h2>Screenshots</h2>
+  <div id="screenshots"></div>
+  
+  <script>
+    const videoInput = document.getElementById('videoInput');
+    const intervalInput = document.getElementById('intervalInput');
+    const processButton = document.getElementById('processButton');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const screenshotsDiv = document.getElementById('screenshots');
+
+    let fileURL;
+
+    // Load the selected video file into the video element.
+    videoInput.addEventListener('change', function() {
+      const file = videoInput.files[0];
+      if (file) {
+        fileURL = URL.createObjectURL(file);
+        video.src = fileURL;
+      }
+    });
+
+    processButton.addEventListener('click', function() {
+      if (!video.src) {
+        alert("Please select a video file first.");
+        return;
+      }
+
+      // Wait until metadata is loaded to get video duration and dimensions.
+      video.addEventListener('loadedmetadata', () => {
+        captureScreenshots();
+      }, { once: true });
+      
+      // Force metadata load if already available.
+      if (video.readyState >= 1) {
+        captureScreenshots();
+      }
+    });
+
+    function captureScreenshots() {
+      const interval = parseFloat(intervalInput.value);
+      const duration = video.duration;
+      const context = canvas.getContext('2d');
+      let currentTime = 0;
+
+      // Clear any previous screenshots.
+      screenshotsDiv.innerHTML = "";
+
+      const captureFrame = () => {
+        video.currentTime = currentTime;
+        video.addEventListener('seeked', function onSeeked() {
+          // Set canvas dimensions to match the video.
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          // Convert the canvas image to a PNG data URL.
+          const imageURL = canvas.toDataURL('image/png');
+
+          // Create an image element to display the screenshot.
+          const img = document.createElement('img');
+          img.src = imageURL;
+          img.width = 320;  // Optionally scale for display.
+          screenshotsDiv.appendChild(img);
+
+          video.removeEventListener('seeked', onSeeked);
+
+          // Move to the next timestamp.
+          currentTime += interval;
+          if (currentTime <= duration) {
+            captureFrame();
+          }
+        }, { once: true });
+      };
+
+      captureFrame();
+    }
+  </script>
+</body>
+</html>
