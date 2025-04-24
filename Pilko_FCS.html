@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nia Frame Capture Studio</title>
+  <title>Pilko Frame Capture Studio</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -85,7 +85,7 @@
     @keyframes loadingAnimation { 0% { background-position: 0 100vh; } 100% { background-position: 0 0; } }
 
     /* Settings Column */
-    .settings-column { flex: 0 0 var(--settings-column-width); position: relative; height: 100%; overflow-y: auto; overflow-x: hidden; direction: rtl; background-color: var(--bg-secondary); padding: 0; border-right: 1px solid var(--border-color); }
+    .settings-column { flex: 0 0 var(--settings-column-width); position: relative; height: 100%; overflow-y: auto; overflow-x: hidden; direction: rtl; background-color: var(--bg-secondary); padding: 0; }
     .settings-content-wrapper { direction: ltr; width: 100%; padding: var(--content-padding); display: flex; flex-direction: column; height: 100%; }
 
     /* Output Column */
@@ -98,31 +98,34 @@
 
 
     /* H1 */
-    h1 { font-family: 'Cairo Play', sans-serif; text-align: center; padding-bottom: 1rem; margin-bottom: 1.25rem; font-weight: 400; font-size: 2em; color: var(--white); position: relative; cursor: pointer; user-select: none; transition: color 0.3s ease; }
-    h1::after { 
-      content: ''; 
-      position: absolute; 
-      left: 0; 
-      bottom: 0; 
-      width: 100%; 
-      height: 2px; 
+    h1 { font-family: 'Cairo Play', sans-serif; text-align: center; padding-bottom: 1rem; font-weight: 400; font-size: 2em; color: var(--white); position: relative; cursor: pointer; user-select: none; transition: color 0.3s ease; }
+    h1::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
       background-image: linear-gradient(to right, var(--accent-primary) 50%, transparent 50%);
       background-size: 20px 2px;
       background-repeat: repeat-x;
       opacity: 0;
       transition: opacity 0.4s ease;
+      z-index: 1;
     }
-    h1:hover { 
-      color: var(--accent-primary); 
+    h1:hover {
+      color: var(--accent-primary);
       text-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
+      margin: 0 0.5rem;
     }
-    h1:hover::after { 
+    h1:hover::after {
       opacity: 1;
       animation: moveLines 1.5s linear infinite;
+      margin-bottom: -0.1rem;
     }
     h1:active { transform: scale(0.98); }
-    @keyframes moveLines { 
-      0% { background-position: 0px; } 
+    @keyframes moveLines {
+      0% { background-position: 0px; }
       100% { background-position: 40px; }
     }
 
@@ -145,7 +148,7 @@
       position: relative;
       overflow: hidden;
     }
-    
+
     #dropZone::before {
       content: "";
       position: absolute;
@@ -162,16 +165,16 @@
       z-index: 0;
       min-height: 100%;
     }
-    
+
     #dropZone.has-bg-image::before {
       opacity: 0.2;
     }
-    
+
     #dropZone > * {
       position: relative;
       z-index: 1;
     }
-    
+
     #dropZone:hover { border-color: var(--accent-primary); box-shadow: 0 5px 12px rgba(0, 198, 255, 0.15); }
     #dropZone #uploadIcon { margin-bottom: 0.75rem; color: var(--text-tertiary); transition: color 0.3s ease, transform 0.3s ease; display: block; }
     #dropZone:hover #uploadIcon { color: var(--accent-primary); transform: scale(1.1); }
@@ -183,51 +186,51 @@
     #dropZone.file-loaded #loadedFileInfo { display: block; width: 100%; }
     #loadedFileName { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0; display: flex; align-items: center; word-break: break-all; flex: 1; margin-right: 1rem; }
     #loadedFileName::before { content: '✓'; color: var(--accent-secondary); font-size: 1.2em; margin-right: 0.5rem; font-weight: bold; }
-    
+
     /* File name row */
     .file-name-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; width: 100%; }
-    
-    #loadedFileStats { font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 1rem; }
+
+    #loadedFileStats { font-size: 0.85rem; color: var(--text-tertiary); }
     #loadedFileStats .info-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; white-space: nowrap; }
     #loadedFileStats .info-row:last-child { margin-bottom: 0; }
     #loadedFileStats .info-label { font-weight: 500; color: var(--text-secondary); margin-right: 1rem; }
-    #loadedFileStats .info-value { 
-        font-family: var(--data-font); 
-        text-align: right; 
-        color: var(--text-primary); 
-        font-weight: 500; 
-        font-size: 0.9rem; 
+    #loadedFileStats .info-value {
+        font-family: var(--data-font);
+        text-align: right;
+        color: var(--text-primary);
+        font-weight: 500;
+        font-size: 0.9rem;
     }
     #loadedFileStats .leader { display: none; }
-    
+
     /* Original select file button (visible when no file is loaded) */
     #initialSelectFileButton { padding: 0.6rem 1.5rem; font-size: 0.9rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; font-weight: 500; width: fit-content; align-self: center; }
     #dropZone:not(.file-loaded):hover #initialSelectFileButton { background-color: rgba(255, 255, 255, 0.1); border-color: var(--text-tertiary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
-    
+
     /* Change file button (visible only when file is loaded) */
-    #selectFileButton { 
+    #selectFileButton {
       font-size: 0.8rem;
       padding: 0.4rem 1rem;
-      background-color: transparent; 
-      border: 1px solid var(--text-primary); 
+      background-color: transparent;
+      border: 1px solid var(--text-primary);
       color: var(--text-primary);
       border-radius: var(--border-radius-md);
       cursor: pointer;
       transition: background-color 0.2s;
     }
     #selectFileButton:hover { background-color: var(--text-primary); color: var(--bg-primary); }
-    
+
     /* Hide initial button when file is loaded */
     #dropZone.file-loaded #initialSelectFileButton { display: none; }
-    
+
     #videoInput { display: none; }
 
     /* Image Count Display */
     #imageCountDisplay { text-align: center; font-size: 0.9rem; color: var(--text-tertiary); margin-top: 1.5rem; margin-bottom: 0.75rem; padding: 0.4rem 0; background-color: var(--bg-tertiary); border-radius: var(--border-radius-md); border: 1px solid var(--border-color); flex-shrink: 0; }
-    #imageCountValue { 
-        font-weight: 600; 
-        font-family: var(--data-font); 
-        margin-left: 0.5ch; 
+    #imageCountValue {
+        font-weight: 600;
+        font-family: var(--data-font);
+        margin-left: 0.5ch;
     }
     /* Mode-specific image count value colors */
     #imageCountValue.interval-mode { color: var(--accent-interval); }
@@ -242,7 +245,7 @@
     .toggle-input { opacity: 0; width: 0; height: 0; }
     .toggle-label-switch { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-primary); transition: .3s; border-radius: 24px; border: 1px solid var(--border-color); }
     .toggle-label-switch:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: var(--text-tertiary); transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-    .toggle-input:checked + .toggle-label-switch { background: var(--text-tertiary); border-color: transparent; }
+    .toggle-input:checked + .toggle-label-switch { background: var(--border-color); border-color: transparent; }
     .toggle-input:checked + .toggle-label-switch:before { transform: translateX(24px); background-color: var(--white); }
 
     /* Tabs */
@@ -262,12 +265,12 @@
     #autoSmartMode .format-tabs button.active, #smartFormatTabs button.active { background: var(--gradient-secondary); }
     .smart-algo-tabs button.active { background: var(--gradient-secondary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
     .grid-size-tabs button.active { background: var(--gradient-tertiary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
-    .grid-size-tabs button { 
-        position: relative; 
+    .grid-size-tabs button {
+        position: relative;
         padding-right: 24px; /* Ensure space for the checkmark */
     }
-    .grid-size-tabs button.completed::after { 
-        content: "✓"; 
+    .grid-size-tabs button.completed::after {
+        content: "✓";
         position: absolute;
         right: 8px;
         top: 50%;
@@ -275,14 +278,14 @@
         font-weight: bold;
         color: var(--accent-tertiary);
     }
-    .grid-size-tabs button.active.completed::after { 
+    .grid-size-tabs button.active.completed::after {
         color: var(--bg-primary);
     }
     .format-tabs, .smart-algo-tabs, .grid-size-tabs { margin-bottom: 0.8rem; }
     .format-tabs button, .smart-algo-tabs button, .grid-size-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
 
     /* Mode Containers */
-    .mode-content { flex-grow: 1; overflow-y: auto; /* Allow scrolling within the mode content area */ padding-right: 5px; /* Space for scrollbar */}
+    .mode-content { flex-grow: 1; overflow-y: auto; padding-right: 5px; /* Space for scrollbar */}
     .mode-content > div { display: none; }
     .mode-content > div.active { display: block; }
 
@@ -290,13 +293,13 @@
     .slider-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
     .slider-label, h3.slider-label { width: 100px; text-align: left; font-size: 0.85rem; color: var(--text-tertiary); flex-shrink: 0; margin: 0; font-weight: normal; }
     .slider-wrapper { flex: 1; display: flex; align-items: center; gap: 0.8rem; min-width: 150px; }
-    .value-display { 
-        font-weight: 500; 
-        min-width: 40px; 
-        text-align: right; 
-        font-family: var(--data-font); 
-        color: var(--text-primary); 
-        font-size: 0.9rem; 
+    .value-display {
+        font-weight: 500;
+        min-width: 40px;
+        text-align: right;
+        font-family: var(--data-font);
+        color: var(--text-primary);
+        font-size: 0.9rem;
     }
     input[type="range"] { /* ... */ -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--bg-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; }
     input[type="range"]::-webkit-slider-thumb { /* ... */ -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.1s ease-out; }
@@ -305,7 +308,7 @@
     input[type="range"]:focus-visible { outline: 2px solid var(--accent-interval); outline-offset: 2px; }
     #autoSmartMode input[type="range"]:focus-visible { outline-color: var(--accent-secondary); }
     #manualMode input[type="range"]:focus-visible { outline-color: var(--accent-primary); }
-    #contactSheetMode input[type="range"]:focus-visible { outline-color: var(--accent-secondary); }
+    #contactSheetMode input[type="range"]:focus-visible { outline-color: var(--accent-tertiary); }
 
     /* Notes & Buttons */
     #pngNote, #pngNoteSmart { font-size: 0.8rem; color: var(--text-tertiary); text-align: center; width: 100%; min-height: 30px; display: flex; align-items: center; justify-content: center; margin-bottom: 0.8rem; background-color: rgba(36, 44, 68, 0.5); border-radius: var(--border-radius-sm); padding: 0.2rem 0.4rem; }
@@ -313,10 +316,10 @@
     .action-button { width: 100%; padding: 0.75rem 1.5rem; font-size: 0.95rem; border: none; border-radius: var(--border-radius-md); color: var(--bg-primary); cursor: pointer; transition: background 0.3s ease, opacity 0.2s, color 0.2s, box-shadow 0.2s ease; text-align: center; font-weight: 600; background-size: 200% auto; box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); }
     .action-button:hover:enabled { box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); background-position: right center; }
     .action-button:active:enabled { transform: scale(0.98); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
-    .action-button:disabled { 
-      opacity: 0.5; 
-      cursor: not-allowed; 
-      box-shadow: none; 
+    .action-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
       filter: saturate(0.4) brightness(0.85);
     }
     /* Mode-specific button styling */
@@ -324,11 +327,11 @@
     #processSmartButton, #smartModeButtons .action-button:not(.secondary-button) { background: var(--gradient-secondary); }
     #processContactSheetButton, #contactSheetModeButtons .action-button:not(.secondary-button) { background: var(--gradient-tertiary); }
     #addManualButton, #manualModeButtons .action-button:not(.secondary-button) { background: var(--gradient-primary); }
-    
+
     /* Cancel state (overrides disabled) */
     .action-button.cancel-active { background: var(--gradient-danger) !important; color: var(--white) !important; }
     .action-button.cancel-active:hover:enabled { background: var(--gradient-danger) !important; filter: brightness(1.1); }
-    
+
     #downloadAllButton, #downloadAllSmartButton, #downloadManualButton, #downloadContactSheetButton { background: transparent; border: 1px solid var(--accent-tertiary); color: var(--accent-tertiary); padding: calc(0.75rem - 1px) calc(1.5rem - 1px); box-shadow: none; }
     #downloadAllButton { border-color: var(--accent-interval); color: var(--accent-interval); }
     #downloadAllButton:hover:enabled { background-color: rgba(154, 110, 255, 0.1); border-color: var(--accent-interval-dark); color: var(--accent-interval-dark); }
@@ -338,7 +341,7 @@
     #downloadManualButton:hover:enabled { background-color: rgba(0, 198, 255, 0.1); border-color: var(--accent-primary-dark); color: var(--accent-primary-dark); }
     #downloadContactSheetButton { border-color: var(--accent-tertiary); color: var(--accent-tertiary); }
     #downloadContactSheetButton:hover:enabled { background-color: rgba(255, 106, 193, 0.1); border-color: var(--accent-tertiary-dark); color: var(--accent-tertiary-dark); box-shadow: none; }
-    
+
     /* Individual disabled styles for each button to preserve their colors */
     #downloadAllButton:disabled { background: transparent; border-color: var(--accent-interval); color: var(--accent-interval); opacity: 0.5; box-shadow: none; }
     #downloadAllSmartButton:disabled { background: transparent; border-color: var(--accent-secondary); color: var(--accent-secondary); opacity: 0.5; box-shadow: none; }
@@ -350,56 +353,133 @@
     #clearScreenshotsButton:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 
     /* Manual Mode */
-    #manualVideo { width: 100%; border-radius: var(--border-radius-lg); background-color: var(--black); margin-bottom: 1rem; aspect-ratio: 16 / 9; border: 1px solid var(--border-color); }
-    /* The manual-buttons class is now replaced by action-button-row */
-    
-    /* Cut Frame button unique styling */
-    #addManualButton { 
-      margin-bottom: 0.75rem;
+    #manualVideo {
+        width: 100%;
+        border-radius: var(--border-radius-lg);
+        background-color: var(--black);
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+        display: none;
     }
-    
+
+    .app-container.file-loaded #manualVideo {
+        display: block;
+    }
+
     /* Scissors cutting animation */
     @keyframes cut-animation {
       0% { transform: rotate(0) scaleY(1); }
       40% { transform: rotate(-20deg) scaleY(-1) scale(1.05); }
       100% { transform: rotate(0) scaleY(1); }
     }
-    
+
     #addManualButton i {
       display: inline-block;
     }
-    
+
     #addManualButton.cutting i {
       animation: cut-animation 0.3s ease-in-out;
     }
-    
-    #addManualButton:hover { 
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); 
-      background-position: right center; 
+
+    #addManualButton:hover {
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+      background-position: right center;
     }
-    #addManualButton:active { 
-      transform: scale(0.98); 
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    #addManualButton:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
+
 
     /* Progress Bars */
     .progress-bar-container { width: 100%; height: 8px; background-color: var(--bg-tertiary); border-radius: var(--border-radius-full); overflow: hidden; margin-top: 0.8rem; display: none; border: 1px solid var(--border-color); }
     .progress-bar-fill { height: 100%; width: 0%; border-radius: var(--border-radius-full); transition: width 0.3s ease-out; }
-    #progressBarAuto .progress-bar-fill { background: var(--gradient-primary); }
+    #progressBarAuto .progress-bar-fill { background: var(--gradient-interval); } /* Use interval gradient */
     #progressBarSmart .progress-bar-fill { background: var(--gradient-secondary); }
     #progressBarContactSheet .progress-bar-fill { background: var(--gradient-tertiary); }
 
     /* Screenshots Grid Item */
-    .screenshot-container { position: relative; overflow: hidden; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); background-color: var(--bg-secondary); transition: box-shadow 0.3s ease, border-color 0.3s ease; }
-    .screenshot-container:hover { box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); border-color: var(--accent-primary); }
-    .screenshot-container a { display: block; line-height: 0; }
-    .screenshot-container img { display: block; width: 100%; height: auto; object-fit: cover; border-radius: var(--border-radius-md); animation: fadeIn 0.5s ease-in-out; }
-    .screenshot-overlay, .delete-btn { position: absolute; opacity: 0; transition: opacity 0.2s ease-in-out; pointer-events: none; }
-    .screenshot-container:hover .screenshot-overlay, .screenshot-container:hover .delete-btn { opacity: 1; pointer-events: auto; }
-    .screenshot-overlay { left: 0; bottom: 0; right: 0; background: linear-gradient(to top, rgba(10, 15, 31, 0.9), transparent); color: var(--white); font-size: 0.75rem; padding: 0.8rem 0.5rem 0.3rem; text-align: right; font-family: var(--data-font); }
-    .delete-btn { top: 6px; right: 6px; background: rgba(244, 63, 94, 0.7); border: none; color: var(--white); font-size: 0.9rem; width: 24px; height: 24px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; backdrop-filter: blur(2px); transition: background-color 0.2s ease; }
-    .delete-btn:hover { background: var(--danger-color); }
+    .screenshot-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--border-radius-md);
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-secondary);
+        transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .screenshot-container:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        border-color: var(--accent-primary);
+    }
+    .screenshot-container .img-container {
+        display: block;
+        line-height: 0;
+    }
+    .screenshot-container img {
+        display: block;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        border-radius: var(--border-radius-md);
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    .screenshot-overlay, .screenshot-container .lightbox-delete-btn {
+        position: absolute;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        pointer-events: none;
+    }
+
+    .screenshot-container:hover .screenshot-overlay, .screenshot-container:hover .lightbox-delete-btn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .screenshot-overlay {
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        color: var(--white);
+        font-size: 0.8rem;
+        padding: 1rem 0.6rem 0.4rem;
+        text-align: right;
+        font-family: 'Source Code Pro', monospace;
+    }
+
+    .lightbox-delete-btn {
+        background-color: var(--danger-color);
+        color: var(--white);
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--border-radius-md);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Position the delete button for the screenshot grid */
+    .screenshot-container .lightbox-delete-btn {
+        position: absolute;
+        bottom: 6px;
+        left: 6px;
+        padding: 0.3rem 0.5rem;
+        font-size: 14px;
+        opacity: 0;
+    }
+
+    .lightbox-delete-btn:hover {
+        background-color: #e11d48;
+    }
+
+    /* Special override for grid view */
+    .screenshot-container .lightbox-delete-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 14px;
+    }
     @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
     /* Hidden Elements */
@@ -407,10 +487,9 @@
     #frameCanvas { display: none; }
 
     /* Contact Sheet Mode Specific */
-    #contactSheetMode p { color: var(--text-tertiary); font-size: 0.9rem; margin-bottom: 1rem; background-color: rgba(36, 44, 68, 0.5); border-radius: var(--border-radius-sm); padding: 0.5rem 0.8rem; }
     #contactSheetVideo { width: 100%; border-radius: var(--border-radius-lg); background-color: var(--black); margin-bottom: 1rem; aspect-ratio: 16 / 9; border: 1px solid var(--border-color); }
     .fine-tune-message { color: var(--accent-tertiary); font-size: 0.85rem; margin: 0.5rem 0 1rem; text-align: center; display: none; }
-    .contact-sheet-controls { display: none; /* Hidden by default */ grid-template-columns: repeat(5, 1fr); gap: 0.75rem; margin-bottom: 1rem; }
+    .contact-sheet-controls { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.2rem; margin-bottom: 1rem; }
     .time-input-container { display: flex; flex-direction: column; gap: 0.3rem; position: relative; }
     .time-input-wrapper {
         position: relative;
@@ -468,7 +547,7 @@
     }
 
     /* Contact Sheet Preview Grid */
-    #contactSheetPreview { 
+    #contactSheetPreview {
         width: 100%;
         margin: 0 auto;
         display: grid;
@@ -479,48 +558,49 @@
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius-md);
     }
-    .grid-cell { 
-        background-color: var(--bg-secondary); 
-        position: relative; 
+    .grid-cell {
+        background-color: var(--bg-secondary);
+        position: relative;
         overflow: hidden;
         border: none;
         display: flex;
         width: 100%;
         height: 100%;
-        align-items: center; 
+        min-height: 70px;
+        align-items: center;
         justify-content: center;
     }
     .grid-cell.filled {
         cursor: pointer;
     }
-    .grid-cell img { 
-        max-width: 100%; 
+    .grid-cell img {
+        max-width: 100%;
         min-width: none;
-        max-height: 100%; 
+        max-height: 100%;
         min-height: max-content;
         object-fit: contain;
-        display: block; 
-        opacity: 0; 
-        transition: opacity 0.3s ease; 
+        display: block;
+        opacity: 0;
+        transition: opacity 0.3s ease;
     }
-    .grid-cell.filled img { 
-        opacity: 1; 
+    .grid-cell.filled img {
+        opacity: 1;
         animation: fadeIn 0.3s ease-in-out;
     }
-    .grid-cell .screenshot-overlay { 
-        opacity: 0; 
-        transition: opacity 0.2s ease-in-out; 
-        pointer-events: none; 
-        position: absolute; 
-        left: 0; 
-        bottom: 0; 
-        right: 0; 
-        background: linear-gradient(to top, rgba(10, 15, 31, 0.8), transparent); 
-        color: var(--white); 
-        font-size: 0.7rem; 
-        padding: 0.6rem 0.4rem 0.2rem; 
-        text-align: right; 
-        font-family: var(--data-font); 
+    .grid-cell .screenshot-overlay {
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+        pointer-events: none;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(10, 15, 31, 0.8), transparent);
+        color: var(--white);
+        font-size: 0.7rem;
+        padding: 0.6rem 0.4rem 0.2rem;
+        text-align: right;
+        font-family: var(--data-font);
     }
     .grid-cell:hover .screenshot-overlay { opacity: 1; pointer-events: auto; }
     .contact-sheet-label { color: var(--accent-tertiary); font-size: 0.9rem; font-weight: 500; margin: 1rem 0 0.5rem; text-align: center; width: 100%; }
@@ -642,14 +722,13 @@
         display: flex;
         flex-direction: column;
     }
-    
+
     .sticky-button-container .button-group {
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
     }
-    
+
     /* Status Row */
     .status-row {
         display: flex;
@@ -657,20 +736,20 @@
         align-items: center;
         margin-bottom: 0.5rem;
     }
-    
+
     .status-row #clearScreenshotsButton {
         margin-top: 0;
         flex: 0 0 auto;
         width: auto;
         margin-right: 0.75rem;
     }
-    
+
     .status-row #imageCountDisplay {
         flex: 1;
         margin-top: 0;
         margin-bottom: 0;
     }
-    
+
     /* Info icon styling */
     .status-row .info-icon {
         margin-left: 1rem;
@@ -679,7 +758,7 @@
         transition: color 0.2s ease;
         font-size: 1.1rem;
     }
-    
+
     .status-row .info-icon:hover {
         color: var(--accent-primary);
     }
@@ -702,17 +781,17 @@
         min-width: 2.2rem;
         aspect-ratio: 1;
     }
-    
+
     .status-row #toolInfoButton:hover {
         background-color: var(--bg-tertiary);
         border-color: var(--text-tertiary);
         color: var(--text-primary);
     }
-    
+
     .status-row #toolInfoButton:active {
         transform: scale(0.95);
     }
-    
+
     .status-row #toolInfoButton i {
         font-size: 1.1rem;
     }
@@ -733,17 +812,16 @@
         visibility: hidden;
         transition: opacity 0.3s ease, visibility 0.3s ease;
     }
-    
+
     .modal-overlay.active {
         opacity: 1;
         visibility: visible;
     }
-    
+
     .modal-content {
         background: var(--bg-secondary);
         border-radius: var(--border-radius-lg);
         max-width: 600px;
-        width: 90%;
         max-height: 90vh;
         overflow-y: auto;
         padding: 1.5rem;
@@ -752,11 +830,11 @@
         transform: translateY(20px);
         transition: transform 0.3s ease;
     }
-    
+
     .modal-overlay.active .modal-content {
         transform: translateY(0);
     }
-    
+
     .modal-close {
         position: absolute;
         top: 1rem;
@@ -768,56 +846,56 @@
         cursor: pointer;
         transition: color 0.2s ease;
     }
-    
+
     .modal-close:hover {
         color: var(--accent-primary);
     }
-    
+
     .modal-title {
         font-size: 1.5rem;
         margin-bottom: 1rem;
         color: var(--text-primary);
         padding-bottom: 0.75rem;
     }
-    
+
     .modal-body {
         color: var(--text-tertiary);
         line-height: 1.6;
     }
-    
+
     .modal-body p {
         margin-bottom: 1rem;
     }
-    
+
     .modal-body h3 {
         color: var(--text-primary);
         margin: 1.5rem 0 0.5rem;
         font-size: 1.1rem;
     }
-    
+
     .modal-body ul {
         padding-left: 1.5rem;
         margin-bottom: 1rem;
     }
-    
+
     .modal-body li {
         margin-bottom: 0.5rem;
     }
-    
+
     /* Show only the active progress bar */
     .sticky-button-container #progressBarAuto,
     .sticky-button-container #progressBarSmart,
     .sticky-button-container #progressBarContactSheet {
         margin-top: 0;
     }
-    
+
     /* Progress Bar Wrapper - Maintains consistent height */
     .progress-bar-wrapper {
         height: 12px;
         margin-bottom: 0.75rem;
         position: relative;
     }
-    
+
     .progress-bar-container {
         position: absolute;
         top: 0;
@@ -828,7 +906,7 @@
         border-radius: var(--border-radius-sm);
         overflow: hidden;
     }
-    
+
     .progress-bar-fill {
         height: 100%;
         width: 0%;
@@ -836,11 +914,11 @@
         border-radius: var(--border-radius-sm);
         transition: width 0.1s ease;
     }
-    
+
     #progressBarSmart .progress-bar-fill {
         background: var(--gradient-secondary);
     }
-    
+
     #progressBarContactSheet .progress-bar-fill {
         background: var(--gradient-tertiary);
     }
@@ -852,7 +930,7 @@
         margin-bottom: 0.5rem;
         text-align: center;
     }
-    
+
     /* Action Button Row for equal width buttons */
     .action-button-row {
         display: flex;
@@ -862,7 +940,7 @@
     .action-button-row .action-button {
         flex: 1;
     }
-    
+
     /* Secondary action buttons */
     .secondary-button {
         background: transparent;
@@ -877,7 +955,7 @@
         color: var(--accent-tertiary-dark);
         box-shadow: none;
     }
-    
+
     /* Mode-specific secondary button styling */
     #manualModeButtons .secondary-button {
         border-color: var(--accent-primary);
@@ -897,7 +975,7 @@
         border-color: var(--accent-secondary-dark);
         color: var(--accent-secondary-dark);
     }
-    
+
     /* Ensure both buttons in Manual mode use accent-primary */
     #extractManualButton {
         border-color: var(--accent-primary) !important;
@@ -908,7 +986,7 @@
         border-color: var(--accent-primary-dark) !important;
         color: var(--accent-primary-dark) !important;
     }
-    
+
     #processButton { background: var(--gradient-interval); }
 
     .image-count .count {
@@ -931,6 +1009,161 @@
     .image-count .count.contact-sheet-mode {
         color: #9C27B0; /* Purple for contact sheet mode */
     }
+
+    /* Screenshot Lightbox Specific Styles */
+    .screenshot-lightbox-content {
+        max-width: 90%;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        position: relative;
+        background-color: var(--bg-secondary);
+    }
+
+    .screenshot-lightbox-content .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+
+    .screenshot-lightbox-container {
+        display: flex;
+        overflow: hidden;
+        position: relative;
+        flex-grow: 1; /* Allow image container to take space */
+        align-items: center; /* Center image vertically */
+        justify-content: center; /* Center image horizontally */
+        padding: 20px; /* Add padding around the image */
+    }
+
+    .screenshot-lightbox-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        margin: auto;
+    }
+
+    .lightbox-nav-btn {
+        background-color: var(--accent-secondary);
+        color: var(--bg-primary);
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--border-radius-md);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.2s;
+        margin-right: 10px;
+        display: flex; /* Use flex for icon alignment */
+        align-items: center;
+        justify-content: center;
+    }
+
+    .lightbox-nav-btn:hover {
+        background-color: var(--accent-secondary-dark);
+    }
+
+    .lightbox-nav-btn:disabled {
+        background-color: var(--bg-tertiary);
+        color: var(--text-secondary);
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .prev-btn, .next-btn {
+        position: static;
+        transform: none;
+        opacity: 1;
+        width: auto;
+        height: auto;
+    }
+
+    .screenshot-lightbox-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        background-color: var(--bg-secondary);
+        border-top: 1px solid var(--border-color);
+        height: 60px;
+        flex-shrink: 0; /* Prevent info bar from shrinking */
+    }
+
+    .lightbox-controls-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    #lightboxTimestamp {
+        font-family: 'Source Code Pro', monospace;
+        color: var(--text-primary);
+        font-size: 1rem;
+        margin: 0 15px;
+        min-width: 60px;
+        text-align: center;
+    }
+
+    .lightbox-download-btn {
+        background-color: var(--accent-primary);
+        color: var(--bg-primary);
+        padding: 0.5rem 1rem;
+        border-radius: var(--border-radius-md);
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.2s;
+        display: flex; /* Use flex for icon alignment */
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .lightbox-download-btn:hover {
+        background-color: var(--accent-primary-dark);
+    }
+
+    .lightbox-nav-controls {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .lightbox-delete-btn {
+        background-color: var(--danger-color);
+        color: var(--white);
+        border: none;
+        padding: 0.5rem 0.75rem;
+        border-radius: var(--border-radius-md);
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.2s;
+        margin-right: 10px;
+        display: flex; /* Use flex for icon alignment */
+        align-items: center;
+        justify-content: center;
+    }
+
+    .lightbox-delete-btn:hover {
+        background-color: #e11d48;
+    }
+
+    /* Mode description styling */
+    .mode-description {
+        color: var(--text-tertiary);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        background-color: rgba(36, 44, 68, 0.5);
+        border-radius: var(--border-radius-sm);
+        padding: 0.5rem 0.8rem;
+    }
   </style>
 </head>
 <body>
@@ -941,7 +1174,7 @@
 
     <div class="settings-column">
       <div class="settings-content-wrapper">
-        <h1 id="pageTitle" data-text="Nia Frame Capture Studio">Nia Frame Capture Studio</h1>
+        <h1 id="pageTitle" data-text="Pilko Frame Capture Studio">Pilko Frame Capture Studio</h1>
 
         <div id="dropZone">
             <div id="uploadIcon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg></div>
@@ -973,9 +1206,11 @@
 
         <div class="mode-content">
             <div id="manualMode" class="active">
+              <p class="mode-description">Use the video player to navigate and press Cut Frame to capture screenshots.</p>
               <video id="manualVideo" controls></video>
             </div>
             <div id="autoMode">
+                <p class="mode-description">Extract screenshots at regular time intervals. Lower value creates more images, higher value creates fewer.</p>
                 <div class="slider-row"><h3 class="slider-label">Interval</h3><div class="slider-wrapper"><input type="range" id="intervalInput" min="1" max="30" value="10" step="1"><span id="intervalValue" class="value-display"></span></div></div>
                 <div class="segmented-controls format-tabs"><button class="format-tab active" data-format="png">PNG</button><button class="format-tab" data-format="jpeg">JPEG</button><button class="format-tab" data-format="webp">WEBP</button></div>
                 <div id="pngNote">Lossless quality, largest file size.</div>
@@ -983,17 +1218,20 @@
                 <div class="slider-row" id="webpSettings" style="display:none;"><h3 class="slider-label">WEBP Quality</h3><div class="slider-wrapper"><input type="range" id="webpQuality" min="10" max="100" value="85" step="5"><span id="webpQualityValue" class="value-display"></span></div></div>
             </div>
             <div id="autoSmartMode">
-               <div class="segmented-controls smart-algo-tabs"><button class="smart-tab active" data-algo="histogram">Histogram Diff</button><button class="smart-tab" data-algo="pixeldiff">Pixel Diff</button><button class="smart-tab" data-algo="ssim">Low SSIM</button></div>
+               <p class="mode-description">Identify scenes and visual changes. Adjust threshold to control sensitivity to changes.</p>
+               <div class="segmented-controls smart-algo-tabs">
+                   <button class="smart-tab active" data-algo="histogram">Histogram Diff</button>
+                   <button class="smart-tab" data-algo="pixeldiff">Pixel Diff</button>
+                </div>
                <div class="slider-row" id="histThresholdSettings"><h3 class="slider-label">Hist Thresh</h3><div class="slider-wrapper"><input type="range" id="histThresholdInput" min="0.05" max="0.75" value="0.40" step="0.05"><span id="histThresholdValue" class="value-display"></span></div></div>
                <div class="slider-row" id="pixelThresholdSettings" style="display:none;"><h3 class="slider-label">Pixel Thresh</h3><div class="slider-wrapper"><input type="range" id="pixelThresholdInput" min="5" max="100" value="35" step="5"><span id="pixelThresholdValue" class="value-display"></span></div></div>
-               <div class="slider-row" id="ssimThresholdSettings" style="display:none;"><h3 class="slider-label">SSIM Thresh</h3><div class="slider-wrapper"><input type="range" id="ssimThresholdInput" min="0.1" max="1.00" value="0.90" step="0.05"><span id="ssimThresholdValue" class="value-display"></span></div></div>
                <div class="segmented-controls format-tabs" id="smartFormatTabs"><button class="format-tab active" data-format="png">PNG</button><button class="format-tab" data-format="jpeg">JPEG</button><button class="format-tab" data-format="webp">WEBP</button></div>
                <div id="pngNoteSmart">Lossless quality, largest file size.</div>
                <div class="slider-row" id="jpegSettingsSmart" style="display:none;"><h3 class="slider-label">JPEG Quality</h3><div class="slider-wrapper"><input type="range" id="jpegQualitySmart" min="10" max="100" value="85" step="5"><span id="jpegQualityValueSmart" class="value-display"></span></div></div>
                <div class="slider-row" id="webpSettingsSmart" style="display:none;"><h3 class="slider-label">WEBP Quality</h3><div class="slider-wrapper"><input type="range" id="webpQualitySmart" min="10" max="100" value="85" step="5"><span id="webpQualityValueSmart" class="value-display"></span></div></div>
             </div>
             <div id="contactSheetMode">
-                <p>Generate a grid of screenshots. Choose a grid size and adjust times below to fine-tune.</p>
+                <p class="mode-description">Choose a grid size for screenshots. After generating, adjust times below or in the thumbnails.</p>
                 <div class="grid-size-title">Grid Size:</div>
                 <div class="segmented-controls grid-size-tabs">
                     <button class="grid-size-tab active" data-rows="4" data-cols="5">5×4</button>
@@ -1016,11 +1254,6 @@
                 <div class="video-container">
                 <video id="contactSheetVideo" controls></video>
                 </div>
-                <div id="fineTuneMessage" class="fine-tune-message">
-                    Drag up/down on time values to adjust frames, or click to enter time manually.
-                    Hover over thumbnails to use -/+ buttons for quick 1-second adjustments.
-                    Click "Update Sheet Image" when finished.
-                </div>
                 <div class="contact-sheet-controls">
                     <!-- Inputs generated by JS -->
                 </div>
@@ -1033,38 +1266,38 @@
                 <button id="processButton" class="action-button">Extract Screenshots</button>
                 <button id="downloadAllButton" class="action-button secondary-button" disabled>Download All (.zip)</button>
             </div>
-            
+
             <!-- Smart Auto Mode Buttons -->
             <div class="button-group" id="smartModeButtons" style="display:none;">
                 <button id="processSmartButton" class="action-button">Extract Smart Shots</button>
                 <button id="downloadAllSmartButton" class="action-button secondary-button" disabled>Download All (.zip)</button>
             </div>
-            
+
             <!-- Manual Mode Buttons -->
-            <div class="button-group" id="manualModeButtons" style="display:none;">
+            <div class="button-group" id="manualModeButtons" style="display:flex;"> <!-- Display by default -->
                 <button id="addManualButton" class="action-button" type="button">Cut Frame <i class="ri-scissors-line"></i></button>
                 <div class="action-button-row">
                     <button id="extractManualButton" class="action-button secondary-button" type="button">Quick Save Frame</button>
                     <button id="downloadManualButton" class="action-button secondary-button" type="button" disabled>Download Added</button>
                 </div>
             </div>
-            
+
             <!-- Contact Sheet Mode Buttons -->
             <div class="button-group" id="contactSheetModeButtons" style="display:none;">
                 <button id="processContactSheetButton" class="action-button">Generate/Update Sheet</button>
                 <div class="action-button-row">
-                    <button id="previewContactSheetButton" class="action-button secondary-button" disabled>Preview Sheet Image</button>
-                    <button id="downloadContactSheetButton" class="action-button secondary-button" disabled>Download Sheet Image</button>
+                    <button id="previewContactSheetButton" class="action-button secondary-button" disabled>Preview</button>
+                    <button id="downloadContactSheetButton" class="action-button secondary-button" disabled>Download</button>
                 </div>
             </div>
-            
+
             <!-- Progress Bars -->
             <div class="progress-bar-wrapper">
                 <div id="progressBarAuto" class="progress-bar-container" style="display:none;"><div id="progressBarFillAuto" class="progress-bar-fill"></div></div>
                 <div id="progressBarSmart" class="progress-bar-container" style="display:none;"><div id="progressBarFillSmart" class="progress-bar-fill"></div></div>
                 <div id="progressBarContactSheet" class="progress-bar-container" style="display:none;"><div id="progressBarFillContactSheet" class="progress-bar-fill"></div></div>
             </div>
-            
+
             <div class="status-row">
                 <button id="clearScreenshotsButton" type="button" disabled>Clear Output</button>
                 <div id="imageCountDisplay">Generated Images:<span id="imageCountValue">0</span></div>
@@ -1098,10 +1331,10 @@
   <div class="modal-overlay" id="toolInfoModal">
     <div class="modal-content">
       <button class="modal-close" id="modalClose"><i class="ri-close-line"></i></button>
-      <h2 class="modal-title">Nia Frame Capture Studio</h2>
+      <h2 class="modal-title">Pilko Frame Capture Studio</h2>
       <div class="modal-body">
-        <p>Nia Frame Capture Studio is a powerful tool for extracting high-quality screenshots from video files directly in your browser, with no uploads required.</p>
-        
+        <p>Pilko Frame Capture Studio is a powerful tool for extracting high-quality screenshots from video files directly in your browser, with no uploads required.</p>
+
         <h3>Features:</h3>
         <ul>
           <li><strong>Interval Mode:</strong> Extract frames at regular time intervals</li>
@@ -1110,26 +1343,45 @@
           <li><strong>Contact Sheet:</strong> Generate a grid of screenshots in a single image</li>
           <li><strong>Black Bar Removal:</strong> Automatically detect and crop black bars from letterboxed videos</li>
         </ul>
-        
+
         <h3>Smart Auto Algorithms:</h3>
         <ul>
           <li><strong>Histogram Diff:</strong> Compares color distribution between frames. Higher threshold captures only major scene changes; lower threshold captures subtle visual differences.</li>
           <li><strong>Pixel Diff:</strong> Measures the percentage of pixels that have changed between frames. Higher threshold focuses on significant visual changes; lower threshold catches minor movements.</li>
-          <li><strong>Low SSIM:</strong> Uses Structural Similarity Index to detect changes in image structure and patterns. Lower values capture more frames; higher values focus only on major scene transitions.</li>
         </ul>
-        
+
         <h3>Supported Formats:</h3>
         <ul>
           <li><strong>PNG:</strong> Lossless quality with largest file size</li>
           <li><strong>JPEG:</strong> Smaller file size with adjustable quality</li>
           <li><strong>WEBP:</strong> Modern format with good compression and quality</li>
         </ul>
-        
+
         <p>All processing happens locally in your browser - your videos are never uploaded to any server.</p>
       </div>
     </div>
   </div>
 
+  <!-- Screenshot lightbox modal -->
+  <div class="modal-overlay" id="screenshotLightbox">
+    <div class="modal-content screenshot-lightbox-content">
+      <button class="modal-close" id="lightboxClose"><i class="ri-close-line"></i></button>
+      <div class="screenshot-lightbox-container">
+        <img id="lightboxImage" src="" alt="Screenshot fullscreen view">
+      </div>
+      <div class="screenshot-lightbox-info">
+        <div class="lightbox-controls-left">
+          <button class="lightbox-delete-btn" id="lightboxDeleteBtn" title="Delete this screenshot"><i class="ri-delete-bin-2-line"></i></button>
+        </div>
+        <div class="lightbox-nav-controls">
+          <button class="lightbox-nav-btn prev-btn" id="lightboxPrevBtn"><i class="ri-arrow-left-line"></i></button>
+          <span id="lightboxTimestamp"></span>
+          <button class="lightbox-nav-btn next-btn" id="lightboxNextBtn"><i class="ri-arrow-right-line"></i></button>
+        </div>
+        <a id="lightboxDownload" href="#" download="screenshot.png" class="lightbox-download-btn">Download <i class="ri-download-2-line"></i></a>
+      </div>
+    </div>
+  </div>
 
   <script>
     'use strict';
@@ -1156,14 +1408,14 @@
             // Prevent scrolling of the body when modal is open
             document.body.style.overflow = 'hidden';
         });
-        
+
         // Close modal when close button is clicked
         modalClose.addEventListener('click', () => {
             toolInfoModal.classList.remove('active');
             // Re-enable scrolling
             document.body.style.overflow = '';
         });
-        
+
         // Close modal when clicking outside the content
         toolInfoModal.addEventListener('click', (e) => {
             if (e.target === toolInfoModal) {
@@ -1171,11 +1423,39 @@
                 document.body.style.overflow = '';
             }
         });
-        
+
         // Close modal when Escape key is pressed
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && toolInfoModal.classList.contains('active')) {
                 toolInfoModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // --- Screenshot Lightbox Modal ---
+    const screenshotLightbox = document.getElementById('screenshotLightbox');
+    const lightboxClose = document.getElementById('lightboxClose');
+
+    if (screenshotLightbox && lightboxClose) {
+        // Close lightbox when close button is clicked
+        lightboxClose.addEventListener('click', () => {
+            screenshotLightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+
+        // Close lightbox when clicking outside the content
+        screenshotLightbox.addEventListener('click', (e) => {
+            if (e.target === screenshotLightbox) {
+                screenshotLightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close lightbox when Escape key is pressed
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && screenshotLightbox.classList.contains('active')) {
+                screenshotLightbox.classList.remove('active');
                 document.body.style.overflow = '';
             }
         });
@@ -1215,7 +1495,7 @@
 
         const imageCountDisplay = document.getElementById('imageCountDisplay');
         const imageCountValue = document.getElementById('imageCountValue');
-        
+
         // Set initial mode-specific class for image count
         if (imageCountValue) {
             imageCountValue.classList.add('manual-mode'); // Start with manual as default
@@ -1224,13 +1504,13 @@
         const modeTabs = document.querySelectorAll('.mode-tab');
         const modeContentDiv = document.querySelector('.mode-content');
         const contactSheetModeDiv = document.getElementById('contactSheetMode');
-        
+
         // Button groups in sticky container
         const intervalModeButtons = document.getElementById('intervalModeButtons');
         const smartModeButtons = document.getElementById('smartModeButtons');
         const contactSheetModeButtons = document.getElementById('contactSheetModeButtons');
         const manualModeButtons = document.getElementById('manualModeButtons');
-        
+
         // Initialize button groups visibility
         if (manualModeButtons) manualModeButtons.style.display = 'flex';
         if (intervalModeButtons) intervalModeButtons.style.display = 'none';
@@ -1270,7 +1550,11 @@
         const smartAlgoTabs = document.querySelectorAll('.smart-tab');
         const histThresholdSettings = document.getElementById('histThresholdSettings');
         const pixelThresholdSettings = document.getElementById('pixelThresholdSettings');
-        const ssimThresholdSettings = document.getElementById('ssimThresholdSettings');
+        const histThresholdInput = document.getElementById('histThresholdInput');
+        const histThresholdValue = document.getElementById('histThresholdValue');
+        const pixelThresholdInput = document.getElementById('pixelThresholdInput');
+        const pixelThresholdValue = document.getElementById('pixelThresholdValue');
+
 
         const manualVideo = document.getElementById('manualVideo');
         const extractManualButton = document.getElementById('extractManualButton');
@@ -1279,7 +1563,6 @@
 
         const contactSheetVideo = document.getElementById('contactSheetVideo');
         const contactSheetControlsElement = document.querySelector('.contact-sheet-controls');
-        const fineTuneMessageElement = document.getElementById('fineTuneMessage');
         const processContactSheetButton = document.getElementById('processContactSheetButton');
         const downloadContactSheetButton = document.getElementById('downloadContactSheetButton');
         const previewContactSheetButton = document.getElementById('previewContactSheetButton');
@@ -1299,12 +1582,13 @@
         verticalSeparatorElement = document.querySelector('.vertical-separator');
 
         // --- Check if Core Elements Exist ---
-        if (!dropZone || !videoInput || !selectFileButton || !video || !manualVideo || !canvas || !frameCanvas || !contactSheetCanvas || !modeContentDiv || !screenshotsDiv || !clearScreenshotsButton || !processContactSheetButton || !downloadContactSheetButton || !previewContactSheetButton || !progressBarContactSheet || !loadedFileInfo || !loadedFileName || !imageCountDisplay || !imageCountValue || !contactSheetVideo || !contactSheetControlsElement || !fineTuneMessageElement || !contactSheetPreviewElement || !outputColumn) {
+        if (!dropZone || !videoInput || !selectFileButton || !video || !manualVideo || !canvas || !frameCanvas || !contactSheetCanvas || !modeContentDiv || !screenshotsDiv || !clearScreenshotsButton || !processContactSheetButton || !downloadContactSheetButton || !previewContactSheetButton || !progressBarContactSheet || !loadedFileInfo || !loadedFileName || !imageCountDisplay || !imageCountValue || !contactSheetVideo || !contactSheetControlsElement || !contactSheetPreviewElement || !outputColumn || !histThresholdInput || !histThresholdValue || !histThresholdSettings || !pixelThresholdInput || !pixelThresholdValue || !pixelThresholdSettings) {
             throw new Error("One or more critical HTML elements are missing. Check IDs.");
         }
 
+
         // --- State Variables ---
-        let currentMode = 'auto';
+        let currentMode = 'manual'; // Default to manual
         let smartAlgorithm = 'histogram';
         let uploadedFile = null;
         let currentVideoDuration = 0;
@@ -1319,19 +1603,19 @@
 
 
         // --- Helper Functions ---
-        const updateSliderBackground = (slider) => { 
-            if (!slider) return; 
-            const val = slider.value; 
-            const min = slider.min || 0; 
-            const max = slider.max || 100; 
-            const pct = max > min ? ((val - min) * 100) / (max - min) : 0; 
-            
+        const updateSliderBackground = (slider) => {
+            if (!slider) return;
+            const val = slider.value;
+            const min = slider.min || 0;
+            const max = slider.max || 100;
+            const pct = max > min ? ((val - min) * 100) / (max - min) : 0;
+
             let color = 'var(--accent-interval)'; // Default for autoMode (Interval)
-            
-            // Fix for pixelThresholdInput which might not be properly detected
+
+            // Check for pixelThresholdInput directly by id
             if (slider.id === 'pixelThresholdInput') {
                 color = 'var(--accent-secondary)';
-            } 
+            }
             else if (slider.closest('#autoSmartMode')) {
                 color = 'var(--accent-secondary)'; // Smart Auto mode
             } else if (slider.closest('#manualMode')) {
@@ -1339,7 +1623,8 @@
             } else if (slider.closest('#contactSheetMode')) {
                 color = 'var(--accent-tertiary)'; // Contact Sheet mode
             }
-            
+
+            // Apply the background gradient
             slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, var(--bg-tertiary) ${pct}%, var(--bg-tertiary) 100%)`;
         };
         const formatTime = (seconds) => {
@@ -1348,14 +1633,14 @@
             const m = Math.floor((seconds % 3600) / 60);
             const s = Math.floor(seconds % 60);
             const ms = Math.floor((seconds % 1) * 100);  // Get 2 decimal places for milliseconds
-            
+
             if (h > 0) {
                 return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             } else {
                 return `${m}:${s.toString().padStart(2, '0')}`;
             }
         };
-        
+
         // Parse a time string in the format "h:mm:ss" or "m:ss" to seconds
         const parseTimeString = (timeStr) => {
             try {
@@ -1366,15 +1651,15 @@
                         return directSeconds;
                     }
                 }
-                
+
                 // Handle time format with colons
                 const parts = timeStr.trim().split(':');
-                
+
                 if (parts.length === 2) {
                     // Format: m:ss or m:ss.ms
                     const minutes = parseInt(parts[0], 10);
                     const seconds = parseFloat(parts[1]);
-                    
+
                     if (!isNaN(minutes) && !isNaN(seconds)) {
                         return minutes * 60 + seconds;
                     }
@@ -1384,12 +1669,12 @@
                     const hours = parseInt(parts[0], 10);
                     const minutes = parseInt(parts[1], 10);
                     const seconds = parseFloat(parts[2]);
-                    
+
                     if (!isNaN(hours) && !isNaN(minutes) && !isNaN(seconds)) {
                         return hours * 3600 + minutes * 60 + seconds;
                     }
                 }
-                
+
                 // Fallback for invalid input
                 console.warn("Invalid time format:", timeStr);
                 return 0;
@@ -1399,12 +1684,12 @@
             }
         };
         const gcd = (a, b) => { return b ? gcd(b, a % b) : a; };
-        
+
         // Add a function to detect common aspect ratios with some tolerance
         const getCommonAspectRatio = (width, height) => {
             // Calculate the raw aspect ratio as a decimal
             const rawRatio = width / height;
-            
+
             // Common aspect ratios with their decimal values and display formats
             const commonRatios = [
                 { ratio: 16/9, display: "16:9" },  // 1.778
@@ -1420,10 +1705,10 @@
                 { ratio: 1/1, display: "1:1" },    // 1.0 (Square)
                 { ratio: 9/16, display: "9:16" }   // 0.5625 (Vertical/Portrait)
             ];
-            
+
             // Tolerance threshold (0.5% deviation)
             const TOLERANCE = 0.005;
-            
+
             // Check if the ratio is close to a common ratio
             for (const { ratio, display } of commonRatios) {
                 const deviation = Math.abs(rawRatio - ratio) / ratio;
@@ -1431,62 +1716,62 @@
                     return display;
                 }
             }
-            
+
             // If no common ratio found, calculate using GCD with rounding for precision
             // Round to nearest whole number for better precision with black bar detection
             const a = Math.round(width);
             const b = Math.round(height);
             const divisor = gcd(a, b);
-            
+
             return `${a / divisor}:${b / divisor}`;
         };
-        
+
         // Function to standardize resolution to common formats
         const getStandardizedResolution = (width, height) => {
             // Round to the nearest 10 for cleaner values
             const roundWidth = (w) => {
                 // If already a multiple of 10, leave as is
                 if (w % 10 === 0) return w;
-                
+
                 // Get the last digit
                 const lastDigit = w % 10;
-                
+
                 // Round down if 4 or less, up if 5 or more
                 return lastDigit <= 4 ? w - lastDigit : w + (10 - lastDigit);
             };
-            
+
             // Apply rounding to width and height
             const roundedWidth = roundWidth(Math.round(width));
             const roundedHeight = roundWidth(Math.round(height));
-            
+
             // Just return the clean dimensions without aspect ratio info
             return `${roundedWidth}×${roundedHeight}`;
         };
-        
-        const updateFileInfoDisplay = () => { 
-            if (!video?.duration || !video?.videoWidth || !video?.videoHeight || 
-                !resolutionValue || !lengthValue || !aspectRatioValue || !bitrateValue) return; 
-            
+
+        const updateFileInfoDisplay = () => {
+            if (!video?.duration || !video?.videoWidth || !video?.videoHeight ||
+                !resolutionValue || !lengthValue || !aspectRatioValue || !bitrateValue) return;
+
             currentVideoDuration = video.duration;
-            
+
             // Use cropped dimensions if black bars removal is enabled
             let width = video.videoWidth;
             let height = video.videoHeight;
-            
+
             // If we have crop data and black bar removal is enabled, use the cropped dimensions
             if (removeBarsEnabled && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0) {
                 width = cropData.cropWidth;
                 height = cropData.cropHeight;
             }
-            
+
             lengthValue.textContent = formatTime(currentVideoDuration);
-            
+
             // Update resolution display with standardized format - no cropped label needed
             resolutionValue.textContent = getStandardizedResolution(width, height);
-            
+
             // Calculate aspect ratio from the current dimensions (cropped or original)
             aspectRatioValue.textContent = getCommonAspectRatio(width, height);
-            
+
             if (uploadedFile && uploadedFile.size > 0 && currentVideoDuration > 0) {
                 const bitrateKbps = Math.round((uploadedFile.size * 8) / currentVideoDuration / 1000);
                 bitrateValue.textContent = `${bitrateKbps} kbps`;
@@ -1494,18 +1779,18 @@
                 bitrateValue.textContent = "N/A";
             }
         };
-        const updateImageCount = () => { 
-            const autoSmartCount = screenshotBlobs.length; 
-            const manualCount = manualScreenshotBlobs.length; 
-            const totalCount = screenshotsDiv ? screenshotsDiv.childElementCount : 0; 
-            
+        const updateImageCount = () => {
+            const autoSmartCount = screenshotBlobs.length;
+            const manualCount = manualScreenshotBlobs.length;
+            const totalCount = screenshotsDiv ? screenshotsDiv.childElementCount : 0;
+
             if (imageCountValue) {
                 // First update the display value
                 imageCountValue.textContent = totalCount;
-                
+
                 // Remove all mode-specific classes
                 imageCountValue.classList.remove('interval-mode', 'smart-mode', 'manual-mode', 'contact-sheet-mode');
-                
+
                 // Add the appropriate class based on current mode
                 if (currentMode === 'auto') {
                     imageCountValue.classList.add('interval-mode');
@@ -1517,171 +1802,176 @@
                     imageCountValue.classList.add('contact-sheet-mode');
                 }
             }
-            
-            if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || autoSmartCount === 0 || processingActive; 
-            if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || autoSmartCount === 0 || processingActive; 
-            if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualCount === 0 || processingActive; 
-            if(downloadContactSheetButton) downloadContactSheetButton.disabled = currentMode !== 'contactSheet' || !contactSheetBlob || processingActive; 
-            if(previewContactSheetButton) previewContactSheetButton.disabled = currentMode !== 'contactSheet' || !contactSheetBlob || processingActive; 
-            if(clearScreenshotsButton) clearScreenshotsButton.disabled = totalCount === 0 && !contactSheetPreviewData.some(d => d !== null); 
+
+            if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || autoSmartCount === 0 || processingActive;
+            if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || autoSmartCount === 0 || processingActive;
+            if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualCount === 0 || processingActive;
+            if(downloadContactSheetButton) downloadContactSheetButton.disabled = currentMode !== 'contactSheet' || !contactSheetBlob || processingActive;
+            if(previewContactSheetButton) previewContactSheetButton.disabled = currentMode !== 'contactSheet' || !contactSheetBlob || processingActive;
+            if(clearScreenshotsButton) clearScreenshotsButton.disabled = totalCount === 0 && !contactSheetPreviewData.some(d => d !== null);
         };
-        const updateDropZoneUI = (isFileLoaded, filename) => { 
-          if(!dropZone || !selectFileButton || !loadedFileName) return; 
-          
-          if (isFileLoaded && filename) { 
-            dropZone.classList.add('file-loaded'); 
-            loadedFileName.textContent = filename; 
-            selectFileButton.textContent = "Change File"; 
-            selectFileButton.classList.add('file-selected'); 
-            updateFileInfoDisplay(); 
-          } else { 
+        const updateDropZoneUI = (isFileLoaded, filename) => {
+          if(!dropZone || !selectFileButton || !loadedFileName) return;
+
+          // Get the app container element
+          const appContainer = document.querySelector('.app-container');
+
+          if (isFileLoaded && filename) {
+            dropZone.classList.add('file-loaded');
+            if (appContainer) appContainer.classList.add('file-loaded');
+            loadedFileName.textContent = filename;
+            selectFileButton.textContent = "Change File";
+            selectFileButton.classList.add('file-selected');
+            updateFileInfoDisplay();
+          } else {
             dropZone.classList.remove('file-loaded');
+            if (appContainer) appContainer.classList.remove('file-loaded');
             dropZone.classList.remove('has-bg-image');
-            
+
             // Clean up any existing background image blob URL
             const oldBgUrl = dropZone.dataset.bgUrl;
             if (oldBgUrl) {
                 URL.revokeObjectURL(oldBgUrl);
                 dropZone.dataset.bgUrl = '';
             }
-            
+
             // Reset the background image CSS variable
             document.documentElement.style.setProperty('--dropzone-bg-image', 'none');
-             
-            loadedFileName.textContent = ''; 
-            selectFileButton.textContent = "Change File"; 
-            selectFileButton.classList.remove('file-selected'); 
-            if(resolutionValue) resolutionValue.textContent = '-'; 
-            if(lengthValue) lengthValue.textContent = '-'; 
-            if(aspectRatioValue) aspectRatioValue.textContent = '-'; 
-            if(bitrateValue) bitrateValue.textContent = '-'; 
-          } 
+
+            loadedFileName.textContent = '';
+            selectFileButton.textContent = "Change File";
+            selectFileButton.classList.remove('file-selected');
+            if(resolutionValue) resolutionValue.textContent = '-';
+            if(lengthValue) lengthValue.textContent = '-';
+            if(aspectRatioValue) aspectRatioValue.textContent = '-';
+            if(bitrateValue) bitrateValue.textContent = '-';
+          }
         };
 
         // --- UI State Management ---
-        const resetProcessingUI = (mode = 'all') => { /* ... */ 
-            console.log(`[Reset UI] Resetting for mode: ${mode}`); 
-            processingActive = false; 
-            cancelExtractionRequested = false; 
-            currentSamplingProcess = null; 
-            
-            if (verticalSeparatorElement) 
-                verticalSeparatorElement.classList.remove('loading', 'loading-smart', 'loading-contact-sheet'); 
-                
-            const resetButton = (btn, text, startHandler) => { 
-                if (!btn) return; 
-                btn.disabled = !video?.src; 
-                btn.textContent = text; 
-                btn.classList.remove('cancel-active'); 
-                btn.removeEventListener('click', handleCancelClick); 
-                btn.removeEventListener('click', startHandler); 
-                btn.addEventListener('click', startHandler); 
-            }; 
-            
-            if ((mode === 'auto' || mode === 'all') && processButton) { 
-                if(progressBarAuto) progressBarAuto.style.display = 'none'; 
-                if(progressBarFillAuto) progressBarFillAuto.style.width = '0%'; 
-                resetButton(processButton, 'Extract Screenshots', startAutoExtraction); 
-                if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || screenshotBlobs.length === 0; 
-            } 
-            
-            if ((mode === 'autoSmart' || mode === 'all') && processSmartButton) { 
-                if(progressBarSmart) progressBarSmart.style.display = 'none'; 
-                if(progressBarFillSmart) progressBarFillSmart.style.width = '0%'; 
-                resetButton(processSmartButton, 'Extract Smart Shots', startSmartExtraction); 
-                if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || screenshotBlobs.length === 0; 
-            } 
-            
-            if ((mode === 'contactSheet' || mode === 'all') && processContactSheetButton) { 
-                if(progressBarContactSheet) progressBarContactSheet.style.display = 'none'; 
-                if(progressBarFillContactSheet) progressBarFillContactSheet.style.width = '0%'; 
-                resetButton(processContactSheetButton, 'Generate/Update Sheet', generateContactSheet); 
+        const resetProcessingUI = (mode = 'all') => {
+            console.log(`[Reset UI] Resetting for mode: ${mode}`);
+            processingActive = false;
+            cancelExtractionRequested = false;
+            currentSamplingProcess = null;
+
+            if (verticalSeparatorElement)
+                verticalSeparatorElement.classList.remove('loading', 'loading-smart', 'loading-contact-sheet');
+
+            const resetButton = (btn, text, startHandler) => {
+                if (!btn) return;
+                btn.disabled = !video?.src;
+                btn.textContent = text;
+                btn.classList.remove('cancel-active');
+                btn.removeEventListener('click', handleCancelClick);
+                btn.removeEventListener('click', startHandler);
+                btn.addEventListener('click', startHandler);
+            };
+
+            if ((mode === 'auto' || mode === 'all') && processButton) {
+                if(progressBarAuto) progressBarAuto.style.display = 'none';
+                if(progressBarFillAuto) progressBarFillAuto.style.width = '0%';
+                resetButton(processButton, 'Extract Screenshots', startAutoExtraction);
+                if(downloadAllButton) downloadAllButton.disabled = currentMode !== 'auto' || screenshotBlobs.length === 0;
+            }
+
+            if ((mode === 'autoSmart' || mode === 'all') && processSmartButton) {
+                if(progressBarSmart) progressBarSmart.style.display = 'none';
+                if(progressBarFillSmart) progressBarFillSmart.style.width = '0%';
+                resetButton(processSmartButton, 'Extract Smart Shots', startSmartExtraction);
+                if(downloadAllSmartButton) downloadAllSmartButton.disabled = currentMode !== 'autoSmart' || screenshotBlobs.length === 0;
+            }
+
+            if ((mode === 'contactSheet' || mode === 'all') && processContactSheetButton) {
+                if(progressBarContactSheet) progressBarContactSheet.style.display = 'none';
+                if(progressBarFillContactSheet) progressBarFillContactSheet.style.width = '0%';
+                resetButton(processContactSheetButton, 'Generate/Update Sheet', generateContactSheet);
                 if(downloadContactSheetButton) downloadContactSheetButton.disabled = currentMode !== 'contactSheet' || !contactSheetBlob;
                 if(previewContactSheetButton) previewContactSheetButton.disabled = currentMode !== 'contactSheet' || !contactSheetBlob;
-            } 
-            
-            if (mode === 'manual' || mode === 'all') { 
-                if(addManualButton) addManualButton.disabled = !video?.src; 
-                if(extractManualButton) extractManualButton.disabled = !video?.src; 
-                if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualScreenshotBlobs.length === 0 || processingActive; 
-            } 
-            
-            if (video?.src) { 
-                if(processButton && currentMode !== 'auto') processButton.disabled = false; 
-                if(processSmartButton && currentMode !== 'autoSmart') processSmartButton.disabled = false; 
-                if(processContactSheetButton && currentMode !== 'contactSheet') processContactSheetButton.disabled = false; 
-                if(addManualButton && currentMode !== 'manual') addManualButton.disabled = false; 
-                if(extractManualButton && currentMode !== 'manual') extractManualButton.disabled = false; 
-            } 
-            
-            updateImageCount(); 
+            }
+
+            if (mode === 'manual' || mode === 'all') {
+                if(addManualButton) addManualButton.disabled = !video?.src;
+                if(extractManualButton) extractManualButton.disabled = !video?.src;
+                if(downloadManualButton) downloadManualButton.disabled = currentMode !== 'manual' || manualScreenshotBlobs.length === 0 || processingActive;
+            }
+
+            if (video?.src) {
+                if(processButton && currentMode !== 'auto') processButton.disabled = false;
+                if(processSmartButton && currentMode !== 'autoSmart') processSmartButton.disabled = false;
+                if(processContactSheetButton && currentMode !== 'contactSheet') processContactSheetButton.disabled = false;
+                if(addManualButton && currentMode !== 'manual') addManualButton.disabled = false;
+                if(extractManualButton && currentMode !== 'manual') extractManualButton.disabled = false;
+            }
+
+            updateImageCount();
         };
-        
-        const setProcessingUI = (mode) => { /* ... */ 
-            console.log(`[Set UI] Setting processing state for mode: ${mode}`); 
-            processingActive = true; 
-            cancelExtractionRequested = false; 
-            
-            [processButton, processSmartButton, processContactSheetButton, downloadAllButton, downloadAllSmartButton, downloadManualButton, downloadContactSheetButton, addManualButton, extractManualButton, clearScreenshotsButton].forEach(btn => { 
-                if (btn) btn.disabled = true; 
-            }); 
-            
-            let processBtn, progressBar, progressBarFill, startHandler, loadingClass; 
-            
-            if (mode === 'auto' && processButton) { 
-                processBtn = processButton; 
-                progressBar = progressBarAuto; 
-                progressBarFill = progressBarFillAuto; 
-                startHandler = startAutoExtraction; 
-                loadingClass = 'loading'; 
-            } else if (mode === 'autoSmart' && processSmartButton) { 
-                processBtn = processSmartButton; 
-                progressBar = progressBarSmart; 
-                progressBarFill = progressBarFillSmart; 
-                startHandler = startSmartExtraction; 
-                loadingClass = 'loading-smart'; 
-            } else if (mode === 'contactSheet' && processContactSheetButton) { 
-                processBtn = processContactSheetButton; 
-                progressBar = progressBarContactSheet; 
-                progressBarFill = progressBarFillContactSheet; 
-                startHandler = generateContactSheet; 
-                loadingClass = 'loading-contact-sheet'; 
-            } else { 
-                return; 
-            } 
-            
-            if (verticalSeparatorElement && loadingClass) 
-                verticalSeparatorElement.classList.add(loadingClass); 
-                
-            if (progressBar) 
-                progressBar.style.display = 'block'; 
-                
-            if (progressBarFill) 
-                progressBarFill.style.width = '0%'; 
-                
-            processBtn.textContent = 'Cancel Extraction'; 
-            processBtn.classList.add('cancel-active'); 
+
+        const setProcessingUI = (mode) => {
+            console.log(`[Set UI] Setting processing state for mode: ${mode}`);
+            processingActive = true;
+            cancelExtractionRequested = false;
+
+            [processButton, processSmartButton, processContactSheetButton, downloadAllButton, downloadAllSmartButton, downloadManualButton, downloadContactSheetButton, addManualButton, extractManualButton, clearScreenshotsButton].forEach(btn => {
+                if (btn) btn.disabled = true;
+            });
+
+            let processBtn, progressBar, progressBarFill, startHandler, loadingClass;
+
+            if (mode === 'auto' && processButton) {
+                processBtn = processButton;
+                progressBar = progressBarAuto;
+                progressBarFill = progressBarFillAuto;
+                startHandler = startAutoExtraction;
+                loadingClass = 'loading';
+            } else if (mode === 'autoSmart' && processSmartButton) {
+                processBtn = processSmartButton;
+                progressBar = progressBarSmart;
+                progressBarFill = progressBarFillSmart;
+                startHandler = startSmartExtraction;
+                loadingClass = 'loading-smart';
+            } else if (mode === 'contactSheet' && processContactSheetButton) {
+                processBtn = processContactSheetButton;
+                progressBar = progressBarContactSheet;
+                progressBarFill = progressBarFillContactSheet;
+                startHandler = generateContactSheet;
+                loadingClass = 'loading-contact-sheet';
+            } else {
+                return;
+            }
+
+            if (verticalSeparatorElement && loadingClass)
+                verticalSeparatorElement.classList.add(loadingClass);
+
+            if (progressBar)
+                progressBar.style.display = 'block';
+
+            if (progressBarFill)
+                progressBarFill.style.width = '0%';
+
+            processBtn.textContent = 'Cancel Extraction';
+            processBtn.classList.add('cancel-active');
             processBtn.removeEventListener('click', startHandler);
-            
+
             // More robust event listener attachment and cleanup for the cancel button
-            processBtn.removeEventListener('click', handleCancelClick);  
-            processBtn.addEventListener('click', handleCancelClick); 
-            processBtn.disabled = false; 
+            processBtn.removeEventListener('click', handleCancelClick);
+            processBtn.addEventListener('click', handleCancelClick);
+            processBtn.disabled = false;
         };
 
         // Cancel Handler
         const handleCancelClick = () => {
             console.log("[Cancel Action] Cancel requested by user");
-            
+
             // Set the cancellation flag - the extraction loops will detect this
             cancelExtractionRequested = true;
-            
+
             // If we have an active sampling process, explicitly cancel it
             if (currentSamplingProcess && typeof currentSamplingProcess.cancel === 'function') {
                 console.log("[Cancel Action] Calling cancel on active sampling process");
                 currentSamplingProcess.cancel();
             }
-            
+
             // Simple failsafe: Force reset after a short delay if still processing
             setTimeout(() => {
                 if (processingActive) {
@@ -1692,141 +1982,220 @@
         };
 
         // --- Helper Functions (Cont.) ---
-        const computeHistogram = (imageData, sampleFactor = 4) => { /* ... */ const data = imageData.data; const hist = new Array(256).fill(0); let count = 0; for (let i = 0; i < data.length; i += 4 * sampleFactor) { const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]); hist[gray]++; count++; } if (count === 0) return hist; return hist.map(val => val / count); };
-        const histogramDifference = (hist1, hist2) => { /* ... */ if (!hist1 || !hist2 || hist1.length !== hist2.length) return 1; return hist1.reduce((acc, val, i) => acc + Math.abs(val - hist2[i]), 0); };
-        const computePixelDiff = (data1, data2, sampleFactor = 4) => { /* ... */ let diff = 0; let count = 0; const step = 4 * sampleFactor; for (let i = 0; i < data1.length; i += step) { diff += Math.abs(data1[i] - data2[i]); diff += Math.abs(data1[i+1] - data2[i+1]); diff += Math.abs(data1[i+2] - data2[i+2]); count++; } return count > 0 ? (diff / (count * 3)) : 0; };
-        
-        const computeSSIM = (imageData1, imageData2, sampleFactor = 4) => {
-            const data1 = imageData1.data;
-            const data2 = imageData2.data;
-            const width = imageData1.width;
-            const height = imageData1.height;
-            
-            // Constants for stability and avoiding division by zero
-            const K1 = 0.01, K2 = 0.03;
-            const L = 255; // Dynamic range for 8-bit images
-            const C1 = (K1 * L) ** 2;
-            const C2 = (K2 * L) ** 2;
-            
-            // Block size for local analysis
-            const blockSize = Math.min(8, Math.max(4, sampleFactor * 2));
-            const step = Math.max(4, blockSize / 2) * 4; // Step in pixels (x4 for RGBA)
-            
-            let ssim_sum = 0;
-            let blocks = 0;
-            
-            // For detecting motion in static scenes
-            let motionScore = 0;
-            let maxMotionRegion = 0;
-            const motionThreshold = 30; // Threshold for significant motion
-            
-            // Track regions with significant changes
-            const regionsX = 3; // Divide image into a 3x3 grid
-            const regionsY = 3;
-            const regionScores = Array(regionsX * regionsY).fill(0);
-            
-            // Process in blocks to better capture structural information
-            for (let y = 0; y < height - blockSize; y += blockSize) {
-                for (let x = 0; x < width - blockSize; x += blockSize) {
-                    let sum1 = 0, sum2 = 0;
-                    let sum1_sq = 0, sum2_sq = 0;
-                    let sum_cross = 0;
-                    let count = 0;
-                    let blockMotion = 0;
-                    
-                    // Process pixels within the block
-                    for (let by = 0; by < blockSize; by += 1) {
-                        for (let bx = 0; bx < blockSize; bx += 1) {
-                            const i = ((y + by) * width + (x + bx)) * 4;
-                            
-                            // Convert to grayscale to simplify calculations
-                            const gray1 = 0.299 * data1[i] + 0.587 * data1[i + 1] + 0.114 * data1[i + 2];
-                            const gray2 = 0.299 * data2[i] + 0.587 * data2[i + 1] + 0.114 * data2[i + 2];
-                            
-                            // Accumulate absolute difference for motion detection
-                            blockMotion += Math.abs(gray1 - gray2);
-                            
-                            sum1 += gray1;
-                            sum2 += gray2;
-                            sum1_sq += gray1 * gray1;
-                            sum2_sq += gray2 * gray2;
-                            sum_cross += gray1 * gray2;
-                            count++;
-                        }
-                    }
-                    
-                    if (count === 0) continue;
-                    
-                    // Calculate mean and variance for both patches
-                    const mean1 = sum1 / count;
-                    const mean2 = sum2 / count;
-                    const variance1 = sum1_sq / count - mean1 * mean1;
-                    const variance2 = sum2_sq / count - mean2 * mean2;
-                    const covariance = sum_cross / count - mean1 * mean2;
-                    
-                    // Calculate SSIM for this block
-                    // (2*μx*μy + C1) * (2*σxy + C2) / ((μx² + μy² + C1) * (σx² + σy² + C2))
-                    const numerator = (2 * mean1 * mean2 + C1) * (2 * covariance + C2);
-                    const denominator = (mean1 * mean1 + mean2 * mean2 + C1) * (variance1 + variance2 + C2);
-                    
-                    // Avoid division by zero
-                    const blockSSIM = denominator > 0 ? numerator / denominator : 1;
-                    
-                    // Calculate average motion in this block
-                    const avgMotion = blockMotion / count;
-                    motionScore += avgMotion;
-                    
-                    // Record motion in grid regions to detect localized changes
-                    const regionX = Math.floor((x / width) * regionsX);
-                    const regionY = Math.floor((y / height) * regionsY);
-                    const regionIndex = regionY * regionsX + regionX;
-                    if (regionIndex >= 0 && regionIndex < regionScores.length) {
-                        regionScores[regionIndex] += avgMotion;
-                    }
-                    
-                    ssim_sum += blockSSIM;
-                    blocks++;
+        const computeHistogram = (imageData, sampleFactor = 4) => { const data = imageData.data; const hist = new Array(256).fill(0); let count = 0; for (let i = 0; i < data.length; i += 4 * sampleFactor) { const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]); hist[gray]++; count++; } if (count === 0) return hist; return hist.map(val => val / count); };
+        const histogramDifference = (hist1, hist2) => { if (!hist1 || !hist2 || hist1.length !== hist2.length) return 1; return hist1.reduce((acc, val, i) => acc + Math.abs(val - hist2[i]), 0); };
+        const computePixelDiff = (data1, data2, sampleFactor = 4) => { let diff = 0; let count = 0; const step = 4 * sampleFactor; for (let i = 0; i < data1.length; i += step) { diff += Math.abs(data1[i] - data2[i]); diff += Math.abs(data1[i+1] - data2[i+1]); diff += Math.abs(data1[i+2] - data2[i+2]); count++; } return count > 0 ? (diff / (count * 3)) : 0; };
+
+
+        const createScreenshotElement = (blob, timestamp, blobArrayRef) => {
+            if(!screenshotsDiv || !blob) return null;
+
+            // Find the correct index within the provided array reference
+            const currentIndex = blobArrayRef.findIndex(item => item.timestamp === timestamp && item.blob?.size === blob.size);
+
+            const container = document.createElement('div');
+            container.className = "screenshot-container";
+            const blobUrl = URL.createObjectURL(blob);
+            container.dataset.blobUrl = blobUrl;
+            container.dataset.timestamp = String(timestamp);
+            container.dataset.index = currentIndex.toString(); // Store the found index
+
+            // Create clickable container instead of an anchor
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'img-container';
+            imgContainer.style.cursor = 'pointer';
+
+            const img = document.createElement('img');
+            img.src = blobUrl;
+            img.alt = `Screenshot at ${formatTime(timestamp)}`;
+
+            imgContainer.appendChild(img);
+            container.appendChild(imgContainer);
+
+            // Add click event to open lightbox
+            imgContainer.addEventListener('click', (e) => {
+                e.preventDefault();
+                // Use the index stored on the container
+                const clickedIndex = parseInt(container.dataset.index);
+                if (!isNaN(clickedIndex)) {
+                    openLightbox(blob, timestamp, blobArrayRef, clickedIndex);
+                } else {
+                    console.warn("Could not find index for lightbox.");
                 }
+            });
+
+            if (timestamp >= 0) {
+                const overlay = document.createElement('div');
+                overlay.className = "screenshot-overlay";
+                overlay.textContent = formatTime(timestamp);
+                container.appendChild(overlay);
             }
-            
-            // Get average SSIM
-            const avgSSIM = blocks > 0 ? ssim_sum / blocks : 1;
-            // Get average motion
-            const avgMotion = blocks > 0 ? motionScore / blocks : 0;
-            
-            // Find the region with maximum motion (to detect local changes in static scenes)
-            maxMotionRegion = Math.max(...regionScores);
-            const hasSignificantLocalMotion = maxMotionRegion > motionThreshold * 3;
-            
-            // Adjust SSIM for static scenes with talking
-            // If there's some motion but overall SSIM is high, this might be dialogue
-            if (avgSSIM > 0.85 && avgMotion < motionThreshold && !hasSignificantLocalMotion) {
-                // Make it less sensitive in static dialogue scenes
-                return Math.min(1, avgSSIM + 0.1);
-            }
-            
-            // If there's significant motion in a specific region (like a face moving)
-            // but the overall frame is static, boost the difference
-            if (avgSSIM > 0.75 && hasSignificantLocalMotion) {
-                return avgSSIM * 0.9;
-            }
-            
-            return avgSSIM;
+
+            const delBtn = document.createElement('button');
+            delBtn.className = "lightbox-delete-btn";
+            delBtn.innerHTML = '<i class="ri-delete-bin-2-line"></i>';
+            delBtn.title = "Remove this screenshot";
+            delBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteScreenshot(blob, timestamp, blobArrayRef);
+            });
+
+            container.appendChild(delBtn);
+            return container;
         };
-        
-        const createScreenshotElement = (blob, timestamp, blobArrayRef) => { /* ... */ if(!screenshotsDiv || !blob) return null; const container = document.createElement('div'); container.className = "screenshot-container"; const blobUrl = URL.createObjectURL(blob); container.dataset.blobUrl = blobUrl; container.dataset.timestamp = String(timestamp); const a = document.createElement('a'); a.href = blobUrl; a.target = "_blank"; const img = document.createElement('img'); img.src = blobUrl; img.alt = `Screenshot at ${formatTime(timestamp)}`; a.appendChild(img); container.appendChild(a); if (timestamp >= 0) { const overlay = document.createElement('div'); overlay.className = "screenshot-overlay"; overlay.textContent = formatTime(timestamp); container.appendChild(overlay); } const delBtn = document.createElement('button'); delBtn.className = "delete-btn"; delBtn.innerHTML = "×"; delBtn.title = "Remove this screenshot"; delBtn.addEventListener('click', (e) => { e.stopPropagation(); const urlToRemove = container.dataset.blobUrl; const timeToRemove = parseFloat(container.dataset.timestamp); const indexToRemove = blobArrayRef.findIndex(item => item.timestamp === timeToRemove && item.blob?.size === blob.size); if (indexToRemove > -1) { blobArrayRef.splice(indexToRemove, 1); } else { console.warn("Could not find blob to remove."); } URL.revokeObjectURL(urlToRemove); container.remove(); updateImageCount(); }); container.appendChild(delBtn); return container; };
-        const getCurrentFormatSettings = () => { /* ... */ let format = 'png'; let qualitySlider = null; let qualityValue = 1.0; const activeModeId = document.querySelector('.mode-content > div.active')?.id; const formatTabsContainerId = (activeModeId === 'manualMode' || activeModeId === 'contactSheetMode') ? 'autoMode' : activeModeId; const activeFormatTab = document.querySelector(`#${formatTabsContainerId} .format-tab.active`); if (activeFormatTab) format = activeFormatTab.getAttribute('data-format') || 'png'; if (format === 'jpeg') { qualitySlider = (activeModeId === 'autoSmartMode') ? jpegQualitySmart : jpegQualityAuto; qualityValue = qualitySlider ? parseFloat(qualitySlider.value) / 100 : 0.85; } else if (format === 'webp') { qualitySlider = (activeModeId === 'autoSmartMode') ? webpQualitySmart : webpQualityAuto; qualityValue = qualitySlider ? parseFloat(qualitySlider.value) / 100 : 0.85; } const type = `image/${format}`; return { type, quality: qualityValue }; };
-        const downloadBlobsAsZip = (blobDataArray, baseFilename = "screenshots") => { /* ... */ if (!blobDataArray || blobDataArray.length === 0) { alert("No screenshots to download."); return; } if (!window.JSZip) { alert("Error: JSZip library not loaded."); return; } const zip = new JSZip(); const { type } = getCurrentFormatSettings(); const extension = type.split('/')[1] === 'jpeg' ? 'jpg' : type.split('/')[1]; blobDataArray.forEach((item, index) => { if (!item || !item.blob) return; const timeSuffix = (item.timestamp !== undefined && item.timestamp >= 0) ? `_${formatTime(item.timestamp).replace(':','-')}` : `_${index + 1}`; const filename = `${baseFilename}${timeSuffix}.${extension}`; zip.file(filename, item.blob); }); zip.generateAsync({ type: "blob" }).then((content) => { const tempLink = document.createElement('a'); const url = URL.createObjectURL(content); tempLink.href = url; tempLink.download = `${baseFilename}.zip`; document.body.appendChild(tempLink); tempLink.click(); document.body.removeChild(tempLink); URL.revokeObjectURL(url); }).catch((err) => { console.error("Error generating ZIP:", err); alert("Error creating ZIP file: " + err.message); }); };
-        const handleFileLoad = (file) => { 
-            if (!video || !manualVideo || !contactSheetVideo || !file) return; 
-            uploadedFile = file; 
-            const fileURL = URL.createObjectURL(file); 
-            video.src = fileURL; 
-            manualVideo.src = fileURL; 
-            contactSheetVideo.src = fileURL; 
-            updateDropZoneUI(true, file.name); 
-            resetUIOnNewVideo(); 
-            
+
+        // Function to open the lightbox with navigation
+        const openLightbox = (blob, timestamp, blobArrayRef, currentIndex) => {
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxTimestamp = document.getElementById('lightboxTimestamp');
+            const lightboxDownload = document.getElementById('lightboxDownload');
+            const screenshotLightbox = document.getElementById('screenshotLightbox');
+            const prevBtn = document.getElementById('lightboxPrevBtn');
+            const nextBtn = document.getElementById('lightboxNextBtn');
+            const deleteBtn = document.getElementById('lightboxDeleteBtn');
+
+            if (!lightboxImage || !lightboxTimestamp || !lightboxDownload || !screenshotLightbox || !prevBtn || !nextBtn) {
+                return;
+            }
+
+            // Set current index for navigation
+            screenshotLightbox.dataset.currentIndex = currentIndex.toString();
+            screenshotLightbox.dataset.arrayType = blobArrayRef === screenshotBlobs ? 'auto' : 'manual';
+
+            // Update image and info
+            updateLightboxContent(currentIndex, blobArrayRef);
+
+            // Show the lightbox
+            screenshotLightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Setup navigation buttons
+            prevBtn.onclick = () => navigateLightbox(-1);
+            nextBtn.onclick = () => navigateLightbox(1);
+
+            // Setup delete button
+            if (deleteBtn) {
+                deleteBtn.onclick = () => {
+                    const currentIdx = parseInt(screenshotLightbox.dataset.currentIndex || '0');
+                    const arrayType = screenshotLightbox.dataset.arrayType || 'auto';
+                    const currentBlobArrayRef = arrayType === 'auto' ? screenshotBlobs : manualScreenshotBlobs;
+
+                    if (currentIdx >= 0 && currentIdx < currentBlobArrayRef.length) {
+                        // Get the item to remove
+                        const itemToRemove = currentBlobArrayRef[currentIdx];
+
+                        // Delete the screenshot
+                        const deletedIndex = deleteScreenshot(itemToRemove.blob, itemToRemove.timestamp, currentBlobArrayRef);
+
+                        // Close lightbox if there are no more images
+                        if (currentBlobArrayRef.length === 0) {
+                            screenshotLightbox.classList.remove('active');
+                            document.body.style.overflow = '';
+                            return;
+                        }
+
+                        // Adjust current index if needed
+                        const newIndex = Math.min(currentIdx, currentBlobArrayRef.length - 1);
+                        screenshotLightbox.dataset.currentIndex = newIndex.toString();
+
+                        // Update lightbox content
+                        updateLightboxContent(newIndex, currentBlobArrayRef);
+
+                        // Update navigation buttons
+                        updateNavButtonVisibility(newIndex, currentBlobArrayRef.length);
+                    }
+                };
+            }
+
+
+            // Update button visibility
+            updateNavButtonVisibility(currentIndex, blobArrayRef.length);
+        };
+
+        // Function to update the lightbox content
+        const updateLightboxContent = (index, blobArrayRef) => {
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxTimestamp = document.getElementById('lightboxTimestamp');
+            const lightboxDownload = document.getElementById('lightboxDownload');
+
+            if (index >= 0 && index < blobArrayRef.length && lightboxImage && lightboxTimestamp && lightboxDownload) {
+                const item = blobArrayRef[index];
+                const blobUrl = URL.createObjectURL(item.blob);
+
+                // Update image source
+                lightboxImage.src = blobUrl;
+
+                // Update timestamp info
+                if (item.timestamp >= 0) {
+                    lightboxTimestamp.textContent = formatTime(item.timestamp);
+                } else {
+                    lightboxTimestamp.textContent = '';
+                }
+
+                // Set download attributes
+                const extension = getFileExtensionFromType(item.blob.type);
+                const timeSuffix = (item.timestamp !== undefined && item.timestamp >= 0)
+                    ? `_${formatTime(item.timestamp).replace(':','-')}`
+                    : '';
+                const filename = `screenshot${timeSuffix}.${extension}`;
+
+                lightboxDownload.href = blobUrl;
+                lightboxDownload.download = filename;
+            }
+        };
+
+        // Function to navigate between images
+        const navigateLightbox = (direction) => {
+            const screenshotLightbox = document.getElementById('screenshotLightbox');
+            if (!screenshotLightbox) return;
+
+            const currentIndex = parseInt(screenshotLightbox.dataset.currentIndex || '0');
+            const arrayType = screenshotLightbox.dataset.arrayType || 'auto';
+            const blobArrayRef = arrayType === 'auto' ? screenshotBlobs : manualScreenshotBlobs;
+
+            const newIndex = currentIndex + direction;
+
+            if (newIndex >= 0 && newIndex < blobArrayRef.length) {
+                // Update current index
+                screenshotLightbox.dataset.currentIndex = newIndex.toString();
+
+                // Update content
+                updateLightboxContent(newIndex, blobArrayRef);
+
+                // Update button visibility
+                updateNavButtonVisibility(newIndex, blobArrayRef.length);
+            }
+        };
+
+        // Function to update navigation button visibility
+        const updateNavButtonVisibility = (currentIndex, totalItems) => {
+            const prevBtn = document.getElementById('lightboxPrevBtn');
+            const nextBtn = document.getElementById('lightboxNextBtn');
+
+            if (prevBtn && nextBtn) {
+                prevBtn.disabled = currentIndex <= 0;
+                nextBtn.disabled = currentIndex >= totalItems - 1;
+            }
+        };
+
+        // Helper to get file extension from MIME type
+        const getFileExtensionFromType = (type) => {
+            if (!type) return 'png';
+            if (type === 'image/jpeg') return 'jpg';
+            return type.split('/')[1] || 'png';
+        };
+        const getCurrentFormatSettings = () => { let format = 'png'; let qualitySlider = null; let qualityValue = 1.0; const activeModeId = document.querySelector('.mode-content > div.active')?.id; const formatTabsContainerId = (activeModeId === 'manualMode' || activeModeId === 'contactSheetMode') ? 'autoMode' : activeModeId; const activeFormatTab = document.querySelector(`#${formatTabsContainerId} .format-tab.active`); if (activeFormatTab) format = activeFormatTab.getAttribute('data-format') || 'png'; if (format === 'jpeg') { qualitySlider = (activeModeId === 'autoSmartMode') ? jpegQualitySmart : jpegQualityAuto; qualityValue = qualitySlider ? parseFloat(qualitySlider.value) / 100 : 0.85; } else if (format === 'webp') { qualitySlider = (activeModeId === 'autoSmartMode') ? webpQualitySmart : webpQualityAuto; qualityValue = qualitySlider ? parseFloat(qualitySlider.value) / 100 : 0.85; } const type = `image/${format}`; return { type, quality: qualityValue }; };
+        const downloadBlobsAsZip = (blobDataArray, baseFilename = "screenshots") => { if (!blobDataArray || blobDataArray.length === 0) { alert("No screenshots to download."); return; } if (!window.JSZip) { alert("Error: JSZip library not loaded."); return; } const zip = new JSZip(); const { type } = getCurrentFormatSettings(); const extension = type.split('/')[1] === 'jpeg' ? 'jpg' : type.split('/')[1]; blobDataArray.forEach((item, index) => { if (!item || !item.blob) return; const timeSuffix = (item.timestamp !== undefined && item.timestamp >= 0) ? `_${formatTime(item.timestamp).replace(':','-')}` : `_${index + 1}`; const filename = `${baseFilename}${timeSuffix}.${extension}`; zip.file(filename, item.blob); }); zip.generateAsync({ type: "blob" }).then((content) => { const tempLink = document.createElement('a'); const url = URL.createObjectURL(content); tempLink.href = url; tempLink.download = `${baseFilename}.zip`; document.body.appendChild(tempLink); tempLink.click(); document.body.removeChild(tempLink); URL.revokeObjectURL(url); }).catch((err) => { console.error("Error generating ZIP:", err); alert("Error creating ZIP file: " + err.message); }); };
+        const handleFileLoad = (file) => {
+            if (!video || !manualVideo || !contactSheetVideo || !file) return;
+            uploadedFile = file;
+            const fileURL = URL.createObjectURL(file);
+            video.src = fileURL;
+            manualVideo.src = fileURL;
+            contactSheetVideo.src = fileURL;
+            updateDropZoneUI(true, file.name);
+            resetUIOnNewVideo();
+
             // Wait for video metadata to be loaded
             if (video.readyState >= 1) {
                 // Set timeout to ensure the video has loaded enough
@@ -1837,28 +2206,28 @@
                 }, { once: true });
             }
         };
-        const resetUIOnNewVideo = () => { 
-            if(screenshotsDiv) screenshotsDiv.innerHTML = ''; 
-            screenshotBlobs = []; 
-            manualScreenshotBlobs = []; 
-            contactSheetBlob = null; 
-            cropData = null; 
+        const resetUIOnNewVideo = () => {
+            if(screenshotsDiv) screenshotsDiv.innerHTML = '';
+            screenshotBlobs = [];
+            manualScreenshotBlobs = [];
+            contactSheetBlob = null;
+            cropData = null;
             clearContactSheetPreview(true);
-            
+
             // Reset grid cache for new video
             gridCache = {
                 '5x4': { data: null, blob: null, completed: false },
                 '4x3': { data: null, blob: null, completed: false },
                 '3x2': { data: null, blob: null, completed: false }
             };
-            
+
             // Clear completion markers
             document.querySelectorAll('.grid-size-tab').forEach(tab => {
                 tab.classList.remove('completed');
             });
-            
-            updateImageCount(); 
-            resetProcessingUI('all'); 
+
+            updateImageCount();
+            resetProcessingUI('all');
         };
 
         // --- Refactored Sampling Logic ---
@@ -1868,39 +2237,39 @@
                     outputType, useCrop,
                     processFrameCallback, onCompleteCallback, onProgressCallback, onErrorCallback } = options;
 
-            let localCancelRequested = false; 
-            let currentSampleIndex = 0; 
+            let localCancelRequested = false;
+            let currentSampleIndex = 0;
             const collectedData = [];
 
             // Early validations with proper cancel checks
-            if (!videoElement || !videoElement.src || videoElement.readyState < videoElement.HAVE_METADATA || videoElement.duration <= 0) { 
-                const error = new Error("Video not ready for sampling."); 
-                if (onErrorCallback) onErrorCallback(error); 
-                else console.error(error); 
+            if (!videoElement || !videoElement.src || videoElement.readyState < videoElement.HAVE_METADATA || videoElement.duration <= 0) {
+                const error = new Error("Video not ready for sampling.");
+                if (onErrorCallback) onErrorCallback(error);
+                else console.error(error);
                 if (onCompleteCallback) onCompleteCallback(collectedData);
-                return { 
+                return {
                     cancel: () => {
                         console.log("[sampleVideoFrames] Cancellation requested on invalid video.");
                         localCancelRequested = true;
-                    } 
-                }; 
+                    }
+                };
             }
-            
-            if (!sampleTimestamps || sampleTimestamps.length === 0) { 
-                const error = new Error("No timestamps provided for sampling."); 
-                if (onErrorCallback) onErrorCallback(error); 
-                else console.error(error); 
+
+            if (!sampleTimestamps || sampleTimestamps.length === 0) {
+                const error = new Error("No timestamps provided for sampling.");
+                if (onErrorCallback) onErrorCallback(error);
+                else console.error(error);
                 if (onCompleteCallback) onCompleteCallback(collectedData);
-                return { 
+                return {
                     cancel: () => {
                         console.log("[sampleVideoFrames] Cancellation requested on empty timestamps.");
                         localCancelRequested = true;
-                    } 
-                }; 
+                    }
+                };
             }
 
             const totalSamples = sampleTimestamps.length;
-            
+
             // Check for external cancellation flag
             const checkCancelled = () => localCancelRequested || cancelExtractionRequested;
 
@@ -1919,7 +2288,7 @@
                 }
 
                 const timestamp = sampleTimestamps[currentSampleIndex];
-                
+
                 // Calculate and report progress percentage
                 if (onProgressCallback) {
                     const progress = Math.min(Math.round((currentSampleIndex / totalSamples) * 100), 100);
@@ -1948,7 +2317,7 @@
                         const onSeeked = () => {
                             clearTimeout(seekTimeout);
                             videoElement.removeEventListener('error', onError);
-                            
+
                             // Check cancellation after seek completes
                             if (checkCancelled()) {
                                 console.log(`[sampleVideoFrames] Cancelled after seeking to ${timestamp.toFixed(2)}s`);
@@ -1968,9 +2337,9 @@
 
                                 frameCanvas.width = sourceWidth;
                                 frameCanvas.height = sourceHeight;
-                                
+
                                 ctx.drawImage(videoElement, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
-                                
+
                                 // Handle various output types
                                 if (outputType === 'blob') {
                                     const { type, quality } = getCurrentFormatSettings();
@@ -1983,7 +2352,7 @@
                                         }
                                         callback(blob);
                                     }, type, quality);
-                                } 
+                                }
                                 else {
                                     callback(frameCanvas.toDataURL('image/png'));
                                 }
@@ -2013,47 +2382,47 @@
 
                 captureCurrentFrame((frameData, error) => {
                     // Check cancellation before processing the result
-                    if (checkCancelled()) { 
-                        console.log(`[sampleVideoFrames] Cancelled during frame ${currentSampleIndex} callback`); 
-                        if (onCompleteCallback) onCompleteCallback(collectedData); 
-                        return; 
+                    if (checkCancelled()) {
+                        console.log(`[sampleVideoFrames] Cancelled during frame ${currentSampleIndex} callback`);
+                        if (onCompleteCallback) onCompleteCallback(collectedData);
+                        return;
                     }
-                    
-                    if (error || !frameData) { 
-                        console.warn(`[sampleVideoFrames] Failed to capture frame at ${timestamp.toFixed(2)}s:`, error || "No data returned"); 
+
+                    if (error || !frameData) {
+                        console.warn(`[sampleVideoFrames] Failed to capture frame at ${timestamp.toFixed(2)}s:`, error || "No data returned");
                     }
                     else {
                         try {
                             // Pass the index along with the data and timestamp
                             processFrameCallback(frameData, timestamp, currentSampleIndex);
                             collectedData[currentSampleIndex] = { data: frameData, timestamp }; // Store successful data
-                        } catch (processError) { 
-                            console.error(`[sampleVideoFrames] Error in processFrameCallback at ${timestamp.toFixed(2)}s:`, processError); 
-                            if (onErrorCallback) onErrorCallback(processError); 
+                        } catch (processError) {
+                            console.error(`[sampleVideoFrames] Error in processFrameCallback at ${timestamp.toFixed(2)}s:`, processError);
+                            if (onErrorCallback) onErrorCallback(processError);
                         }
                     }
-                    
+
                     // Check cancellation again before scheduling next frame
-                    if (checkCancelled()) { 
-                        console.log(`[sampleVideoFrames] Cancelled after processing frame ${currentSampleIndex}`); 
-                        if (onCompleteCallback) onCompleteCallback(collectedData); 
-                        return; 
+                    if (checkCancelled()) {
+                        console.log(`[sampleVideoFrames] Cancelled after processing frame ${currentSampleIndex}`);
+                        if (onCompleteCallback) onCompleteCallback(collectedData);
+                        return;
                     }
-                    
-                    currentSampleIndex++; 
+
+                    currentSampleIndex++;
                     requestAnimationFrame(processNext); // Use rAF for next step
                 });
             };
-            
+
             // Start the process
             requestAnimationFrame(processNext);
-            
+
             // Return an object with cancel method
-            return { 
-                cancel: () => { 
-                    console.log("[sampleVideoFrames] Cancellation explicitly requested."); 
-                    localCancelRequested = true; 
-                } 
+            return {
+                cancel: () => {
+                    console.log("[sampleVideoFrames] Cancellation explicitly requested.");
+                    localCancelRequested = true;
+                }
             };
         };
 
@@ -2067,7 +2436,7 @@
                 if (callback) callback();
                 return;
             }
-            
+
             // Define sample times at 30%, 50%, and 70% of video duration
             const samplePercents = [0.3, 0.5, 0.7];
             const sampleTimes = samplePercents.map(
@@ -2190,12 +2559,12 @@
                         cropWidth: finalCropWidth,
                         cropHeight: finalCropHeight,
                     };
-                    
+
                     console.log("Detected black bars crop data:", cropData);
                     if (callback) callback();
                     return;
                 }
-                
+
                 // Set up listener for each sample's seek event
                 const sampleTime = sampleTimes[currentSample];
                 video.addEventListener(
@@ -2210,7 +2579,7 @@
                     },
                     { once: true }
                 );
-                
+
                 // Handle errors during seeking
                 video.addEventListener(
                     "error",
@@ -2229,7 +2598,7 @@
                     },
                     { once: true }
                 );
-                
+
                 try {
                     video.currentTime = sampleTime;
                 } catch (error) {
@@ -2252,16 +2621,16 @@
         // --- Event Listeners Setup ---
         if (pageTitle) pageTitle.addEventListener('click', () => window.location.reload());
         if (video) video.addEventListener('loadedmetadata', () => {
-            updateFileInfoDisplay(); 
+            updateFileInfoDisplay();
              resetProcessingUI('all');
-            
+
             // If remove bars toggle is enabled, detect black bars when a new video loads
             if (removeBarsEnabled) {
                 // Small delay to ensure video is ready
                 setTimeout(() => {
                     detectCropBoundariesMulti(() => {
                         console.log("Black bar detection completed for new video");
-                        
+
                         // Update thumbnail and stats after detection completes
                         updateDropZoneThumbnail();
                         updateFileInfoDisplay(); // Update stats again with crop data
@@ -2283,10 +2652,9 @@
 
         // File Upload Listeners
         if (videoInput) videoInput.addEventListener('change', (event) => { const file = event.target.files[0]; if (file) handleFileLoad(file); });
-        if (dropZone) { /* ... */ dropZone.addEventListener('dragover', (e) => { e.preventDefault(); if (!dropZone.classList.contains('file-loaded')) dropZone.classList.add('hover'); }); dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); }); dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); const file = e.dataTransfer.files[0]; if (file && file.type.startsWith('video/')) handleFileLoad(file); else alert("Please drop a valid video file."); }); 
-        
-        // Updated to handle both states
-        dropZone.addEventListener('click', (e) => { 
+        if (dropZone) { dropZone.addEventListener('dragover', (e) => { e.preventDefault(); if (!dropZone.classList.contains('file-loaded')) dropZone.classList.add('hover'); }); dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); }); dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); const file = e.dataTransfer.files[0]; if (file && file.type.startsWith('video/')) handleFileLoad(file); else alert("Please drop a valid video file."); });
+
+        dropZone.addEventListener('click', (e) => {
           if (dropZone.classList.contains('file-loaded')) {
             // If file is loaded and click is not on the change file button
             if (selectFileButton && !selectFileButton.contains(e.target) && videoInput) videoInput.click();
@@ -2294,18 +2662,18 @@
             // If no file is loaded and click is not on the initial button
             if (initialSelectFileButton && !initialSelectFileButton.contains(e.target) && videoInput) videoInput.click();
           }
-        }); 
-        }
-        
-        // Event listeners for both buttons
-        if (selectFileButton) selectFileButton.addEventListener('click', (e) => { 
-          e.stopPropagation(); 
-          if(videoInput) videoInput.click(); 
         });
-        
-        if (initialSelectFileButton) initialSelectFileButton.addEventListener('click', (e) => { 
-          e.stopPropagation(); 
-          if(videoInput) videoInput.click(); 
+        }
+
+        // Event listeners for both buttons
+        if (selectFileButton) selectFileButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if(videoInput) videoInput.click();
+        });
+
+        if (initialSelectFileButton) initialSelectFileButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if(videoInput) videoInput.click();
         });
 
         // --- Mode Tabs Listener ---
@@ -2317,23 +2685,30 @@
 
                    const showPreview = (newMode === 'contactSheet');
                    outputColumn.classList.toggle('show-contact-sheet', showPreview);
-                   
+
                    // Toggle the correct button groups
                    const intervalModeButtons = document.getElementById('intervalModeButtons');
                    const smartModeButtons = document.getElementById('smartModeButtons');
                    const contactSheetModeButtons = document.getElementById('contactSheetModeButtons');
                    const manualModeButtons = document.getElementById('manualModeButtons');
-                   
+
                    if (intervalModeButtons) intervalModeButtons.style.display = (newMode === 'auto') ? 'flex' : 'none';
                    if (smartModeButtons) smartModeButtons.style.display = (newMode === 'autoSmart') ? 'flex' : 'none';
                    if (contactSheetModeButtons) contactSheetModeButtons.style.display = (newMode === 'contactSheet') ? 'flex' : 'none';
                    if (manualModeButtons) manualModeButtons.style.display = (newMode === 'manual') ? 'flex' : 'none';
-                   
+
+                   // Generate time inputs when contact sheet mode is selected
+                   if (newMode === 'contactSheet') {
+                       // Initialize the contact sheet preview grid and time inputs
+                       initContactSheetPreview();
+                       generateTimeInputs();
+                   }
+
                    // Toggle the correct progress bars - keep them hidden initially
                    const progressBarAuto = document.getElementById('progressBarAuto');
                    const progressBarSmart = document.getElementById('progressBarSmart');
                    const progressBarContactSheet = document.getElementById('progressBarContactSheet');
-                   
+
                    if (progressBarAuto) progressBarAuto.style.display = 'none';
                    if (progressBarSmart) progressBarSmart.style.display = 'none';
                    if (progressBarContactSheet) progressBarContactSheet.style.display = 'none';
@@ -2344,11 +2719,13 @@
                    } else {
                        contactSheetBlob = null; // Reset blob if switching away
                        if(downloadContactSheetButton) downloadContactSheetButton.disabled = true;
-                       if (contactSheetControlsElement) contactSheetControlsElement.style.display = 'none';
-                       if (fineTuneMessageElement) fineTuneMessageElement.style.display = 'none';
                    }
-                   // Clear regular screenshots if switching to contact sheet or manual
-                   if (newMode === 'contactSheet' || newMode === 'manual') { if (screenshotsDiv) screenshotsDiv.innerHTML = ''; screenshotBlobs = []; manualScreenshotBlobs = []; }
+                   // Clear regular screenshots if switching to contact sheet
+                   if (newMode === 'contactSheet') {
+                       if (screenshotsDiv) screenshotsDiv.innerHTML = '';
+                       screenshotBlobs = [];
+                       manualScreenshotBlobs = [];
+                   }
 
                    document.querySelectorAll(`#${newMode}Mode input[type="range"]`).forEach(updateSliderBackground); updateImageCount();
                  });
@@ -2360,45 +2737,45 @@
         const customGridControls = document.getElementById('customGridControls');
         const customGridCols = document.getElementById('customGridCols');
         const customGridRows = document.getElementById('customGridRows');
-        
+
         if (gridSizeTabs.length > 0) {
             gridSizeTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     if (processingActive) return;
-                    
+
                     // Update active tab styling
                     gridSizeTabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    
+
                     // Get rows and cols attributes
                     let rows = parseInt(tab.getAttribute('data-rows'));
                     let cols = parseInt(tab.getAttribute('data-cols'));
-                    
+
                     // Show/hide custom grid controls
                     const isCustom = tab.textContent.trim() === 'Custom';
                     if (customGridControls) {
                         customGridControls.style.display = isCustom ? 'block' : 'none';
                     }
-                    
+
                     // If custom, use the values from inputs
                     if (isCustom && customGridRows && customGridCols) {
                         rows = parseInt(customGridRows.value) || 2;
                         cols = parseInt(customGridCols.value) || 3;
-                        
+
                         // Update the custom tab's data attributes
                         tab.setAttribute('data-rows', rows);
                         tab.setAttribute('data-cols', cols);
                     }
-                    
+
                     if (isNaN(rows) || isNaN(cols)) return;
-                    
+
                     // Save current state if we have data
                     const previousTab = document.querySelector('.grid-size-tab.active');
                     if (previousTab && previousTab !== tab) {
                         const prevRows = parseInt(previousTab.getAttribute('data-rows'));
                         const prevCols = parseInt(previousTab.getAttribute('data-cols'));
                         const cacheKey = `${prevCols}x${prevRows}`;
-                        
+
                         if (contactSheetPreviewData.some(item => item !== null)) {
                             gridCache[cacheKey] = {
                                 data: [...contactSheetPreviewData],
@@ -2407,25 +2784,25 @@
                             };
                         }
                     }
-                    
+
                     // Check if we have cached data for this grid size
                     const cacheKey = `${cols}x${rows}`;
                     const cachedGrid = gridCache[cacheKey];
-                    
+
                     if (cachedGrid?.data) {
                         // Restore from cache
                         contactSheetPreviewData = [...cachedGrid.data];
                         contactSheetBlob = cachedGrid.blob;
-                        
+
                         // Restore cell visuals
                         clearContactSheetPreview(true); // Clear existing
                         initContactSheetPreview(rows, cols);
                         generateTimeInputs(rows, cols);
-                        
+
                         contactSheetPreviewData.forEach((data, index) => {
                             if (data && data.blob) {
                                 updatePreviewCell(index, data.blob, data.timestamp);
-                                
+
                                 // Update time input values
                                 const timeInput = document.getElementById(`timeInput_${index}`);
                                 const timeFormatted = document.getElementById(`timeFormatted_${index}`);
@@ -2433,16 +2810,15 @@
                                 if (timeFormatted) timeFormatted.value = formatTime(data.timestamp);
                             }
                         });
-                        
+
                         // Show controls if we have data
                         if (contactSheetControlsElement) contactSheetControlsElement.style.display = 'grid';
-                        if (fineTuneMessageElement) fineTuneMessageElement.style.display = 'block';
-                        
+
                         if (contactSheetBlob && downloadContactSheetButton) {
                             downloadContactSheetButton.disabled = false;
                         }
                         if (previewContactSheetButton) previewContactSheetButton.disabled = !cachedGrid.blob;
-                        
+
                         if (cachedGrid.completed) {
                             tab.classList.add('completed');
                         } else {
@@ -2452,80 +2828,80 @@
                         // Initialize new grid
                         contactSheetPreviewData = new Array(rows * cols).fill(null);
                         contactSheetBlob = null;
-                        
+
                         if (downloadContactSheetButton) {
                             downloadContactSheetButton.disabled = true;
                         }
-                        
+
                         tab.classList.remove('completed');
                     }
-                    
+
                     // Update the UI
                     initContactSheetPreview(rows, cols);
                     generateTimeInputs(rows, cols);
                 });
             });
         }
-        
+
         // Custom grid dimension inputs event listeners
         if (customGridCols && customGridRows) {
             const updateCustomGrid = () => {
                 if (processingActive) return;
-                
+
                 // Find the custom tab by its text content
                 const customTab = Array.from(gridSizeTabs).find(tab => tab.textContent.trim() === 'Custom');
                 if (!customTab || !customTab.classList.contains('active')) return;
-                
+
                 const rows = Math.min(Math.max(parseInt(customGridRows.value) || 2, 1), 6);
                 const cols = Math.min(Math.max(parseInt(customGridCols.value) || 3, 1), 6);
-                
+
                 // Update values to ensure they're within bounds
                 customGridRows.value = rows;
                 customGridCols.value = cols;
-                
+
                 // Update the custom tab's data attributes
                 customTab.setAttribute('data-rows', rows);
                 customTab.setAttribute('data-cols', cols);
-                
+
                 // Initialize new grid with new dimensions
                 contactSheetPreviewData = new Array(rows * cols).fill(null);
                 contactSheetBlob = null;
-                
+
                 if (downloadContactSheetButton) {
                     downloadContactSheetButton.disabled = true;
                 }
-                
+
                 customTab.classList.remove('completed');
-                
+
                 // Update the UI
                 initContactSheetPreview(rows, cols);
                 generateTimeInputs(rows, cols);
             };
-            
+
             customGridCols.addEventListener('input', updateCustomGrid);
             customGridRows.addEventListener('input', updateCustomGrid);
         }
 
         // --- Sliders, Toggle, Format Tabs, Algo Tabs Setup ---
-        const setupSlider = (slider, displaySpan, suffix) => { 
-            if (!slider || !displaySpan) return; 
-            
-            const updateSliderUI = () => { 
-                displaySpan.textContent = slider.value + suffix; 
-                updateSliderBackground(slider); 
-            }; 
-            
-            slider.addEventListener('input', updateSliderUI); 
-            updateSliderUI(); 
+        const setupSlider = (slider, displaySpan, suffix) => {
+            if (!slider || !displaySpan) return;
+
+            const updateSliderUI = () => {
+                displaySpan.textContent = slider.value + suffix;
+                updateSliderBackground(slider);
+            };
+
+            slider.addEventListener('input', updateSliderUI);
+            updateSliderUI();
         };
-        setupSlider(intervalInput, intervalValue, 's'); setupSlider(jpegQualityAuto, jpegQualityValueAuto, '%'); setupSlider(webpQualityAuto, webpQualityValueAuto, '%'); setupSlider(jpegQualitySmart, jpegQualityValueSmart, '%'); setupSlider(webpQualitySmart, webpQualityValueSmart, '%'); setupSlider(histThresholdInput, histThresholdValue, ''); setupSlider(pixelThresholdInput, pixelThresholdValue, ''); setupSlider(ssimThresholdInput, ssimThresholdValue, '');
+        setupSlider(intervalInput, intervalValue, 's'); setupSlider(jpegQualityAuto, jpegQualityValueAuto, '%'); setupSlider(webpQualityAuto, webpQualityValueAuto, '%'); setupSlider(jpegQualitySmart, jpegQualityValueSmart, '%'); setupSlider(webpQualitySmart, webpQualityValueSmart, '%'); setupSlider(histThresholdInput, histThresholdValue, ''); setupSlider(pixelThresholdInput, pixelThresholdValue, '');
         // Set up toggle handlers to sync the state across modes
-        if (removeBarsToggle) removeBarsToggle.addEventListener('change', (e) => { 
-            removeBarsEnabled = e.target.checked; 
+        if (removeBarsToggle) removeBarsToggle.addEventListener('change', (e) => {
+            removeBarsEnabled = e.target.checked;
             if (removeBarsEnabled && video?.src && video.readyState >= 2) {
                     detectCropBoundariesMulti(() => {
                     console.log("Black bar detection completed after toggle");
-                    
+
                     // Update thumbnail and stats after black bar detection
                     updateDropZoneThumbnail();
                     updateFileInfoDisplay();
@@ -2533,7 +2909,7 @@
             } else if (!removeBarsEnabled) {
                 // Reset crop data when disabling
                 cropData = null;
-                
+
                 // Update the dropzone thumbnail with full frame and refresh stats
                 updateDropZoneThumbnail();
                 updateFileInfoDisplay();
@@ -2543,44 +2919,48 @@
         // Add a function to update the dropzone thumbnail with the current crop settings
         const updateDropZoneThumbnail = () => {
             if (!video?.src || video.readyState < 1 || !dropZone) return;
-            
+
             // Use the 25% point of the video for the preview
             const previewTime = video.duration * 0.25;
-            
+
             // Capture frame for background (this will apply crop if enabled)
             captureFrameAtTime(previewTime, (blob) => {
                 if (!blob || !dropZone) return;
-                
+
                 // Create URL from the blob
                 const blobUrl = URL.createObjectURL(blob);
-                
+
                 // Clean up the previous background if it exists
                 const oldBgUrl = dropZone.dataset.bgUrl;
                 if (oldBgUrl) {
                     URL.revokeObjectURL(oldBgUrl);
                 }
-                
+
                 // Store the URL for cleanup later
                 dropZone.dataset.bgUrl = blobUrl;
-                
+
                 // Update the CSS variable directly
                 document.documentElement.style.setProperty('--dropzone-bg-image', `url(${blobUrl})`);
                 dropZone.classList.add('has-bg-image');
             });
         };
-        const setupFormatTabs = (tabsNodeList, pngNoteEl, jpegSettingsEl, webpSettingsEl) => { /* ... */ if (tabsNodeList.length === 0 || !pngNoteEl || !jpegSettingsEl || !webpSettingsEl) return; const updateFormatVisibility = (format) => { pngNoteEl.style.display = (format === 'png') ? 'flex' : 'none'; jpegSettingsEl.style.display = (format === 'jpeg') ? 'flex' : 'none'; webpSettingsEl.style.display = (format === 'webp') ? 'flex' : 'none'; }; let initialFormat = 'png'; tabsNodeList.forEach(tab => { if (tab.classList.contains('active')) initialFormat = tab.getAttribute('data-format') || 'png'; tab.addEventListener('click', () => { if (processingActive) return; const format = tab.getAttribute('data-format'); if (!format) return; tabsNodeList.forEach(t => t.classList.remove('active')); tab.classList.add('active'); updateFormatVisibility(format); }); }); updateFormatVisibility(initialFormat); };
+        const setupFormatTabs = (tabsNodeList, pngNoteEl, jpegSettingsEl, webpSettingsEl) => { if (tabsNodeList.length === 0 || !pngNoteEl || !jpegSettingsEl || !webpSettingsEl) return; const updateFormatVisibility = (format) => { pngNoteEl.style.display = (format === 'png') ? 'flex' : 'none'; jpegSettingsEl.style.display = (format === 'jpeg') ? 'flex' : 'none'; webpSettingsEl.style.display = (format === 'webp') ? 'flex' : 'none'; }; let initialFormat = 'png'; tabsNodeList.forEach(tab => { if (tab.classList.contains('active')) initialFormat = tab.getAttribute('data-format') || 'png'; tab.addEventListener('click', () => { if (processingActive) return; const format = tab.getAttribute('data-format'); if (!format) return; tabsNodeList.forEach(t => t.classList.remove('active')); tab.classList.add('active'); updateFormatVisibility(format); }); }); updateFormatVisibility(initialFormat); };
         setupFormatTabs(formatTabsAuto, pngNoteAuto, jpegSettingsAuto, webpSettingsAuto); setupFormatTabs(formatTabsSmart, pngNoteSmart, jpegSettingsSmart, webpSettingsSmart);
         if (smartAlgoTabs.length > 0) {
             let initialAlgo = 'histogram';
             const updateThresholdSliders = (algo) => {
                 if(histThresholdSettings) histThresholdSettings.style.display = (algo === 'histogram') ? 'flex' : 'none';
                 if(pixelThresholdSettings) pixelThresholdSettings.style.display = (algo === 'pixeldiff') ? 'flex' : 'none';
-                if(ssimThresholdSettings) ssimThresholdSettings.style.display = (algo === 'ssim') ? 'flex' : 'none';
-                
-                // Update the slider background for the newly visible slider
-                if(algo === 'histogram' && histThresholdInput) updateSliderBackground(histThresholdInput);
-                if(algo === 'pixeldiff' && pixelThresholdInput) updateSliderBackground(pixelThresholdInput);
-                if(algo === 'ssim' && ssimThresholdInput) updateSliderBackground(ssimThresholdInput);
+
+                // Update the slider background for each slider immediately
+                if(histThresholdInput) updateSliderBackground(histThresholdInput);
+                if(pixelThresholdInput) updateSliderBackground(pixelThresholdInput);
+
+                // Force immediate redraw of the newly visible slider
+                setTimeout(() => {
+                    if(algo === 'histogram' && histThresholdInput) updateSliderBackground(histThresholdInput);
+                    if(algo === 'pixeldiff' && pixelThresholdInput) updateSliderBackground(pixelThresholdInput);
+                }, 0);
             };
             smartAlgoTabs.forEach(tab => {
                 if (tab.classList.contains('active')) initialAlgo = tab.getAttribute('data-algo') || 'histogram';
@@ -2625,7 +3005,7 @@
                         canvas.width = cropData.cropWidth;
                         canvas.height = cropData.cropHeight;
                         ctx.drawImage(
-                            videoElement, 
+                            videoElement,
                             cropData.cropX, cropData.cropY, cropData.cropWidth, cropData.cropHeight,
                             0, 0, cropData.cropWidth, cropData.cropHeight
                         );
@@ -2634,7 +3014,7 @@
                         canvas.height = videoElement.videoHeight;
                         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
                     }
-                    
+
                     const { type, quality } = getCurrentFormatSettings();
                     canvas.toBlob((blob) => callback(blob), type, quality);
                 } catch (error) {
@@ -2671,7 +3051,7 @@
 
         const startAutoExtraction = () => {
             if (!video?.src || processingActive || !intervalInput) return;
-            
+
             setProcessingUI('auto');
             if (screenshotsDiv) screenshotsDiv.innerHTML = '';
             screenshotBlobs = [];
@@ -2690,7 +3070,7 @@
                     console.log("[Auto Extraction] Waiting for video to be fully ready...");
                     // Seek to beginning to ensure video is ready
                     video.currentTime = 0;
-                    
+
                     // Wait for video to be ready before starting
                     video.addEventListener('canplay', startExtraction, { once: true });
                 } else {
@@ -2698,14 +3078,14 @@
                     startExtraction();
                 }
             };
-            
+
             const startExtraction = () => {
                 // Start with a small offset to avoid the empty first frame
                 let currentTime = 0.1;  // Start at 0.1 seconds instead of 0
                 const totalDuration = currentVideoDuration;
                 let frameAnimationId = null;
                 let isCancelled = false;
-                
+
                 // Create an object that can be cancelled
                 currentSamplingProcess = {
                     cancel: () => {
@@ -2725,7 +3105,7 @@
                         resetProcessingUI('auto'); // This re-attaches the start listener
                         return;
                     }
-                    
+
                     const timestamp = currentTime;
                     const progress = Math.min((currentTime / totalDuration) * 100, 100);
                     if (progressBarFillAuto) progressBarFillAuto.style.width = `${progress}%`;
@@ -2739,7 +3119,7 @@
                             if (container && screenshotsDiv) screenshotsDiv.appendChild(container);
                             updateImageCount();
                         }
-                        
+
                         // Schedule next only if not cancelled
                         if (!isCancelled && !cancelExtractionRequested) {
                             currentTime += interval;
@@ -2754,14 +3134,14 @@
                 // Start the extraction process
                 frameAnimationId = requestAnimationFrame(processNextFrame);
             };
-            
+
             // Start the process with a small delay to ensure everything is ready
             ensureVideoReady();
         };
 
         const startSmartExtraction = () => {
             if (!video?.src || processingActive) return;
-            
+
             setProcessingUI('autoSmart');
             if (screenshotsDiv) screenshotsDiv.innerHTML = '';
             screenshotBlobs = [];
@@ -2772,7 +3152,6 @@
             const sampleFactor = 8;
             const histThreshold = histThresholdInput ? parseFloat(histThresholdInput.value) : 0.35;
             const pixelThreshold = pixelThresholdInput ? parseFloat(pixelThresholdInput.value) : 35;
-            const ssimThreshold = ssimThresholdInput ? parseFloat(ssimThresholdInput.value) : 0.90;
 
             // Ensure video is fully ready by seeking to the beginning first
             const ensureVideoReady = () => {
@@ -2780,7 +3159,7 @@
                     console.log("[Smart Extraction] Waiting for video to be fully ready...");
                     // Seek to beginning to ensure video is ready
                     video.currentTime = 0;
-                    
+
                     // Wait for video to be ready before starting
                     video.addEventListener('canplay', startExtraction, { once: true });
                 } else {
@@ -2788,7 +3167,7 @@
                     startExtraction();
                 }
             };
-            
+
             const startExtraction = () => {
                 // Start with a small offset to avoid the empty first frame
                 let currentTime = 0.1;  // Start at 0.1 seconds instead of 0
@@ -2798,7 +3177,7 @@
                 let previousPixelData = null;
                 let frameAnimationId = null;
                 let isCancelled = false;
-                
+
                 // Create an object that can be cancelled
                 currentSamplingProcess = {
                     cancel: () => {
@@ -2818,7 +3197,7 @@
                         resetProcessingUI('autoSmart'); // This re-attaches the start listener
                         return;
                     }
-                    
+
                     const timestamp = currentTime;
                     const progress = Math.min((currentTime / totalDuration) * 100, 100);
                     if (progressBarFillSmart) progressBarFillSmart.style.width = `${progress}%`;
@@ -2828,7 +3207,7 @@
                             resetProcessingUI('autoSmart');
                             return;
                         }
-                        
+
                         if (!blob) {
                             // If frame fails, just move to next frame
                             currentTime += smartInterval;
@@ -2839,14 +3218,14 @@
                         const tempCanvas = document.createElement('canvas');
                         const tempCtx = tempCanvas.getContext('2d');
                         const img = new Image();
-                        
+
                         img.onload = () => {
                             if (isCancelled || cancelExtractionRequested) {
                                 resetProcessingUI('autoSmart');
                                 URL.revokeObjectURL(img.src);
                                 return;
                             }
-                            
+
                             try {
                                 tempCanvas.width = img.width;
                                 tempCanvas.height = img.height;
@@ -2870,11 +3249,6 @@
                                         if (diff >= pixelThreshold) {
                                             captureThisFrame = true;
                                         }
-                                    } else if (smartAlgorithm === "ssim") {
-                                        const ssimValue = computeSSIM(previousImageData, currentImageData, sampleFactor);
-                                        if (ssimValue < ssimThreshold) {
-                                            captureThisFrame = true;
-                                        }
                                     }
                                 }
 
@@ -2884,7 +3258,7 @@
                                     const container = createScreenshotElement(blob, timestamp, screenshotBlobs);
                                     if (container && screenshotsDiv) screenshotsDiv.appendChild(container);
                                     updateImageCount();
-                                    
+
                                     previousImageData = currentImageData;
                                     if (smartAlgorithm === 'pixeldiff' && currentImageData) {
                                         previousPixelData = currentImageData.data.slice();
@@ -2893,7 +3267,7 @@
                                         previousHist = computeHistogram(currentImageData, sampleFactor);
                                     }
                                 }
-                                
+
                                 // Only proceed if not cancelled
                                 if (!isCancelled && !cancelExtractionRequested) {
                                     currentTime += smartInterval;
@@ -2901,11 +3275,11 @@
                                 } else {
                                     resetProcessingUI('autoSmart');
                                 }
-                                
+
                             } catch (error) {
                                 console.error("[Process Smart] Error:", error);
                                 URL.revokeObjectURL(img.src);
-                                
+
                                 // Continue to next frame unless cancelled
                                 if (!isCancelled && !cancelExtractionRequested) {
                                     currentTime += smartInterval;
@@ -2915,11 +3289,11 @@
                                 }
                             }
                         };
-                        
+
                         img.onerror = () => {
                             console.error("[Process Smart] Failed to load blob into image");
                             URL.revokeObjectURL(img.src);
-                            
+
                             // Continue to next frame unless cancelled
                             if (!isCancelled && !cancelExtractionRequested) {
                                 currentTime += smartInterval;
@@ -2928,15 +3302,15 @@
                                 resetProcessingUI('autoSmart');
                             }
                         };
-                        
+
                         img.src = URL.createObjectURL(blob);
                     });
                 }
-                
+
                 // Start the extraction process
                 frameAnimationId = requestAnimationFrame(processNextSmartFrame);
             };
-            
+
             // Start the process with a small delay to ensure everything is ready
             ensureVideoReady();
         };
@@ -2945,24 +3319,24 @@
         const initContactSheetPreview = (rows = 4, cols = 5) => {
             if (!contactSheetPreviewElement) return;
             contactSheetPreviewElement.innerHTML = ''; // Clear existing
-            
+
             // Set CSS variables for grid layout
             document.documentElement.style.setProperty('--grid-rows', rows);
             document.documentElement.style.setProperty('--grid-cols', cols);
-            
+
             // Reset contactSheetPreviewData array to match grid size
             contactSheetPreviewData = new Array(rows * cols).fill(null);
-            
+
             for (let i = 0; i < rows * cols; i++) {
-                const cell = document.createElement('div'); 
+                const cell = document.createElement('div');
                 cell.className = 'grid-cell';
-                
+
                 // Create img element directly in the cell
-                const img = document.createElement('img'); 
+                const img = document.createElement('img');
                 img.alt = `Frame ${i+1}`; // Alt text for accessibility
                 cell.appendChild(img);
                 cell.dataset.index = i;
-                
+
                 // Make cell itself clickable
                 cell.addEventListener('click', (e) => {
                     // Only trigger if we're not clicking on a button
@@ -2970,11 +3344,11 @@
                         window.open(cell.dataset.blobUrl, '_blank');
                     }
                 });
-                
+
                 // Create frame adjustment buttons container
                 const btnContainer = document.createElement('div');
                 btnContainer.className = 'frame-adjust-buttons';
-                
+
                 // Create minus button
                 const minusBtn = document.createElement('div');
                 minusBtn.className = 'frame-adjust-btn';
@@ -2984,7 +3358,7 @@
                     e.stopPropagation(); // Prevent other click handlers
                     adjustFrameTime(i, -1); // Adjust time by -1 second
                 });
-                
+
                 // Create plus button
                 const plusBtn = document.createElement('div');
                 plusBtn.className = 'frame-adjust-btn';
@@ -2994,53 +3368,53 @@
                     e.stopPropagation(); // Prevent other click handlers
                     adjustFrameTime(i, 1); // Adjust time by +1 second
                 });
-                
+
                 // Add buttons to container
                 btnContainer.appendChild(minusBtn);
                 btnContainer.appendChild(plusBtn);
-                
+
                 // Add the container to the cell
                 cell.appendChild(btnContainer);
-                
+
                 // Add highlighting interactions
                 cell.addEventListener('mouseenter', () => {
                     cell.classList.add('highlight');
                     const timeInput = contactSheetControlsElement?.querySelector(`.time-input-container[data-index="${i}"]`);
                     if (timeInput) timeInput.classList.add('highlight');
                 });
-                
+
                 cell.addEventListener('mouseleave', () => {
                     cell.classList.remove('highlight');
                     const timeInput = contactSheetControlsElement?.querySelector(`.time-input-container[data-index="${i}"]`);
                     if (timeInput) timeInput.classList.remove('highlight');
                 });
-                
+
                 contactSheetPreviewElement.appendChild(cell);
             }
             console.log(`Contact sheet preview grid initialized with ${rows}×${cols} grid.`);
         };
-        
+
         // Function to adjust frame time by a given offset (in seconds)
         const adjustFrameTime = (index, offsetSeconds) => {
             // Get the current time value
             const timeInput = document.getElementById(`timeInput_${index}`);
             if (!timeInput) return;
-            
+
             const currentValue = parseFloat(timeInput.value);
             if (isNaN(currentValue)) return;
-            
+
             // Calculate new time with constraints
             const newValue = Math.max(0, Math.min(
                 currentValue + offsetSeconds,
                 currentVideoDuration - 0.01
             ));
-            
+
             // Update the value in the input field
             const timeFormatted = document.getElementById(`timeFormatted_${index}`);
-            
+
             if (timeInput) timeInput.value = newValue.toFixed(2);
             if (timeFormatted) timeFormatted.value = formatTime(newValue);
-            
+
             // Trigger update of the frame
             handleFineTuneChange(index, newValue);
         };
@@ -3060,17 +3434,16 @@
                     delete cell.dataset.timestamp;
                 }
             });
-            
+
             // Don't use fill as the array length might have changed
             contactSheetPreviewData = new Array(contactSheetPreviewData.length).fill(null);
-            
+
             if (clearInputs) {
                 contactSheetControlsElement?.querySelectorAll('.time-input').forEach(input => input.value = '0');
                 contactSheetControlsElement?.querySelectorAll('.time-formatted').forEach(input => input.value = '0:00');
             }
-            // Hide fine-tuning controls
-            if (contactSheetControlsElement) contactSheetControlsElement.style.display = 'none';
-            if (fineTuneMessageElement) fineTuneMessageElement.style.display = 'none';
+
+            // Disable download buttons but don't hide the controls
             if (downloadContactSheetButton) downloadContactSheetButton.disabled = true;
             if (previewContactSheetButton) previewContactSheetButton.disabled = true;
             console.log("Contact sheet preview cleared.");
@@ -3088,11 +3461,11 @@
 
             // Create a single blob URL for the cell
             const blobUrl = URL.createObjectURL(blob);
-            
+
             // Update image source
             const img = cell.querySelector('img');
             if (img) img.src = blobUrl;
-            
+
             // Store URL directly on the cell for click handler
             cell.classList.add('filled');
             cell.dataset.blobUrl = blobUrl;
@@ -3180,9 +3553,15 @@
                         }
 
                         // Render final image onto contactSheetCanvas
-                        const cols = 5; const targetAspectRatio = 16 / 9;
-                        const targetWidth = 1920; const targetHeight = Math.round(targetWidth / targetAspectRatio);
-                        const cellWidth = Math.floor(targetWidth / cols); const cellHeight = Math.floor(targetHeight / Math.ceil(validPreviewData.length / cols));
+                        const activeTab = document.querySelector('.grid-size-tab.active');
+                        const renderCols = parseInt(activeTab?.getAttribute('data-cols') || 5);
+                        const renderRows = parseInt(activeTab?.getAttribute('data-rows') || 4);
+
+                        const targetAspectRatio = 16 / 9;
+                        const targetWidth = 1920;
+                        const cellWidth = Math.floor(targetWidth / renderCols);
+                        const cellHeight = Math.round(cellWidth / targetAspectRatio); // Calculate height based on width and AR
+                        const targetHeight = cellHeight * renderRows; // Calculate total height
 
                         const ctx = contactSheetCanvas.getContext('2d'); if (!ctx) throw new Error("Could not get contact sheet canvas context");
                         contactSheetCanvas.width = targetWidth; contactSheetCanvas.height = targetHeight; ctx.fillStyle = 'black'; ctx.fillRect(0, 0, targetWidth, targetHeight);
@@ -3198,36 +3577,48 @@
                         const loadedImages = await Promise.all(imageLoadPromises);
 
                         // Draw onto final canvas
-                        loadedImages.forEach((img, index) => {
+                        loadedImages.forEach((img, flatIndex) => {
                             if (!img) return;
-                            const dataEntry = validPreviewData[index]; // Get corresponding data entry
+                            const dataEntry = validPreviewData[flatIndex]; // Get corresponding data entry
                             const originalIndex = contactSheetPreviewData.findIndex(d => d === dataEntry); // Find original cell index
 
-                            const row = Math.floor(originalIndex / cols);
-                            const col = originalIndex % cols;
+                            const row = Math.floor(originalIndex / renderCols);
+                            const col = originalIndex % renderCols;
                             const drawX = col * cellWidth; const drawY = row * cellHeight;
-                            const scale = Math.min(cellWidth / img.width, cellHeight / img.height);
-                            const drawWidth = img.width * scale; const drawHeight = img.height * scale;
-                            const offsetX = drawX + (cellWidth - drawWidth) / 2; const offsetY = drawY + (cellHeight - drawHeight) / 2;
+
+                            // Maintain aspect ratio of the *cell*, draw image inside
+                            const imgAspectRatio = img.width / img.height;
+                            let drawWidth, drawHeight;
+                            if (imgAspectRatio > targetAspectRatio) {
+                                drawWidth = cellWidth;
+                                drawHeight = drawWidth / imgAspectRatio;
+                            } else {
+                                drawHeight = cellHeight;
+                                drawWidth = drawHeight * imgAspectRatio;
+                            }
+
+                            const offsetX = drawX + (cellWidth - drawWidth) / 2;
+                            const offsetY = drawY + (cellHeight - drawHeight) / 2;
                             ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
                             URL.revokeObjectURL(img.src); // Revoke URL *after* drawing
                         });
 
+
                         contactSheetCanvas.toBlob((finalBlob) => {
-                            if (finalBlob) { 
-                                contactSheetBlob = finalBlob; 
+                            if (finalBlob) {
+                                contactSheetBlob = finalBlob;
                                 console.log("Contact Sheet final image generated.");
-                                
+
                                 // Mark the current grid size as completed
                                 const activeTab = document.querySelector('.grid-size-tab.active');
                                 if (activeTab) {
                                     activeTab.classList.add('completed');
-                                    
+
                                     // Update cache
                                     const rows = parseInt(activeTab.getAttribute('data-rows'));
                                     const cols = parseInt(activeTab.getAttribute('data-cols'));
                                     const cacheKey = `${cols}x${rows}`;
-                                    
+
                                     gridCache[cacheKey] = {
                                         data: [...contactSheetPreviewData],
                                         blob: finalBlob,
@@ -3239,7 +3630,6 @@
                             resetProcessingUI('contactSheet'); // Finish UI reset
                             // Show fine-tuning controls
                             if (contactSheetControlsElement) contactSheetControlsElement.style.display = 'grid';
-                            if (fineTuneMessageElement) fineTuneMessageElement.style.display = 'block';
                         }, 'image/jpeg', 0.9);
                     },
                     onErrorCallback: (error) => { console.error("Error during contact sheet frame sampling:", error); alert(`Error generating contact sheet: ${error.message}`); resetProcessingUI('contactSheet'); }
@@ -3256,23 +3646,23 @@
             captureFrameAtTime(clampedTime, (blob) => { // Use the reliable capture function
                  if (blob) {
                      updatePreviewCell(index, blob, clampedTime);
-                     
+
                      // Invalidate the final blob - user needs to regenerate for download
                      contactSheetBlob = null;
                      if (downloadContactSheetButton) downloadContactSheetButton.disabled = true;
                      if (previewContactSheetButton) previewContactSheetButton.disabled = true;
                      if (processContactSheetButton) processContactSheetButton.textContent = 'Update Sheet Image'; // Change button text
-                     
+
                      // Remove completed marker since content has changed
                      const activeTab = document.querySelector('.grid-size-tab.active');
                      if (activeTab) {
                          activeTab.classList.remove('completed');
-                         
+
                          // Update cache to show incomplete state
                          const rows = parseInt(activeTab.getAttribute('data-rows'));
                          const cols = parseInt(activeTab.getAttribute('data-cols'));
                          const cacheKey = `${cols}x${rows}`;
-                         
+
                          if (gridCache[cacheKey]) {
                              gridCache[cacheKey].completed = false;
                              gridCache[cacheKey].blob = null;
@@ -3288,12 +3678,12 @@
         const generateTimeInputs = (rows = 4, cols = 5) => {
              if (!contactSheetControlsElement) return;
              contactSheetControlsElement.innerHTML = ''; // Clear previous
-             
+
              // Update grid template for the controls
              contactSheetControlsElement.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 
              for (let i = 0; i < rows * cols; i++) {
-                 const container = document.createElement('div'); 
+                 const container = document.createElement('div');
                  container.className = 'time-input-container';
                  container.dataset.index = i; // Store index for highlighting
 
@@ -3321,13 +3711,12 @@
                  timeFormatted.setAttribute('draggable', 'false'); // Prevent default drag
 
                  // Add highlighting interactions
-                 // When time input is hovered, highlight both the input and corresponding cell
                  container.addEventListener('mouseenter', () => {
                      container.classList.add('highlight');
                      const cell = contactSheetPreviewElement?.querySelector(`.grid-cell[data-index="${i}"]`);
                      if (cell) cell.classList.add('highlight');
                  });
-                 
+
                  container.addEventListener('mouseleave', () => {
                      container.classList.remove('highlight');
                      const cell = contactSheetPreviewElement?.querySelector(`.grid-cell[data-index="${i}"]`);
@@ -3357,56 +3746,53 @@
                      startY = e.clientY;
                      startValue = parseFloat(timeInput.value);
                      document.body.style.cursor = 'ns-resize';
-                     
+
                      // Add global event listeners to track drag even outside the element
                      document.addEventListener('mousemove', handleMouseMove);
                      document.addEventListener('mouseup', handleMouseUp);
-                     
+
                      // Prevent text selection during drag
                      e.preventDefault();
                  });
 
                  const handleMouseMove = (e) => {
                      if (!isDragging) return;
-                     
+
                      const deltaY = startY - e.clientY;
                      const newValue = Math.max(0, Math.min(
                          startValue + (deltaY * sensitivity),
-                         currentVideoDuration - 0.01
+                         currentVideoDuration - 0.01 // Ensure we don't exceed video duration
                      ));
-                     
+
                      // Update both inputs
                      timeInput.value = newValue.toFixed(2);
                      timeFormatted.value = formatTime(newValue);
-                     
+
                      // Trigger frame update as user drags
                      handleFineTuneChange(parseInt(timeInput.dataset.index), newValue);
                  };
 
                  const handleMouseUp = () => {
+                     if (!isDragging) return;
                      isDragging = false;
                      document.body.style.cursor = '';
                      document.removeEventListener('mousemove', handleMouseMove);
                      document.removeEventListener('mouseup', handleMouseUp);
                  };
 
-                 // Helper function to update time value
+                 // Helper function to update time value from text input change
                  const updateTimeValue = (index, seconds) => {
                      if (isNaN(seconds)) seconds = 0;
                      const clampedTime = Math.min(Math.max(0, seconds), currentVideoDuration - 0.01);
-                     
+
                      // Update the inputs
                      const numberInput = document.getElementById(`timeInput_${index}`);
                      const formatted = document.getElementById(`timeFormatted_${index}`);
-                     
+
                      if (numberInput) numberInput.value = clampedTime.toFixed(2);
                      if (formatted) formatted.value = formatTime(clampedTime);
-                     
-                     // Update video and frame
-                         if (contactSheetVideo && !contactSheetVideo.seeking) {
-                         contactSheetVideo.currentTime = clampedTime;
-                     }
-                     
+
+                     // Trigger frame update after text input change
                      handleFineTuneChange(index, clampedTime);
                  };
 
@@ -3415,26 +3801,29 @@
                  container.appendChild(wrapper);
                  contactSheetControlsElement.appendChild(container);
              }
+
+             // Always show the controls after generating time inputs
+             contactSheetControlsElement.style.display = 'grid';
         };
 
 
-        if (extractManualButton) extractManualButton.addEventListener('click', () => { /* ... */ if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) return; try { const { type, quality } = getCurrentFormatSettings(); const ctx = canvas.getContext('2d'); if(!ctx) throw new Error("Canvas context not available"); if (removeBarsEnabled && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0) { canvas.width = cropData.cropWidth; canvas.height = cropData.cropHeight; ctx.drawImage(manualVideo, cropData.cropX, cropData.cropY, cropData.cropWidth, cropData.cropHeight, 0, 0, cropData.cropWidth, cropData.cropHeight); } else { canvas.width = manualVideo.videoWidth; canvas.height = manualVideo.videoHeight; if (canvas.width === 0 || canvas.height === 0) throw new Error("Video dimensions are zero for manual extract."); ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height); } canvas.toBlob((blob) => { if (blob) { const tempLink = document.createElement('a'); const url = URL.createObjectURL(blob); tempLink.href = url; const extension = type.split('/')[1] === 'jpeg' ? 'jpg' : type.split('/')[1]; tempLink.download = `quick_frame_${formatTime(manualVideo.currentTime).replace(':','-')}.${extension}`; document.body.appendChild(tempLink); tempLink.click(); document.body.removeChild(tempLink); URL.revokeObjectURL(url); } }, type, quality); } catch(error) { console.error("[Manual Quick Save] Error:", error); alert("An error occurred during Quick Save."); } });
-        if (addManualButton) addManualButton.addEventListener('click', () => { 
+        if (extractManualButton) extractManualButton.addEventListener('click', () => { if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) return; try { const { type, quality } = getCurrentFormatSettings(); const ctx = canvas.getContext('2d'); if(!ctx) throw new Error("Canvas context not available"); if (removeBarsEnabled && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0) { canvas.width = cropData.cropWidth; canvas.height = cropData.cropHeight; ctx.drawImage(manualVideo, cropData.cropX, cropData.cropY, cropData.cropWidth, cropData.cropHeight, 0, 0, cropData.cropWidth, cropData.cropHeight); } else { canvas.width = manualVideo.videoWidth; canvas.height = manualVideo.videoHeight; if (canvas.width === 0 || canvas.height === 0) throw new Error("Video dimensions are zero for manual extract."); ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height); } canvas.toBlob((blob) => { if (blob) { const tempLink = document.createElement('a'); const url = URL.createObjectURL(blob); tempLink.href = url; const extension = type.split('/')[1] === 'jpeg' ? 'jpg' : type.split('/')[1]; tempLink.download = `quick_frame_${formatTime(manualVideo.currentTime).replace(':','-')}.${extension}`; document.body.appendChild(tempLink); tempLink.click(); document.body.removeChild(tempLink); URL.revokeObjectURL(url); } }, type, quality); } catch(error) { console.error("[Manual Quick Save] Error:", error); alert("An error occurred during Quick Save."); } });
+        if (addManualButton) addManualButton.addEventListener('click', () => {
           // Add cutting class to trigger the cutting animation
           addManualButton.classList.add('cutting');
-          
+
           // Remove the class after the animation completes
           setTimeout(() => {
             addManualButton.classList.remove('cutting');
           }, 300);
-          
+
           if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) return;
-          
-          try { 
+
+          try {
             const { type, quality } = getCurrentFormatSettings();
             const ctx = canvas.getContext('2d');
             if(!ctx) throw new Error("Canvas context not available");
-            
+
             if (removeBarsEnabled && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0) {
               canvas.width = cropData.cropWidth;
               canvas.height = cropData.cropHeight;
@@ -3445,7 +3834,7 @@
               if (canvas.width === 0 || canvas.height === 0) throw new Error("Video dimensions are zero for manual add.");
               ctx.drawImage(manualVideo, 0, 0, canvas.width, canvas.height);
             }
-            
+
             const timestamp = manualVideo.currentTime;
             canvas.toBlob((blob) => {
               if (blob) {
@@ -3466,7 +3855,7 @@
         if(downloadAllButton) downloadAllButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(screenshotBlobs, "auto_screenshots"); });
         if(downloadAllSmartButton) downloadAllSmartButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(screenshotBlobs, "smart_screenshots"); });
         if(downloadManualButton) downloadManualButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(manualScreenshotBlobs, "manual_screenshots"); });
-        
+
         // Preview Contact Sheet button
         if(previewContactSheetButton) previewContactSheetButton.addEventListener('click', () => {
             if (!processingActive && contactSheetBlob) {
@@ -3478,21 +3867,21 @@
                 alert("Please generate the contact sheet first or update it after fine-tuning.");
             }
         });
-        
+
         // Download Contact Sheet button
-        if(downloadContactSheetButton) downloadContactSheetButton.addEventListener('click', () => { 
-            if (!processingActive && contactSheetBlob) { 
-                const tempLink = document.createElement('a'); 
-                const url = URL.createObjectURL(contactSheetBlob); 
-                tempLink.href = url; 
-                tempLink.download = `contact_sheet_${uploadedFile?.name.split('.')[0] || 'video'}.jpg`; 
-                document.body.appendChild(tempLink); 
-                tempLink.click(); 
-                document.body.removeChild(tempLink); 
-                URL.revokeObjectURL(url); 
-            } else if (!contactSheetBlob) { 
-                alert("Please generate the contact sheet first or update it after fine-tuning."); 
-            } 
+        if(downloadContactSheetButton) downloadContactSheetButton.addEventListener('click', () => {
+            if (!processingActive && contactSheetBlob) {
+                const tempLink = document.createElement('a');
+                const url = URL.createObjectURL(contactSheetBlob);
+                tempLink.href = url;
+                tempLink.download = `contact_sheet_${uploadedFile?.name.split('.')[0] || 'video'}.jpg`;
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+                URL.revokeObjectURL(url);
+            } else if (!contactSheetBlob) {
+                alert("Please generate the contact sheet first or update it after fine-tuning.");
+            }
         });
 
         if (clearScreenshotsButton) clearScreenshotsButton.addEventListener('click', () => {
@@ -3504,23 +3893,23 @@
                      // Clear regular screenshots
                      screenshotsDiv.querySelectorAll('.screenshot-container').forEach(container => { if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); });
                      screenshotsDiv.innerHTML = ''; screenshotBlobs = []; manualScreenshotBlobs = [];
-                     
+
                      // Clear contact sheet preview and data
                      clearContactSheetPreview(true); // Clear inputs too
                      contactSheetBlob = null; // Reset downloadable blob
-                     
+
                      // Clear all completion markers and grid caches
                      document.querySelectorAll('.grid-size-tab').forEach(tab => {
                          tab.classList.remove('completed');
                      });
-                     
+
                      // Reset grid cache
                      gridCache = {
                          '5x4': { data: null, blob: null, completed: false },
                          '4x3': { data: null, blob: null, completed: false },
                          '3x2': { data: null, blob: null, completed: false }
                      };
-                     
+
                      if(downloadContactSheetButton) downloadContactSheetButton.disabled = true;
                      if(processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Sheet'; // Reset button text
                      updateImageCount();
@@ -3529,35 +3918,35 @@
         });
 
         // --- Final Initial Setup ---
-        currentMode = document.querySelector('.mode-tab.active')?.getAttribute('data-mode') || 'auto';
+        currentMode = document.querySelector('.mode-tab.active')?.getAttribute('data-mode') || 'manual'; // Default to manual
         smartAlgorithm = document.querySelector('.smart-tab.active')?.getAttribute('data-algo') || 'histogram';
-        
+
         // Initialize all sliders' backgrounds - even those in hidden sections
         document.querySelectorAll('input[type="range"]').forEach(updateSliderBackground);
-        
+
         resetProcessingUI('all');
         updateDropZoneUI(false, null); // Initial state
         updateImageCount();
         initContactSheetPreview(); // Initialize the grid structure
         generateTimeInputs(); // Generate inputs structure
-        
+
         // Ensure buttons are properly disabled initially
         if(downloadContactSheetButton) downloadContactSheetButton.disabled = true;
         if(previewContactSheetButton) previewContactSheetButton.disabled = true;
 
-        console.log("Nia Frame Capture Studio Initialized.");
+        console.log("Pilko Frame Capture Studio Initialized.");
 
         // Initialize contact sheet mode
         if (contactSheetMode && contactSheetPreviewElement) {
             // Initial grid setup
             initContactSheetPreview();
             generateTimeInputs();
-            
+
             // Check if custom tab is active initially and show its controls
             const activeTab = document.querySelector('.grid-size-tab.active');
             if (activeTab && activeTab.textContent.trim() === 'Custom' && customGridControls) {
                 customGridControls.style.display = 'block';
-                
+
                 // Set custom values to match the tab's data attributes
                 if (customGridRows && customGridCols) {
                     customGridRows.value = activeTab.getAttribute('data-rows') || '2';
@@ -3566,7 +3955,169 @@
             }
         }
 
-      } catch (error) { /* ... error handling ... */ console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.textContent = `Initialization Error: ${error.message}. Please refresh or check console (F12).`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
+        // Helper function to delete a screenshot
+        const deleteScreenshot = (blob, timestamp, blobArrayRef) => {
+            // Find the index to remove from the array
+            const indexToRemove = blobArrayRef.findIndex(item =>
+                item.timestamp === timestamp && item.blob?.size === blob.size
+            );
+
+            if (indexToRemove > -1) {
+                // Remove from array
+                const removedItem = blobArrayRef.splice(indexToRemove, 1)[0];
+
+                // Find and remove the DOM element
+                const containers = screenshotsDiv.querySelectorAll('.screenshot-container');
+                const containerToRemove = Array.from(containers).find(container => {
+                    const containerTimestamp = parseFloat(container.dataset.timestamp || '-1');
+                    const containerUrl = container.dataset.blobUrl;
+                    // Match by URL as timestamp might not be unique enough if frames are close
+                    return containerUrl === URL.createObjectURL(removedItem.blob); // Comparing generated URL might be tricky, safer to compare timestamp AND maybe index if possible
+                    // Let's refine the check:
+                    // return containerTimestamp === timestamp; // Less reliable if timestamps are identical
+                });
+
+                // Better approach: Find container by index if available, otherwise by timestamp
+                let domContainerToRemove = null;
+                const potentialMatches = Array.from(containers).filter(c => parseFloat(c.dataset.timestamp) === timestamp);
+                if (potentialMatches.length === 1) {
+                    domContainerToRemove = potentialMatches[0];
+                } else if (potentialMatches.length > 1) {
+                    // If multiple containers have the same timestamp, try matching by index if stored
+                    domContainerToRemove = potentialMatches.find(c => parseInt(c.dataset.index) === indexToRemove);
+                }
+
+
+                if (domContainerToRemove) {
+                    // Revoke the object URL before removing
+                    URL.revokeObjectURL(domContainerToRemove.dataset.blobUrl);
+                    domContainerToRemove.remove();
+                } else {
+                     // Fallback if DOM element wasn't found easily (maybe it was already removed?)
+                     URL.revokeObjectURL(URL.createObjectURL(removedItem.blob)); // Ensure cleanup
+                     console.warn("Could not find matching DOM element to remove for screenshot", timestamp);
+                }
+
+                // Update the image count
+                updateImageCount();
+
+                // After removing from DOM and array, re-index the remaining DOM elements
+                const remainingContainers = screenshotsDiv.querySelectorAll('.screenshot-container');
+                remainingContainers.forEach((container, newIndex) => {
+                    const containerTimestamp = parseFloat(container.dataset.timestamp);
+                    const itemIndexInArray = blobArrayRef.findIndex(item => item.timestamp === containerTimestamp && item.blob?.size === /* how to get blob size here? need to pass it */ 0); // Cannot easily get blob size here
+                    // Re-finding the index in the array might be complex without the blob.
+                    // Simpler: just re-assign dataset.index based on DOM order after removal.
+                    container.dataset.index = newIndex.toString();
+                });
+
+
+                // Return the index for lightbox navigation purposes
+                return indexToRemove;
+            }
+
+            return -1;
+        };
+
+        // Creates a screenshot container for the output area
+        const createScreenshotContainer = (blob, timestamp = -1, blobArrayRef = screenshotBlobs) => {
+            const container = document.createElement('div');
+            container.className = "screenshot-container";
+            container.dataset.timestamp = timestamp.toString();
+
+            const img = document.createElement('img');
+            img.className = "screenshot-img";
+            const blobUrl = URL.createObjectURL(blob);
+            img.src = blobUrl;
+            container.dataset.blobUrl = blobUrl;
+
+            // Wrap image in a div for click handling
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'img-container';
+            imgContainer.style.cursor = 'pointer';
+            imgContainer.appendChild(img);
+            container.appendChild(imgContainer);
+
+            // Find the index *after* pushing to the array
+            const currentIndex = blobArrayRef.length -1; // Index will be the last element
+            container.dataset.index = currentIndex.toString();
+
+
+            // Add click handler to open lightbox
+            imgContainer.addEventListener('click', () => {
+                const indexFromData = parseInt(container.dataset.index);
+                if (!isNaN(indexFromData)) {
+                    openLightbox(blob, timestamp, blobArrayRef, indexFromData);
+                } else {
+                    // Fallback: re-find index if dataset wasn't reliable
+                     const fallbackIndex = blobArrayRef.findIndex(item =>
+                         item.timestamp === timestamp && item.blob?.size === blob.size
+                     );
+                     if (fallbackIndex > -1) {
+                         openLightbox(blob, timestamp, blobArrayRef, fallbackIndex);
+                     } else {
+                        console.error("Could not determine index for lightbox.");
+                     }
+                }
+            });
+
+            if (timestamp >= 0) {
+                const overlay = document.createElement('div');
+                overlay.className = "screenshot-overlay";
+                overlay.textContent = formatTime(timestamp);
+                container.appendChild(overlay);
+            }
+
+            const delBtn = document.createElement('button');
+            delBtn.className = "lightbox-delete-btn";
+            delBtn.innerHTML = '<i class="ri-delete-bin-2-line"></i>';
+            delBtn.title = "Remove this screenshot";
+            delBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteScreenshot(blob, timestamp, blobArrayRef);
+            });
+
+            container.appendChild(delBtn);
+            return container;
+        };
+
+        // Setup delete button for lightbox
+        const deleteBtn = document.getElementById('lightboxDeleteBtn');
+        if (deleteBtn) {
+            deleteBtn.onclick = () => {
+                const currentIndex = parseInt(screenshotLightbox.dataset.currentIndex || '0');
+                const arrayType = screenshotLightbox.dataset.arrayType || 'auto';
+                const blobArrayRef = arrayType === 'auto' ? screenshotBlobs : manualScreenshotBlobs;
+
+                if (currentIndex >= 0 && currentIndex < blobArrayRef.length) {
+                    // Get the item to remove
+                    const itemToRemove = blobArrayRef[currentIndex];
+
+                    // Delete the screenshot
+                    const deletedIndex = deleteScreenshot(itemToRemove.blob, itemToRemove.timestamp, blobArrayRef);
+
+                    // Close lightbox if there are no more images
+                    if (blobArrayRef.length === 0) {
+                        screenshotLightbox.classList.remove('active');
+                        document.body.style.overflow = '';
+                        return;
+                    }
+
+                    // Adjust current index if needed
+                    const newIndex = Math.min(currentIndex, blobArrayRef.length - 1);
+                    screenshotLightbox.dataset.currentIndex = newIndex.toString();
+
+                    // Update lightbox content
+                    updateLightboxContent(newIndex, blobArrayRef);
+
+                    // Update navigation buttons
+                    updateNavButtonVisibility(newIndex, blobArrayRef.length);
+                }
+            };
+        }
+
+
+      } catch (error) { console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.textContent = `Initialization Error: ${error.message}. Please refresh or check console (F12).`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
     }); // End DOMContentLoaded
   </script>
 
