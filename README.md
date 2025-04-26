@@ -38,9 +38,10 @@
 
 **Preview & Download**
 
-- Live preview of captured frames  
+- Live preview of captured frames in grid and lightbox view
 - Manually remove unwanted frames  
 - Download individual frames, ZIP archives, or contact sheets
+- Hotkeys in lightbox for quick manual fine-tuning and validation  
 
 ---
 
