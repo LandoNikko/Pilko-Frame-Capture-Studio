@@ -2,6 +2,8 @@
 
 **Pilko Frame Capture Studio** is a privacy-focused, web-based tool that lets you extract still frames (screenshots) from videos directly in your browser.
 
+Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
+
 ---
 
 ## ✨ Features
@@ -75,6 +77,14 @@ Create contact sheets or capture specific scenes for analysis or inspiration.
 
 **Privacy-Conscious Users**  
 Process everything locally with no data ever leaving your device.
+
+## 🗺️ Roadmap
+The tool is mostly complete, but I still have ideas for improvements. I’m mainly thinking about making the Contact Sheet mode more extensive.
+However, I want future updates to be driven by user feedback. If you can, please share how you use the tool and what you use it for (or want to use it for). It would help me better understand your core needs and implement those.
+
+## 📣 Feedback
+Please leave feedback by opening an Issue on GitHub.
+You can also reach me at landonikko [at] gmail [dot] com
 
 ---
 
