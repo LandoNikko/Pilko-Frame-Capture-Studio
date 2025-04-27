@@ -159,9 +159,9 @@
       z-index: 1;
     }
 
-    #dropZone:hover { border-color: var(--accent-primary); box-shadow: 0 5px 12px rgba(0, 198, 255, 0.15); }
+    #dropZone:hover { border-color: var(--text-primary); }
     #dropZone #uploadIcon { margin-bottom: 0.75rem; color: var(--text-tertiary); transition: color 0.3s ease, transform 0.3s ease; display: block; }
-    #dropZone:hover #uploadIcon { color: var(--accent-primary); transform: scale(1.1); }
+    #dropZone:hover #uploadIcon { color: var(--text-primary); transform: scale(1.1); }
     #dropZone #uploadIcon svg { width: 44px; height: 44px; fill: currentColor; }
     #dropZone #dropZoneText { margin-bottom: 1rem; font-size: 0.95rem; color: var(--text-tertiary); display: block; }
     #dropZone #loadedFileInfo { display: none; }
@@ -169,7 +169,7 @@
     #dropZone.file-loaded #uploadIcon, #dropZone.file-loaded #dropZoneText { display: none; }
     #dropZone.file-loaded #loadedFileInfo { display: block; width: 100%; }
     #loadedFileName { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0; display: flex; align-items: center; word-break: break-all; flex: 1; margin-right: 1rem; }
-    #loadedFileName::before { content: '✓'; color: var(--accent-secondary); font-size: 1.2em; margin-right: 0.5rem; font-weight: bold; }
+    #loadedFileName::before { content: '\EF80'; font-family: 'remixicon'; color: var(--text-primary); font-size: 1.2em; margin-right: 0.5rem; font-weight: normal; }
 
     .file-name-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; width: 100%; }
 
@@ -218,8 +218,7 @@
 
     .setting-row { display: flex; align-items: center; flex-wrap: wrap; margin-bottom: 1.25rem; background-color: var(--bg-tertiary); padding: 0.8rem 1rem; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); flex-shrink: 0; }
     .setting-label { flex: 1; font-size: 0.9rem; color: var(--text-primary); font-weight: 500; margin-right: 0.8rem; margin: 0; cursor: default; display: inline-flex; align-items: center; }
-    .info-icon-inline { font-size: 1em; margin-left: 0.5em; color: var(--text-tertiary); cursor: help; transition: color 0.2s ease; }
-    .info-icon-inline:hover { color: var(--accent-primary); }
+    .info-icon-inline { font-size: 1.1em; color: var(--text-tertiary); cursor: help; }
 
     .toggle-row { display: flex; align-items: center; justify-content: space-between; }
     .toggle-label { display: flex; align-items: center; gap: 0.5rem; }
@@ -227,7 +226,7 @@
     .toggle-input { opacity: 0; width: 0; height: 0; }
     .toggle-label-switch { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-primary); transition: .3s; border-radius: 24px; border: 1px solid var(--border-color); }
     .toggle-label-switch:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: var(--text-tertiary); transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-    .toggle-input:checked + .toggle-label-switch { background: var(--border-color); border-color: transparent; }
+    .toggle-input:checked + .toggle-label-switch { background: var(--text-tertiary); border-color: transparent; }
     .toggle-input:checked + .toggle-label-switch:before { transform: translateX(24px); background-color: var(--white); }
 
     #format-options-row { display: flex; }
@@ -251,8 +250,7 @@
     }
     #outputFormatSelect:focus {
         outline: none;
-        border-color: var(--accent-primary);
-        box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.3);
+        border-color: var(--text-primary);
     }
 
     #jpegQualityGlobalRow, #webpQualityGlobalRow {
@@ -317,17 +315,10 @@
         color: var(--text-primary);
         font-size: 0.9rem;
     }
-    input[type="range"] { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--bg-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; }
+    input[type="range"] { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--text-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; }
     input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.1s ease-out; }
     input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.1s ease-out; }
     input[type="range"]:active::-webkit-slider-thumb, input[type="range"]:active::-moz-range-thumb { transform: scale(1.1); }
-
-    #jpegQualityGlobalRow input[type="range"]:focus-visible,
-    #webpQualityGlobalRow input[type="range"]:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
-    #autoSmartMode input[type="range"]:focus-visible { outline-color: var(--accent-secondary); }
-    #manualMode input[type="range"]:focus-visible { outline-color: var(--accent-primary); }
-    #contactSheetMode input[type="range"]:focus-visible { outline-color: var(--accent-tertiary); }
-
 
     .button-group { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
     .action-button { width: 100%; padding: 0.75rem 1.5rem; font-size: 0.95rem; border: none; border-radius: var(--border-radius-md); color: var(--bg-primary); cursor: pointer; transition: background 0.3s ease, opacity 0.2s, color 0.2s, box-shadow 0.2s ease; text-align: center; font-weight: 600; background-size: 200% auto; box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); display: inline-flex; align-items: center; justify-content: center;}
@@ -1242,9 +1233,10 @@
         border-radius: var(--border-radius-sm);
         padding: 0.3rem 0.5rem;
         font-family: var(--data-font);
-        text-align: center;
+        text-align: left;
         width: 55px;
         margin-left: 0.5rem;
+        min-width: 4rem;
      }
       #customGridControls input[type="number"]:focus {
         outline: none;
@@ -1301,6 +1293,7 @@
         .mode-content { overflow: visible; }
         .lightbox-nav-btn .nav-text { display: none; }
         #lightboxDownload span { display: none; }
+        #lightboxFrameNumber { display: none; }
     }
 
   </style>
@@ -1330,7 +1323,7 @@
                     <div class="info-row"><div class="info-label">Bitrate</div><div class="info-value" id="bitrateValue">-</div></div>
                 </div>
             </div>
-            <button id="initialSelectFileButton" type="button">Select File</button>
+            <button id="initialSelectFileButton" type="button">Select a File</button>
             <input type="file" id="videoInput" accept="video/*">
         </div>
 
@@ -1381,16 +1374,16 @@
 
         <div class="mode-content">
             <div id="manualMode" class="active">
-              <p class="mode-description">Use the video player to navigate and press Cut Frame to capture screenshots.</p>
+              <p class="mode-description">Use the video player to navigate and press Cut Frame to extract screenshots.</p>
               <video id="manualVideo" controls></video>
             </div>
             <div id="autoMode">
-                <p class="mode-description">Extract screenshots at regular time intervals. Lower value creates more images, higher value creates fewer.</p>
+                <p class="mode-description">Captures screenshots at regular time intervals. Lower value creates more images, higher value creates fewer.</p>
                 <div class="slider-row"><h3 class="slider-label" style="font-size: 0.9rem; color: var(--text-primary); font-weight: 500;">Interval</h3>
                 <div class="slider-wrapper"><input type="range" id="intervalInput" min="1" max="30" value="10" step="1"><span id="intervalValue" class="value-display"></span></div></div>
             </div>
             <div id="autoSmartMode">
-               <p class="mode-description">Identify scenes and visual changes. Adjust threshold to control sensitivity to changes.</p>
+               <p class="mode-description">Identifies scenes and visual changes. Default values aim for one screenshot per scene.</p>
                 <h3 class="setting-group-title">Algorithm</h3>
                 <div class="segmented-controls smart-algo-tabs">
                    <button class="smart-tab active" data-algo="histogram">Histogram Diff</button>
@@ -1399,22 +1392,22 @@
                 <div class="slider-row" id="histThresholdSettings">
                    <h3 class="slider-label">Hist Thresh</h3>
                    <div class="slider-wrapper">
-                       <input type="range" id="histThresholdInput" min="0.05" max="0.75" value="0.40" step="0.01">
+                       <input type="range" id="histThresholdInput" min="0.05" max="0.80" value="0.40" step="0.01">
                        <span id="histThresholdValue" class="value-display"></span>
                    </div>
                 </div>
-                <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold means more sensitive to changes. <strong>Recommended value: 0.40</strong></p>
+                <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold means more sensitivity to changes. <strong>Recommended value: 40%</strong></p>
                 <div class="slider-row" id="pixelThresholdSettings" style="display:none;">
                    <h3 class="slider-label">Pixel Thresh</h3>
                    <div class="slider-wrapper">
-                       <input type="range" id="pixelThresholdInput" min="5" max="100" value="35" step="1">
+                       <input type="range" id="pixelThresholdInput" min="5" max="80" value="35" step="1">
                        <span id="pixelThresholdValue" class="value-display"></span>
                    </div>
                 </div>
-                 <p class="disclaimer-note" id="pixelDiffDisclaimer" style="display: none;">Lower threshold = more sensitive to pixel changes (more frames). <strong>Recommended value: 35</strong></p>
+                 <p class="disclaimer-note" id="pixelDiffDisclaimer" style="display: none;">Measures the percentage of pixel changes between frames. Higher threshold means more sensitivity to changes. <strong>Recommended value: 35%</strong></p>
             </div>
             <div id="contactSheetMode">
-                <p class="mode-description">Choose a grid size for screenshots. After generating, adjust times below or in the thumbnails.</p>
+                <p class="mode-description">Choose a grid size for screenshots. After generating, you can fine-tune the captured frames.</p>
                 <h3 class="setting-group-title">Grid Size</h3>
                 <div class="segmented-controls grid-size-tabs">
                     <button class="grid-size-tab active" data-rows="4" data-cols="5">5×4</button>
@@ -1424,12 +1417,11 @@
                 <div id="customGridControls" style="display: none; margin-bottom: 1.25rem;">
                     <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
                         <label style="display: flex; align-items: center;">
-                            <span>Columns:</span>
+                            <span><i class="ri-arrow-right-box-line"></i> Columns</span>
                             <input type="number" id="customGridCols" min="1" value="3">
                         </label>
-                        <span>×</span>
                         <label style="display: flex; align-items: center;">
-                            <span>Rows:</span>
+                            <span>Rows</span>
                             <input type="number" id="customGridRows" min="1" value="2">
                         </label>
                     </div>
@@ -1531,7 +1523,7 @@
         </ul>
 
         <h3>Processing & Privacy</h3>
-        <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can also self-host it for full peace of mind. View the source code on <a href="https://github.com/your-repo-link" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
+        <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can also self-host it for full peace of mind. View the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
 
       </div>
     </div>
@@ -2577,19 +2569,33 @@
             const max = parseFloat(slider.max || 100);
             const pct = max > min ? ((val - min) * 100) / (max - min) : 0;
             let color = 'var(--accent-interval)';
-             // Determine color based on the slider ID for global sliders
+             // Determine slider color
              if (slider.id === 'jpegQualityGlobal' || slider.id === 'webpQualityGlobal') {
-                 color = 'var(--accent-primary)'; // Use a neutral or primary accent for global settings
+                 color = 'var(--text-secondary)'; // Use a neutral or primary accent for global settings
              }
              else if (slider.closest('#autoSmartMode')) { color = 'var(--accent-secondary)'; }
              else if (slider.closest('#manualMode')) { color = 'var(--accent-primary)'; }
              else if (slider.closest('#contactSheetMode')) { color = 'var(--accent-tertiary)'; }
-            slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, var(--bg-tertiary) ${pct}%, var(--bg-tertiary) 100%)`;
+            slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, var(--border-color) ${pct}%, var(--border-color) 100%)`;
         };
 
         const setupSlider = (slider, displaySpan, suffix) => {
             if (!slider || !displaySpan) return;
-            const updateUI = () => { displaySpan.textContent = slider.value + suffix; updateSliderBackground(slider); };
+            const updateUI = () => { 
+                // Special handling for histogram threshold (convert to percentage)
+                if (slider.id === 'histThresholdInput') {
+                    displaySpan.textContent = Math.round(slider.value * 100) + '%';
+                }
+                // Special handling for pixel threshold (add % sign)
+                else if (slider.id === 'pixelThresholdInput') {
+                    displaySpan.textContent = slider.value + '%';
+                }
+                // Default handling for other sliders
+                else {
+                    displaySpan.textContent = slider.value + suffix;
+                }
+                updateSliderBackground(slider); 
+            };
             slider.addEventListener('input', updateUI); updateUI();
         };
 
@@ -2975,7 +2981,7 @@
                          // --- Start Final Image Compositing ---
                          const renderCols = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-cols') || 5);
                          const renderRows = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-rows') || 4);
-                         const targetWidth = 1920;
+                         const targetWidth = 3000;
                          const cellWidth = Math.floor(targetWidth / renderCols);
 
                          const imageLoadPromises = validPreviewData.map(({ blob, timestamp, blobUrl }, index) => new Promise((resolve) => {
