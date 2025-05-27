@@ -7,7 +7,7 @@ Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
 **Offline Use:** Download `index.html` from this repository and open it in your browser. Core functionality works entirely offline, though the intended visual appearance relies on fonts and icons to be loaded via internet connection.
 
 Setting options
-![Pilko_Home](https://github.com/user-attachments/assets/dfefb4d4-b2d7-4dd9-a95e-0001cd6a9a44)
+![Pilko_Home_Empty](https://github.com/user-attachments/assets/dbf2ee44-8e52-41be-81b7-c3fd0db3f2d4)
 
 ## ✨ Features
 #### Upload a video
@@ -21,6 +21,7 @@ Setting options
 
 #### Extraction mode | Interval
 - Capture screenshots at fixed time intervals (every 1–30s).
+![Pilko_Home](https://github.com/user-attachments/assets/dfefb4d4-b2d7-4dd9-a95e-0001cd6a9a44)
 
 #### Extraction mode | Smart Auto
   - Use different frame comparison algorithms to capture only significant frame changes. [(1)](#underlying-concepts)
