@@ -6,8 +6,7 @@ Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
 
 **Offline Use:** Download `index.html` from this repository and open it in your browser. Core functionality works entirely offline, though the intended visual appearance relies on fonts and icons to be loaded via internet connection.
 
-Setting options
-![Pilko_Home_Empty](https://github.com/user-attachments/assets/dbf2ee44-8e52-41be-81b7-c3fd0db3f2d4)
+![Pilko_Home](https://github.com/user-attachments/assets/a58c7c62-09e1-448e-a170-051a60681e22)
 
 ## ✨ Features
 #### Upload a video
@@ -18,10 +17,11 @@ Setting options
 
 #### Extraction mode | Manual
 - Use the embedded video player to manually seek and  capture specific frames with the "Cut Frame" or "Save Frame" -buttons.
+![Pilko_Manual](https://github.com/user-attachments/assets/9e78f6e4-4b0e-4501-8203-9545e7379f59)
 
 #### Extraction mode | Interval
 - Capture screenshots at fixed time intervals (every 1–30s).
-![Pilko_Home](https://github.com/user-attachments/assets/dfefb4d4-b2d7-4dd9-a95e-0001cd6a9a44)
+![Pilko_Interval](https://github.com/user-attachments/assets/c1882d67-8d30-4b8f-bb3e-09b0a52e6fe6)
 
 #### Extraction mode | Smart Auto
   - Use different frame comparison algorithms to capture only significant frame changes. [(1)](#underlying-concepts)
@@ -29,14 +29,14 @@ Setting options
         Compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (adjustable value) in a scene change, it triggers a frame capture. [(2)](#underlying-concepts)
     - **Pixel Difference**<br />
         Measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (adjustable value), a frame capture will be triggered. [(3)](#underlying-concepts)
+![Pilko_SmartAuto](https://github.com/user-attachments/assets/6be5a6b4-72d9-4533-a6d2-16d611574ce7)
 
 #### Contact Sheet
   - Generate a single image with a grid of evenly spaced thumbnails.  
   - Supports presets (5×4, 4×3) and custom grid sizes.  
   - Allows fine-tuning the frame capture positions before export via slider boxes, thumbnails and lightbox view.
   - Final image is generated at 3000px wide.
-
-![Pilko_Panel](https://github.com/user-attachments/assets/5c9c2363-09c0-4ba6-b508-e760baaf3619)
+![Pilko_ContactSheet](https://github.com/user-attachments/assets/a0334b44-0ef7-480c-a963-f388fb65fc5a)
 
 #### Output Configuration
 - Choose to capture frames in PNG, JPEG or WEBP formats.
@@ -73,6 +73,8 @@ Demo
     Use Smart Auto Mode to generate training sets for AI models (e.g., LoRAs, Midjourney style references).
 - **Archivists / Content Managers**<br />
     Use Contact Sheet Mode to create a visual summary of the video — a quick reference without opening or scrubbing through the file.
+
+![Pilko_Panel](https://github.com/user-attachments/assets/5c9c2363-09c0-4ba6-b508-e760baaf3619)
 
 ## 📱 Mobile Ready
 Fully functional on mobile browsers, allowing you to capture frames and create sheets directly on your phone or tablet. Great if you have a mobile-first workflow or don't have access to a desktop computer.
