@@ -6,6 +6,9 @@ Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
 
 **Offline Use:** Download `index.html` from this repository and open it in your browser. Core functionality works entirely offline, though the intended visual appearance relies on fonts and icons to be loaded via internet connection.
 
+Setting options
+![Pilko_Panel](https://github.com/user-attachments/assets/5c9c2363-09c0-4ba6-b508-e760baaf3619)
+
 ## ✨ Features
 #### Upload a video
 - Browser determines video format support. `.mp4` and `.webm` are usually well-supported. `.mkv` can fail on Firefox, but likely work on Chrome.
@@ -48,6 +51,9 @@ Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
 - No cloud processing or installations.
 - 100% client-side: built with HTML, CSS, and JavaScript.
 - Frames are temporarily stored in your browser via Blob URLs and are cleared when you close the tab or clear the output.
+
+Demo
+<video src="https://github.com/user-attachments/assets/16b17ae7-c46b-4b34-b45b-593505b835f5" controls width="600"></video>
 
 ## 🎯 Use Cases
 - **Privacy-Conscious Users**<br />
