@@ -7,7 +7,7 @@ Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
 **Offline Use:** Download `index.html` from this repository and open it in your browser. Core functionality works entirely offline, though the intended visual appearance relies on fonts and icons to be loaded via internet connection.
 
 Setting options
-![Pilko_Panel](https://github.com/user-attachments/assets/5c9c2363-09c0-4ba6-b508-e760baaf3619)
+![Pilko_Home](https://github.com/user-attachments/assets/dfefb4d4-b2d7-4dd9-a95e-0001cd6a9a44)
 
 ## ✨ Features
 #### Upload a video
@@ -34,6 +34,8 @@ Setting options
   - Supports presets (5×4, 4×3) and custom grid sizes.  
   - Allows fine-tuning the frame capture positions before export via slider boxes, thumbnails and lightbox view.
   - Final image is generated at 3000px wide.
+
+![Pilko_Panel](https://github.com/user-attachments/assets/5c9c2363-09c0-4ba6-b508-e760baaf3619)
 
 #### Output Configuration
 - Choose to capture frames in PNG, JPEG or WEBP formats.
