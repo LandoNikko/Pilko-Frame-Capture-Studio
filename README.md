@@ -2,7 +2,7 @@
 
 **Pilko Frame Capture Studio** is a privacy-first, browser-based tool for extracting frames from your video files locally, offering a range of flexible extraction options. It works seamlessly on both desktop and mobile devices.
 
-Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
+Try it here: https://pilko.studio
 
 **Offline Use:** Download `index.html` from this repository and open it in your browser. Core functionality works entirely offline, though the intended visual appearance relies on fonts and icons to be loaded via internet connection.
 
@@ -29,6 +29,7 @@ Try it here: https://landonikko.github.io/Pilko-Frame-Capture-Studio
         Compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (adjustable value) in a scene change, it triggers a frame capture. [(2)](#underlying-concepts)
     - **Pixel Difference**<br />
         Measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (adjustable value), a frame capture will be triggered. [(3)](#underlying-concepts)
+  - Please try different values to see how it affects the capture sensitivity.
 ![Pilko_SmartAuto](https://github.com/user-attachments/assets/6be5a6b4-72d9-4533-a6d2-16d611574ce7)
 
 #### Contact Sheet
