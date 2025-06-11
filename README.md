@@ -1,13 +1,16 @@
-[![Try it][demo-shield]][demo-url]   [![GitHub][github-shield]][github-url]   [![Email][gmail-shield]][gmail-url]   ![Discord: ABC Status][discord-shield-static]
+[![Try it][demo-shield]][demo-url]   [![License][license-shield]][license-url]   [![GitHub][github-shield]][github-url]   [![Email][gmail-shield]][gmail-url]   ![Discord: landomrandom Status][discord-shield-static]
 
 [demo-shield]: https://img.shields.io/badge/Try_it-00c6ff?style=for-the-badge&color=080c19
-[demo-url]: URL
+[demo-url]: [URL](https://pilko.studio)
+
+[license-shield]: https://img.shields.io/badge/License-MIT-121727?style=for-the-badge&labelColor=080c19&messageColor=e0e6f7&logo=gnu&logoColor=00c6ff
+[license-url]: LICENSE
 
 [github-shield]: https://img.shields.io/badge/GitHub-121727?style=for-the-badge&color=080c19&logo=github&logoColor=00c6ff
-[github-url]: URL
+[github-url]: https://github.com/LandoNikko/Pilko-Frame-Capture-Studio
 
 [gmail-shield]: https://img.shields.io/badge/Email-00c6ff?style=for-the-badge&color=080c19&logo=gmail&logoColor=00c6ff
-[gmail-url]: URL
+[gmail-url]: landonikko@gmail.com
 
 [discord-shield-static]: https://img.shields.io/badge/Discord-landomrandom-121727?style=for-the-badge&labelColor=080c19&messageColor=e0e6f7&logo=discord&logoColor=00c6ff
 
@@ -54,16 +57,10 @@ The tool finds timestamps (or you pick them). Your browser's built-in capabiliti
 
 [how-it-works-shield]: https://img.shields.io/badge/How_it_Works-00c6ff?style=for-the-badge&color=121727
 
-## ![Demo Shield][demo-section-shield]
-
 <video src="https://github.com/user-attachments/assets/16b17ae7-c46b-4b34-b45b-593505b835f5" controls width="600"></video>
-
-[demo-section-shield]: https://img.shields.io/badge/Demo-00c6ff?style=for-the-badge&color=121727
 
 ## ![Feedback Shield][feedback-shield]
 
 [![Email][gmail-shield]][gmail-url]   ![Discord: ABC Status][discord-shield-static]
 
 [feedback-shield]: https://img.shields.io/badge/Feedback-242c44?style=for-the-badge&color=121727&logo=github&logoColor=00c6ff
-
-MIT License
