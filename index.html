@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -102,11 +102,6 @@
       color: var(--accent-primary);
       text-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
       margin: 0 0.5rem;
-    }
-    h1:hover::after {
-      opacity: 1;
-      animation: moveLines 1.5s linear infinite;
-      margin-bottom: -0.1rem;
     }
     h1:active { transform: scale(0.98); }
     @keyframes moveLines {
@@ -765,6 +760,7 @@
     .sticky-button-container .button-group {
         display: flex;
         flex-direction: column;
+        gap: 0.5rem;
         margin-bottom: 0.4rem;
         margin-top: 1rem;
     }
@@ -1146,19 +1142,25 @@
          margin-left: 5px;
          font-family: var(--data-font);
      }
-     .screenshot-lightbox-content:not(.contact-sheet-mode) #lightboxFrameNumber {
-         display: none;
+     /* Default: frame number hidden, delete button shown */
+     #lightboxFrameNumber { display: none; }
+     #lightboxDeleteBtn { display: inline-flex; } /* or block, matching .clear-delete-button */
+
+     /* If .contact-sheet-mode is on lightbox content: */
+     .screenshot-lightbox-content.contact-sheet-mode #lightboxFrameNumber {
+         display: inline; /* Show frame number for CS */
      }
      .screenshot-lightbox-content.contact-sheet-mode #lightboxDeleteBtn {
-         display: none;
+         display: none; /* Hide delete button for CS */
      }
     .lightbox-frame-adjust-controls {
-        display: none;
+        display: none; /* Hidden by default */
         align-items: center;
         gap: 5px;
     }
+    /* If .contact-sheet-mode is on lightbox content: */
     .screenshot-lightbox-content.contact-sheet-mode .lightbox-frame-adjust-controls {
-        display: inline-flex;
+        display: inline-flex; /* Show adjust controls for CS (and Smart Auto via JS override) */
     }
     .lightbox-adjust-btn {
         background-color: var(--bg-tertiary);
@@ -1320,7 +1322,7 @@
                 </div>
             </div>
             <button id="initialSelectFileButton" type="button">Select a File</button>
-            <input type="file" id="videoInput" accept="video/*">
+            <input type="file" id="videoInput" accept=".mov">
         </div>
 
         <div class="settings-panel">
@@ -1507,21 +1509,23 @@
             <li><strong style="color: var(--accent-secondary)">Smart Auto</strong><br><span>Use different frame comparison algorithms to capture only significant frame changes.</span></li>
               <ul>
                 <li><strong style="color: var(--accent-secondary)">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
-                <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
+                <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixel changes between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
               </ul>
             </li>
             <li><strong style="color: var(--accent-tertiary)">Contact Sheet</strong><br><span>Generate a grid of screenshots to a single image.</span></li>
           </ul>
 
-        <h3>Supported Formats</h3>
+        <h3>Features</h3>
         <ul>
-          <li><strong style="color: var(--text-primary)">PNG</strong> - Lossless frame capture from video source.</li>
-          <li><strong style="color: var(--text-primary)">JPEG</strong> - Compressed frame capture with adjustable quality.</li>
-          <li><strong style="color: var(--text-primary)">WEBP</strong> - Compressed frame capture with adjustable quality.</li>
+          <li>See basic video metadata.</li>
+          <li>Automatically detect and remove black bars.</li>
+          <li>Different capture formats (PNG, JPEG, WEBP) and quality sliders (1-100%).</li>
+          <li>Preview and fine-tune captured frames with buttons or hotkeys.</li>
+          <li>Download individually or as a .zip -file.</li>
         </ul>
 
         <h3>Processing & Privacy</h3>
-        <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can also self-host it for full peace of mind. View the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
+        <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can also self-host it for full peace of mind. More information on <a href="https://github.com/TBA" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
 
       </div>
     </div>
@@ -1604,21 +1608,19 @@
         lightboxClose.addEventListener('click', () => toggleModal(screenshotLightbox, false));
         screenshotLightbox.addEventListener('click', (e) => {
             if (e.target === screenshotLightbox || e.target.closest('.screenshot-lightbox-container')) {
-                // Close when clicking overlay or container, not controls
                 if (!e.target.closest('.screenshot-lightbox-info') && e.target !== lightboxClose && !lightboxClose.contains(e.target)) {
                      toggleModal(screenshotLightbox, false);
                 }
             }
         });
-        // Hotkeys in Lightbox
          document.addEventListener('keydown', (e) => {
             if (screenshotLightbox.classList.contains('active')) {
                  if (e.key === 'Escape') toggleModal(screenshotLightbox, false);
-                 if (e.key === 'ArrowLeft' || e.key === 'a') document.getElementById('lightboxPrevBtn')?.click();
-                 if (e.key === 'ArrowRight' || e.key === 'd') document.getElementById('lightboxNextBtn')?.click();
-                 if (e.key === 'ArrowDown' || e.key === 's') document.getElementById('lightboxDeleteBtn')?.click();
-                 if (e.key === 'q') document.getElementById('lightboxAdjustPrev')?.click();
-                 if (e.key === 'e') document.getElementById('lightboxAdjustNext')?.click();
+                 if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') document.getElementById('lightboxPrevBtn')?.click();
+                 if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') document.getElementById('lightboxNextBtn')?.click();
+                 if (e.key === 'ArrowDown' || e.key.toLowerCase() === 's') document.getElementById('lightboxDeleteBtn')?.click();
+                 if (e.key.toLowerCase() === 'q') document.getElementById('lightboxAdjustPrev')?.click();
+                 if (e.key.toLowerCase() === 'e') document.getElementById('lightboxAdjustNext')?.click();
              }
         });
     }
@@ -1654,7 +1656,6 @@
         const modeContentDiv = $$('.mode-content')[0];
         const intervalInput = $('intervalInput');
         const intervalValue = $('intervalValue');
-        // Global Format/Quality Controls
         const captureFormatSelect = $('captureFormatSelect');
         const jpegQualityGlobalRow = $('jpegQualityGlobalRow');
         const jpegQualityGlobal = $('jpegQualityGlobal');
@@ -1662,7 +1663,6 @@
         const webpQualityGlobalRow = $('webpQualityGlobalRow');
         const webpQualityGlobal = $('webpQualityGlobal');
         const webpQualityGlobalValue = $('webpQualityGlobalValue');
-        // Smart Auto Controls
         const smartAlgoTabs = $$('.smart-tab');
         const histThresholdSettings = $('histThresholdSettings');
         const pixelThresholdSettings = $('pixelThresholdSettings');
@@ -1671,7 +1671,6 @@
         const pixelThresholdInput = $('pixelThresholdInput');
         const pixelThresholdValue = $('pixelThresholdValue');
         const pixelDiffDisclaimer = $('pixelDiffDisclaimer');
-        // Buttons & Progress
         const processButton = $('processButton');
         const downloadAllButton = $('downloadAllButton');
         const progressBarAuto = $('progressBarAuto');
@@ -1680,12 +1679,10 @@
         const downloadAllSmartButton = $('downloadAllSmartButton');
         const progressBarSmart = $('progressBarSmart');
         const progressBarFillSmart = $('progressBarFillSmart');
-        // Manual Controls
         const manualVideo = $('manualVideo');
         const extractManualButton = $('extractManualButton');
         const addManualButton = $('addManualButton');
         const downloadManualButton = $('downloadManualButton');
-        // Contact Sheet Controls
         const contactSheetVideo = $('contactSheetVideo');
         const contactSheetControlsElement = $$('.contact-sheet-controls')[0];
         const processContactSheetButton = $('processContactSheetButton');
@@ -1696,7 +1693,6 @@
         const contactSheetCanvas = $('contactSheetCanvas');
         const contactSheetPreviewElement = $('contactSheetPreview');
         const largeGridDisclaimer = $('largeGridDisclaimer');
-        // Other
         const removeBarsToggle = $('removeBarsToggle');
         const screenshotsDiv = $('screenshots');
         const video = $('video');
@@ -1711,10 +1707,37 @@
 
         verticalSeparatorElement = $$('.vertical-separator')[0];
 
-        [dropZone, videoInput, selectFileButton, video, manualVideo, canvas, frameCanvas, contactSheetCanvas, modeContentDiv, screenshotsDiv, clearScreenshotsButton, processContactSheetButton, downloadContactSheetButton, previewContactSheetButton, progressBarContactSheet, $('loadedFileInfo'), $('loadedFileName'), imageCountDisplay, imageCountValue, contactSheetVideo, contactSheetControlsElement, contactSheetPreviewElement, largeGridDisclaimer, outputColumn, histThresholdInput, histThresholdValue, histThresholdSettings, pixelThresholdInput, pixelThresholdValue, pixelThresholdSettings, captureFormatSelect, jpegQualityGlobalRow, jpegQualityGlobal, jpegQualityGlobalValue, webpQualityGlobalRow, webpQualityGlobal, webpQualityGlobalValue, pixelDiffDisclaimer].forEach(el => {
-            if (!el) throw new Error(`Missing critical HTML element: ${el?.id || 'unknown'}`);
-        });
-        if (!progressBarFillContactSheet) throw new Error("Missing critical HTML element: progressBarFillContactSheet");
+         const criticalElements = [
+             { id: 'dropZone', el: dropZone }, { id: 'videoInput', el: videoInput }, { id: 'selectFileButton', el: selectFileButton },
+             { id: 'video', el: video }, { id: 'manualVideo', el: manualVideo }, { id: 'canvas', el: canvas },
+             { id: 'frameCanvas', el: frameCanvas }, { id: 'contactSheetCanvas', el: contactSheetCanvas },
+             { id: 'modeContentDiv', el: modeContentDiv }, { id: 'screenshots', el: screenshotsDiv },
+             { id: 'clearScreenshotsButton', el: clearScreenshotsButton }, { id: 'processButton', el: processButton },
+             { id: 'downloadAllButton', el: downloadAllButton }, { id: 'previewContactSheetButton', el: previewContactSheetButton },
+             { id: 'progressBarContactSheet', el: progressBarContactSheet }, { id: 'loadedFileInfo', el: $('loadedFileInfo') },
+             { id: 'loadedFileName', el: $('loadedFileName') }, { id: 'imageCountDisplay', el: imageCountDisplay },
+             { id: 'imageCountValue', el: imageCountValue }, { id: 'contactSheetVideo', el: contactSheetVideo },
+             { id: 'contactSheetControlsElement', el: contactSheetControlsElement }, { id: 'contactSheetPreview', el: contactSheetPreviewElement },
+             { id: 'largeGridDisclaimer', el: largeGridDisclaimer }, { id: 'outputColumn', el: outputColumn }, { id: 'histThresholdInput', el: histThresholdInput },
+             { id: 'histThresholdValue', el: histThresholdValue }, { id: 'histThresholdSettings', el: histThresholdSettings },
+             { id: 'pixelThresholdInput', el: pixelThresholdInput }, { id: 'pixelThresholdValue', el: pixelThresholdValue },
+             { id: 'pixelThresholdSettings', el: pixelThresholdSettings }, { id: 'captureFormatSelect', el: captureFormatSelect },
+             { id: 'jpegQualityGlobalRow', el: jpegQualityGlobalRow }, { id: 'jpegQualityGlobal', el: jpegQualityGlobal }, { id: 'jpegQualityGlobalValue', el: jpegQualityGlobalValue },
+             { id: 'webpQualityGlobalRow', el: webpQualityGlobalRow }, { id: 'webpQualityGlobal', el: webpQualityGlobal }, { id: 'webpQualityGlobalValue', el: webpQualityGlobalValue },
+             { id: 'pixelDiffDisclaimer', el: pixelDiffDisclaimer },
+             { id: 'intervalModeButtons', el: $('intervalModeButtons') }, { id: 'smartModeButtons', el: $('smartModeButtons') },
+             { id: 'contactSheetModeButtons', el: $('contactSheetModeButtons') }, { id: 'manualModeButtons', el: $('manualModeButtons') }
+         ];
+
+         criticalElements.forEach(item => {
+             if (!item.el) {
+                 const missingId = item.id;
+                 throw new Error(`Missing critical HTML element with ID: ${missingId}. Please check your HTML structure.`);
+             }
+         });
+
+         if (!progressBarFillContactSheet) throw new Error("Missing critical HTML element with ID: progressBarFillContactSheet. Please check your HTML structure.");
+
 
         let currentMode = 'manual';
         let smartAlgorithm = 'histogram';
@@ -1724,9 +1747,10 @@
         let cancelExtractionRequested = false;
         let screenshotBlobs = [];
         let manualScreenshotBlobs = [];
-        let contactSheetBlob = null; // This holds the *final generated* image blob
-        let contactSheetPreviewData = new Array(20).fill(null); // Holds data for *preview* cells {blob, timestamp, blobUrl}
+        let contactSheetBlob = null;
+        let contactSheetPreviewData = new Array(20).fill(null);
         let currentSamplingProcess = null;
+
 
         if (imageCountValue) imageCountValue.classList.add('manual-mode');
 
@@ -1751,7 +1775,7 @@
         };
 
         const formatTime = (seconds) => {
-            if (isNaN(seconds)) seconds = 0;
+            if (isNaN(seconds) || seconds < 0) seconds = 0;
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
             const s = Math.floor(seconds % 60);
@@ -1760,16 +1784,26 @@
         };
         const parseTimeString = (timeStr) => {
             try {
-                if (!timeStr.includes(':')) {
-                    const directSeconds = parseFloat(timeStr);
-                    return isNaN(directSeconds) ? 0 : directSeconds;
-                }
+                if (!timeStr) return 0;
+                 if (!timeStr.includes(':')) {
+                     const directSeconds = parseFloat(timeStr);
+                     return isNaN(directSeconds) || directSeconds < 0 ? 0 : directSeconds;
+                 }
+
                 const parts = timeStr.trim().split(':').map(parseFloat);
-                if (parts.length === 2 && !parts.some(isNaN)) return parts[0] * 60 + parts[1];
-                if (parts.length === 3 && !parts.some(isNaN)) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-                console.warn("Invalid time format:", timeStr);
+                if (parts.some(isNaN) || parts.some(p => p < 0)) return 0;
+
+                if (parts.length === 2) {
+                     return parts[0] * 60 + parts[1];
+                }
+                if (parts.length === 3) {
+                     return parts[0] * 3600 + parts[1] * 60 + parts[2];
+                }
+
                 return 0;
-            } catch { return 0; }
+            } catch (e) {
+                 return 0;
+             }
         };
         const gcd = (a, b) => b ? gcd(b, a % b) : a;
         const getCommonAspectRatio = (width, height) => {
@@ -1799,7 +1833,7 @@
             aspectRatioValue.textContent = getCommonAspectRatio(width, height);
             if (uploadedFile?.size > 0 && currentVideoDuration > 0) { const bitrateKbps = Math.round((uploadedFile.size * 8) / currentVideoDuration / 1000); bitrateValue.textContent = `${bitrateKbps} kbps`; } else { bitrateValue.textContent = "N/A"; }
         };
-        const updateImageCount = () => { // Counting
+        const updateImageCount = () => {
             const screenshotCount = screenshotBlobs.length;
             const manualCount = manualScreenshotBlobs.length;
             let totalCount = 0;
@@ -1822,14 +1856,13 @@
             if(downloadAllButton) downloadAllButton.disabled = !hasAutoOrSmartScreenshots || processingActive;
             if(downloadAllSmartButton) downloadAllSmartButton.disabled = !hasAutoOrSmartScreenshots || processingActive;
             if(downloadManualButton) downloadManualButton.disabled = !hasManualScreenshots || processingActive;
-            // Contact Sheet buttons depend on whether a blob exists *and* it's not marked as needing update
             const needsUpdate = processContactSheetButton?.classList.contains('needs-update');
             if(downloadContactSheetButton) downloadContactSheetButton.disabled = !contactSheetBlob || processingActive || needsUpdate;
             if(previewContactSheetButton) previewContactSheetButton.disabled = !contactSheetBlob || processingActive || needsUpdate;
             if(clearScreenshotsButton) clearScreenshotsButton.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots && !hasContactSheetPreview && !contactSheetBlob;
         };
         const updateDropZoneUI = (isFileLoaded, filename) => {
-          if(!dropZone || !selectFileButton || !$('loadedFileName')) return;
+          if(!dropZone || !selectFileButton || !$('loadedFileInfo') || !$('loadedFileName')) return;
           const appContainer = $$('.app-container')[0];
           dropZone.classList.toggle('file-loaded', isFileLoaded);
           if (appContainer) appContainer.classList.toggle('file-loaded', isFileLoaded);
@@ -1837,7 +1870,6 @@
             $('loadedFileName').textContent = filename;
             selectFileButton.textContent = "Change File";
             selectFileButton.classList.add('file-selected');
-            // Don't call updateFileInfoDisplay here, wait for 'loadedmetadata'
           } else {
             dropZone.classList.remove('file-loaded');
             if (appContainer) appContainer.classList.remove('file-loaded');
@@ -1847,7 +1879,7 @@
             dropZone.dataset.bgUrl = '';
             document.documentElement.style.setProperty('--dropzone-bg-image', 'none');
             $('loadedFileName').textContent = '';
-            selectFileButton.textContent = "Change File";
+            selectFileButton.textContent = "Select a File";
             selectFileButton.classList.remove('file-selected');
             if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
           }
@@ -1858,12 +1890,9 @@
 
             const resetBtn = (btn, text, startHandler, iconClass = null) => {
                  if (!btn) return;
-                 // Enable button only if video source exists
                  btn.disabled = !video?.src;
-                 // Clear existing content and add text/icon
-                 btn.innerHTML = ''; // Clear first
-                 
-                 // All buttons now have icon after text
+
+                 btn.innerHTML = '';
                  btn.appendChild(document.createTextNode(text));
                  if (iconClass) {
                      const icon = document.createElement('i');
@@ -1888,7 +1917,10 @@
 
             resetBtn(processButton, 'Extract Screenshots', startAutoExtraction, 'ri-scissors-line');
             resetBtn(processSmartButton, 'Extract Smart Shots', startSmartExtraction, 'ri-scissors-line');
-            resetBtn(processContactSheetButton, 'Generate/Update Sheet', generateContactSheet);
+            if (processContactSheetButton) {
+                 const csBtnText = contactSheetBlob ? 'Update Sheet Image' : 'Generate/Update Sheet';
+                 resetBtn(processContactSheetButton, csBtnText, generateContactSheet);
+            }
             resetBtn(addManualButton, 'Cut Frame', addManualButton.onclick, 'ri-scissors-line');
             resetBtn(extractManualButton, 'Save Frame', extractManualButton.onclick, 'ri-download-line');
 
@@ -1897,10 +1929,10 @@
 
             Object.entries(progressBarElements).forEach(([key, bar]) => {
                 if (bar && (mode === key || mode === 'all')) bar.style.display = 'none';
-                if (progressBarFillElements[key]) progressBarFillElements[key].style.width = '0%';
+                const fillBar = progressBarFillElements[key];
+                if (fillBar) fillBar.style.width = '0%';
             });
 
-            // Reset contact sheet specific button titles etc.
             if(downloadContactSheetButton) {
                 downloadContactSheetButton.title = '';
                 downloadContactSheetButton.classList.remove('needs-update');
@@ -1910,8 +1942,9 @@
                 previewContactSheetButton.classList.remove('needs-update');
             }
 
-            updateImageCount(); // Recalculate download/clear button states
+            updateImageCount();
         };
+
 
         const setProcessingUI = (mode) => {
             processingActive = true; cancelExtractionRequested = false;
@@ -1927,9 +1960,8 @@
 
             if (verticalSeparatorElement && loadingClass) verticalSeparatorElement.classList.add(loadingClass);
             if (progressBar) progressBar.style.display = 'block';
-            if (progressBarFillElements[mode]) progressBarFillElements[mode].style.width = '0%'; // Reset progress fill
+            if (progressBarFillElements[mode]) progressBarFillElements[mode].style.width = '0%';
 
-             // Clear icon before setting text
              const icon = processBtn.querySelector('i, svg');
              if(icon) icon.remove();
 
@@ -1944,20 +1976,65 @@
 
             processBtn.removeEventListener('click', handleCancelClick);
             processBtn.addEventListener('click', handleCancelClick);
-            processBtn.disabled = false; // Enable the cancel button
+            processBtn.disabled = false;
         };
 
         const handleCancelClick = () => {
             cancelExtractionRequested = true;
             if (currentSamplingProcess?.cancel) currentSamplingProcess.cancel();
+             setTimeout(() => {
+                 if (processingActive) {
+                     resetProcessingUI(currentMode);
+                 }
+             }, 300);
         };
 
-        const computeHistogram = (imageData, sampleFactor = 4) => { const data = imageData.data; const hist = new Array(256).fill(0); let count = 0; const step = 4 * sampleFactor; for (let i = 0; i < data.length; i += step) { const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]); hist[gray]++; count++; } return count === 0 ? hist : hist.map(val => val / count); };
-        const histogramDifference = (hist1, hist2) => (!hist1 || !hist2 || hist1.length !== hist2.length) ? 1 : hist1.reduce((acc, val, i) => acc + Math.abs(val - hist2[i]), 0);
-        const computePixelDiff = (data1, data2, sampleFactor = 4) => { let diff = 0; let count = 0; const step = 4 * sampleFactor; for (let i = 0; i < data1.length; i += step) { diff += Math.abs(data1[i] - data2[i]) + Math.abs(data1[i+1] - data2[i+1]) + Math.abs(data1[i+2] - data2[i+2]); count++; } return count > 0 ? (diff / (count * 3)) : 0; };
+        const computeHistogram = (imageData, sampleFactor = 4) => {
+            if (!imageData || !imageData.data || imageData.data.length === 0) return new Array(256).fill(0);
+            const data = imageData.data;
+            const hist = new Array(256).fill(0);
+            let count = 0;
+            const step = 4 * sampleFactor;
+            for (let i = 0; i < data.length; i += step) {
+                if (i + 2 < data.length) {
+                     const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
+                     hist[gray]++;
+                     count++;
+                } else {
+                    break;
+                }
+            }
+            return count === 0 ? new Array(256).fill(0) : hist.map(val => val / count);
+        };
+        const histogramDifference = (hist1, hist2) => {
+             if (!hist1 || !hist2 || hist1.length !== 256 || hist2.length !== 256) return 1;
+             let diff = 0;
+             for(let i = 0; i < 256; i++) {
+                  diff += Math.abs(hist1[i] - hist2[i]);
+             }
+             return diff;
+         };
+        const computePixelDiff = (data1, data2, sampleFactor = 4) => {
+             if (!data1 || !data2 || data1.length === 0 || data1.length !== data2.length) return 0;
+             let diffSum = 0;
+             let count = 0;
+             const step = 4 * sampleFactor;
+             for (let i = 0; i < data1.length; i += step) {
+                  if (i + 2 < data1.length) {
+                     diffSum += Math.abs(data1[i] - data2[i]);
+                     diffSum += Math.abs(data1[i+1] - data2[i+1]);
+                     diffSum += Math.abs(data1[i+2] - data2[i+2]);
+                     count++;
+                  } else {
+                     break;
+                  }
+             }
+             return count > 0 ? (diffSum / (count * 3)) : 0;
+         };
 
          const deleteScreenshot = (itemToDelete, blobArrayRef) => {
              const indexToRemove = blobArrayRef.indexOf(itemToDelete);
+
              if (indexToRemove > -1) {
                  const [removedItem] = blobArrayRef.splice(indexToRemove, 1);
                  if (removedItem?.blobUrl) URL.revokeObjectURL(removedItem.blobUrl);
@@ -1965,15 +2042,14 @@
                  const parentDiv = (blobArrayRef === manualScreenshotBlobs || blobArrayRef === screenshotBlobs) ? screenshotsDiv : null;
                  if (!parentDiv) return -1;
 
-                 const containerToRemove = parentDiv.querySelector(`.screenshot-container[data-index="${indexToRemove}"]`);
+                 const containerToRemove = parentDiv.querySelector(`.screenshot-container[data-blob-url="${removedItem.blobUrl}"]`);
 
                  if (containerToRemove) {
                      containerToRemove.remove();
                  } else {
-                     console.warn("Could not find DOM element to remove for index:", indexToRemove, "Timestamp:", removedItem.timestamp);
+                     console.warn("Could not find DOM element to remove for blobUrl:", removedItem.blobUrl, "Timestamp:", removedItem.timestamp);
                  }
 
-                 // Re-index remaining DOM elements *after* removal
                  const remainingContainers = $$('.screenshot-container', parentDiv);
                  remainingContainers.forEach((container, newIndex) => {
                      container.dataset.index = newIndex.toString();
@@ -1995,13 +2071,15 @@
             const blobData = { blob, timestamp, blobUrl };
             let insertBeforeNode = null;
             if (blobArrayRef === manualScreenshotBlobs || blobArrayRef === screenshotBlobs) {
-                for (let i = 0; i < blobArrayRef.length; i++) {
-                    if (blobArrayRef[i].timestamp > timestamp) {
-                        insertBeforeNode = screenshotsDiv.querySelector(`.screenshot-container[data-index="${i}"]`);
-                        blobArrayRef.splice(i, 0, blobData);
-                        break;
-                    }
-                }
+                 // Insert while maintaining sorted order by timestamp
+                 for (let i = 0; i < blobArrayRef.length; i++) {
+                     if (blobArrayRef[i].timestamp > timestamp) {
+                         // Find the corresponding DOM element to insert before
+                         insertBeforeNode = screenshotsDiv.querySelector(`.screenshot-container[data-index="${i}"]`);
+                         blobArrayRef.splice(i, 0, blobData);
+                         break;
+                     }
+                 }
             }
             if (!insertBeforeNode) {
                 blobArrayRef.push(blobData);
@@ -2022,20 +2100,12 @@
             container.appendChild(imgContainer);
 
             imgContainer.addEventListener('click', () => {
-                 const indexFromData = parseInt(container.dataset.index);
-                 let clickedItem = null;
-                 let actualIndex = -1;
-
-                 // Verify index and get item directly
-                 if (!isNaN(indexFromData) && indexFromData >= 0 && indexFromData < blobArrayRef.length) {
-                      clickedItem = blobArrayRef[indexFromData];
-                      actualIndex = indexFromData;
-                 }
-
-                 if (actualIndex > -1 && clickedItem) {
-                     openLightbox(clickedItem, blobArrayRef, actualIndex);
-                 } else {
-                    console.error("Could not determine item for lightbox. Index:", indexFromData, "Array length:", blobArrayRef.length);
+                 const clickedItem = blobArrayRef.find(item => item.blobUrl === container.dataset.blobUrl);
+                 if (clickedItem) {
+                     const actualIndex = blobArrayRef.indexOf(clickedItem);
+                     if (actualIndex > -1) {
+                        openLightbox(clickedItem, blobArrayRef, actualIndex);
+                     }
                  }
              });
 
@@ -2053,32 +2123,27 @@
             delBtn.innerHTML = DELETE_ICON_SVG;
             delBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const currentItemIndex = blobArrayRef.indexOf(blobData);
-                if (currentItemIndex > -1) {
-                    deleteScreenshot(blobData, blobArrayRef);
-                    if (screenshotLightbox?.classList.contains('active')) {
-                        toggleModal(screenshotLightbox, false);
-                    }
-                } else {
-                    console.error("Item to delete not found in array.");
+                const itemToDelete = blobArrayRef.find(item => item.blobUrl === container.dataset.blobUrl);
+                if (itemToDelete) {
+                    deleteScreenshot(itemToDelete, blobArrayRef);
+                     if (screenshotLightbox?.classList.contains('active') && screenshotLightbox.dataset.itemBlobUrl === container.dataset.blobUrl) {
+                         toggleModal(screenshotLightbox, false);
+                     }
                 }
             });
 
             container.appendChild(delBtn);
 
-             // Insert or append DOM node
             if (insertBeforeNode) {
                 screenshotsDiv.insertBefore(container, insertBeforeNode);
             } else {
                 screenshotsDiv.appendChild(container);
             }
 
-            // Re-index *all* screenshot containers after insertion/append
             const allContainers = $$('.screenshot-container', screenshotsDiv);
             allContainers.forEach((cont, idx) => {
                 cont.dataset.index = idx.toString();
             });
-
 
             return container;
         };
@@ -2090,60 +2155,61 @@
              const lightboxDownload = $('lightboxDownload');
              const prevBtn = $('lightboxPrevBtn');
              const nextBtn = $('lightboxNextBtn');
-             const deleteBtnContainer = $('lightboxDeleteBtn').parentNode;
-             let deleteBtn = $('lightboxDeleteBtn');
-             const lightboxAdjustControls = $$('.lightbox-frame-adjust-controls')[0];
+             let deleteBtn = $('lightboxDeleteBtn'); // Get current delete button ref
              const lightboxAdjustPrev = $('lightboxAdjustPrev');
              const lightboxAdjustNext = $('lightboxAdjustNext');
              const lightboxContent = $$('.info-box-content.screenshot-lightbox-content')[0];
              const frameNumberSpan = $('lightboxFrameNumber');
 
-             if (!lightboxImage || !lightboxTimestamp || !lightboxDownload || !screenshotLightbox || !prevBtn || !nextBtn || !item || !deleteBtnContainer || !lightboxAdjustControls || !lightboxAdjustPrev || !lightboxAdjustNext || !lightboxContent || !frameNumberSpan) return;
+             if (!lightboxImage || !lightboxTimestamp || !lightboxDownload || !screenshotLightbox || !prevBtn || !nextBtn || !item || !deleteBtn || !lightboxAdjustPrev || !lightboxAdjustNext || !lightboxContent || !frameNumberSpan) {
+                 console.error("Lightbox elements or item missing.");
+                 return;
+             }
 
              const arrayType = blobArrayRef === contactSheetPreviewData ? 'contactSheet' : (blobArrayRef === manualScreenshotBlobs ? 'manual' : 'auto');
              screenshotLightbox.dataset.currentIndex = currentIndex.toString();
              screenshotLightbox.dataset.arrayType = arrayType;
-             screenshotLightbox.dataset.itemId = item.timestamp;
+             screenshotLightbox.dataset.itemBlobUrl = item.blobUrl; // Store item identifier (URL)
 
-             // Show/hide contact sheet specific controls
              const isContactSheet = arrayType === 'contactSheet';
-             lightboxAdjustControls.style.display = isContactSheet ? 'inline-flex' : 'none';
-             lightboxContent.classList.toggle('contact-sheet-mode', isContactSheet);
+             const isSmartAutoOrInterval = arrayType === 'auto';
 
-             // Store the blob array reference in the lightbox dataset
-             screenshotLightbox.dataset.blobArrayRef = arrayType;
+             // Control delete button and frame number visibility
+             if (deleteBtn) deleteBtn.style.display = (isContactSheet) ? 'none' : 'inline-flex';
+             if (frameNumberSpan) frameNumberSpan.style.display = (isContactSheet) ? 'inline' : 'none';
+
+             // Control frame adjustment controls visibility
+             const adjustControlsContainer = lightboxAdjustPrev.closest('.lightbox-frame-adjust-controls');
+             if (adjustControlsContainer) {
+                 adjustControlsContainer.style.display = (isContactSheet || isSmartAutoOrInterval) ? 'inline-flex' : 'none';
+             }
 
              updateLightboxContent(currentIndex, blobArrayRef);
              toggleModal(screenshotLightbox, true);
 
-             prevBtn.onclick = () => navigateLightbox(-1);
-             nextBtn.onclick = () => navigateLightbox(1);
+             // Set up navigation buttons
+             prevBtn.onclick = null; nextBtn.onclick = null;
+             prevBtn.addEventListener('click', () => navigateLightbox(-1));
+             nextBtn.addEventListener('click', () => navigateLightbox(1));
 
-             // --- Delete Button Handling ---
-             const newDeleteBtn = document.createElement('button');
-             newDeleteBtn.id = 'lightboxDeleteBtn';
-             newDeleteBtn.className = "clear-delete-button lightbox-delete-btn";
-             newDeleteBtn.title = "Delete this screenshot (Hotkeys: 🡫, S)";
-             newDeleteBtn.innerHTML = DELETE_ICON_SVG;
-             // Hide if contact sheet
-             if (isContactSheet) {
-                 newDeleteBtn.style.display = 'none';
-             }
-             deleteBtnContainer.replaceChild(newDeleteBtn, deleteBtn);
-             deleteBtn = newDeleteBtn;
-
+             // Setup delete button
              deleteBtn.onclick = () => {
-                 const currentIdx = parseInt(screenshotLightbox.dataset.currentIndex || '0');
+                 const currentIdx = parseInt(screenshotLightbox.dataset.currentIndex || '-1');
                  const currentArrayType = screenshotLightbox.dataset.arrayType || 'auto';
                  let currentBlobArrayRef;
                  if (currentArrayType === 'contactSheet') currentBlobArrayRef = contactSheetPreviewData;
                  else if (currentArrayType === 'manual') currentBlobArrayRef = manualScreenshotBlobs;
                  else currentBlobArrayRef = screenshotBlobs;
 
-                 if (currentIdx >= 0 && currentIdx < currentBlobArrayRef.length) {
-                     const itemToDelete = currentBlobArrayRef[currentIdx];
+                 const itemBlobUrl = screenshotLightbox.dataset.itemBlobUrl;
+                 const itemToDelete = currentBlobArrayRef.find(item => item.blobUrl === itemBlobUrl);
+
+                 if (itemToDelete) {
                      if (currentArrayType === 'contactSheet') {
-                     } else {
+                         // For contact sheet, deleting from lightbox is not standard, handle via cell modification
+                         // Maybe show a message?
+                         alert("Delete contact sheet frames by adjusting their time to 0:00 in the main panel.");
+                     } else { // Manual or Auto/Smart
                          const deletedIndex = deleteScreenshot(itemToDelete, currentBlobArrayRef);
                          if (deletedIndex > -1) {
                              if (currentBlobArrayRef.length === 0) {
@@ -2153,15 +2219,26 @@
                              screenshotLightbox.dataset.currentIndex = newIndex.toString();
                              updateLightboxContent(newIndex, currentBlobArrayRef);
                              updateNavButtonVisibility(newIndex, currentBlobArrayRef.length);
+                             screenshotLightbox.dataset.itemBlobUrl = currentBlobArrayRef[newIndex].blobUrl; // Update identifier
                          }
                      }
+                 } else {
+                     console.error("Could not find item to delete in array for lightbox.", itemBlobUrl);
+                     toggleModal(screenshotLightbox, false); // Close if item is already gone
                  }
              };
 
              // --- Lightbox Frame Adjustment Handling ---
+              // Remove previous listeners first
+             lightboxAdjustPrev.onclick = null;
+             lightboxAdjustNext.onclick = null;
+
              if (isContactSheet) {
-                lightboxAdjustPrev.onclick = () => adjustFrameTimeFromLightbox(-1);
-                lightboxAdjustNext.onclick = () => adjustFrameTimeFromLightbox(1);
+                lightboxAdjustPrev.addEventListener('click', () => adjustFrameTimeFromLightbox(-1));
+                lightboxAdjustNext.addEventListener('click', () => adjustFrameTimeFromLightbox(1));
+             } else if (isSmartAutoOrInterval) {
+                 lightboxAdjustPrev.addEventListener('click', () => adjustSmartAutoFrameFromLightbox(-1));
+                 lightboxAdjustNext.addEventListener('click', () => adjustSmartAutoFrameFromLightbox(1));
              }
 
              updateNavButtonVisibility(currentIndex, blobArrayRef.length);
@@ -2170,9 +2247,73 @@
         const adjustFrameTimeFromLightbox = (offset) => {
             if (!screenshotLightbox.classList.contains('active')) return;
             const currentIndex = parseInt(screenshotLightbox.dataset.currentIndex || '-1');
-            if (currentIndex >= 0 && screenshotLightbox.dataset.arrayType === 'contactSheet') {
-                adjustFrameTime(currentIndex, offset);
-                 // Lightbox image itself will be updated via handleFineTuneChange -> updatePreviewCell -> updateLightboxContent
+             if (currentIndex < 0 || screenshotLightbox.dataset.arrayType !== 'contactSheet') return;
+
+             const timeInput = $(`timeInput_${currentIndex}`); if (!timeInput) return;
+             const currentValue = parseFloat(timeInput.value); if (isNaN(currentValue)) return;
+
+             const newValue = Math.max(0, Math.min(currentValue + offset, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
+
+             // Update the value in the input field and trigger the debounced change handler
+             timeInput.value = newValue.toFixed(2);
+             $(`timeFormatted_${currentIndex}`).value = formatTime(newValue); // Update formatted input too
+             handleFineTuneChange(currentIndex, newValue);
+         };
+
+        const adjustSmartAutoFrameFromLightbox = debounce((offsetSeconds) => {
+            if (!screenshotLightbox.classList.contains('active')) return;
+            const currentIndex = parseInt(screenshotLightbox.dataset.currentIndex || '-1');
+            const arrayType = screenshotLightbox.dataset.arrayType;
+
+            if (currentIndex < 0 || arrayType !== 'auto') return;
+
+            const currentBlobArrayRef = screenshotBlobs;
+            if (currentIndex >= currentBlobArrayRef.length) return;
+
+            const item = currentBlobArrayRef[currentIndex];
+            if (!item || typeof item.timestamp !== 'number') return;
+
+            const newTime = Math.max(0, Math.min(item.timestamp + offsetSeconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
+
+            captureFrameAtTime(newTime, (newBlob) => {
+                if (newBlob) {
+                    updateSmartAutoScreenshot(currentIndex, newBlob, newTime);
+                    updateLightboxContent(currentIndex, currentBlobArrayRef);
+                } else {
+                    console.warn(`Failed to capture adjusted frame for Smart Auto/Interval at ${newTime.toFixed(2)}s`);
+                }
+            });
+        }, 300);
+
+        const updateSmartAutoScreenshot = (index, newBlob, newTimestamp) => {
+            if (index < 0 || index >= screenshotBlobs.length || !newBlob) return;
+
+            const itemToUpdate = screenshotBlobs[index];
+
+            // Revoke the old blob URL
+            if (itemToUpdate.blobUrl) {
+                URL.revokeObjectURL(itemToUpdate.blobUrl);
+            }
+
+            // Create new blob URL and update the item data
+            itemToUpdate.blob = newBlob;
+            itemToUpdate.timestamp = newTimestamp;
+            itemToUpdate.blobUrl = URL.createObjectURL(newBlob);
+
+            // Update the corresponding DOM element
+            const container = screenshotsDiv.querySelector(`.screenshot-container[data-index="${index}"]`);
+            if (container) {
+                const img = container.querySelector('.screenshot-img');
+                if (img) {
+                    img.src = itemToUpdate.blobUrl;
+                }
+                container.dataset.timestamp = newTimestamp.toString();
+                container.dataset.blobUrl = itemToUpdate.blobUrl;
+
+                const overlay = container.querySelector('.screenshot-overlay');
+                if (overlay) {
+                    overlay.textContent = formatTime(newTimestamp);
+                }
             }
         };
 
@@ -2182,16 +2323,15 @@
              const lightboxTimestamp = $('lightboxTimestamp');
              const lightboxDownload = $('lightboxDownload');
              const frameNumberSpan = $('lightboxFrameNumber');
-             const isContactSheet = blobArrayRef === contactSheetPreviewData;
 
              if (index >= 0 && index < blobArrayRef.length && lightboxImage && lightboxTimestamp && lightboxDownload && frameNumberSpan) {
                  const item = blobArrayRef[index];
-                 // Handle case where item might be null (e.g., deleted contact sheet cell)
                  if (!item || !item.blobUrl) {
-                     lightboxImage.src = ''; // Clear image
+                     lightboxImage.src = '';
+                     lightboxImage.dataset.blobUrl = '';
                      lightboxTimestamp.textContent = '-';
                      lightboxDownload.href = '#';
-                     frameNumberSpan.textContent = ''; // Clear frame number
+                     frameNumberSpan.textContent = '';
                      return;
                  }
                  const newBlobUrl = item.blobUrl;
@@ -2200,10 +2340,14 @@
                  lightboxImage.dataset.blobUrl = newBlobUrl;
 
                  lightboxTimestamp.textContent = item.timestamp >= 0 ? formatTime(item.timestamp) : '';
-                 frameNumberSpan.textContent = isContactSheet ? `Frame ${index + 1}` : '';
+                 if (blobArrayRef === contactSheetPreviewData) {
+                    frameNumberSpan.textContent = `Frame ${index + 1}`;
+                 } else {
+                    frameNumberSpan.textContent = ''; // Hide for non-CS modes
+                 }
 
                  const extension = item.blob?.type ? (item.blob.type === 'image/jpeg' ? 'jpg' : item.blob.type.split('/')[1]) : 'png';
-                 const timeSuffix = (item.timestamp !== undefined && item.timestamp >= 0) ? `_${formatTime(item.timestamp).replace(':','-')}` : `_${index + 1}`;
+                 const timeSuffix = (item.timestamp !== undefined && item.timestamp >= 0) ? `_${formatTime(item.timestamp).replace(/[:.]/g,'-')}` : `_${index + 1}`; // Replace dots too
                  const filename = `screenshot${timeSuffix}.${extension}`;
                  lightboxDownload.href = newBlobUrl;
                  lightboxDownload.download = filename;
@@ -2211,22 +2355,45 @@
          };
 
         const navigateLightbox = (direction) => {
-            if (!screenshotLightbox) return;
-            const currentIndex = parseInt(screenshotLightbox.dataset.currentIndex || '0');
+            if (!screenshotLightbox || processingActive) return;
             const arrayType = screenshotLightbox.dataset.arrayType || 'auto';
             let blobArrayRef;
             if (arrayType === 'contactSheet') blobArrayRef = contactSheetPreviewData;
             else if (arrayType === 'manual') blobArrayRef = manualScreenshotBlobs;
             else blobArrayRef = screenshotBlobs;
 
+            let currentIndex = parseInt(screenshotLightbox.dataset.currentIndex || '0');
             let newIndex = currentIndex + direction;
-            while (arrayType === 'contactSheet' && newIndex >= 0 && newIndex < blobArrayRef.length && !blobArrayRef[newIndex]) {
-                newIndex += direction;
+
+            if (arrayType === 'contactSheet') {
+                // For contact sheet, skip null entries
+                while (newIndex >= 0 && newIndex < blobArrayRef.length && !blobArrayRef[newIndex]) {
+                    newIndex += direction;
+                }
             }
 
+
             if (newIndex >= 0 && newIndex < blobArrayRef.length) {
+                 const newItem = blobArrayRef[newIndex];
+                 if (!newItem) {
+                     console.error(`Item at new index ${newIndex} is null or undefined during navigation.`);
+                     // Try finding the next valid item in the same direction if the calculated index is invalid
+                     let nextValidIndex = newIndex + direction;
+                      while (nextValidIndex >= 0 && nextValidIndex < blobArrayRef.length && !blobArrayRef[nextValidIndex]) {
+                          nextValidIndex += direction;
+                      }
+                      if (nextValidIndex >= 0 && nextValidIndex < blobArrayRef.length && blobArrayRef[nextValidIndex]) {
+                          newIndex = nextValidIndex; // Use the found valid index
+                      } else {
+                          console.warn("Could not find next valid item after skipping nulls.");
+                          return; // Stop navigation if no valid item found
+                      }
+                      newItem = blobArrayRef[newIndex]; // Get the item at the found valid index
+                 }
+
                 screenshotLightbox.dataset.currentIndex = newIndex.toString();
                 updateLightboxContent(newIndex, blobArrayRef);
+                screenshotLightbox.dataset.itemBlobUrl = newItem.blobUrl;
                 updateNavButtonVisibility(newIndex, blobArrayRef.length);
             }
         };
@@ -2234,12 +2401,32 @@
         const updateNavButtonVisibility = (currentIndex, totalItems) => {
             const prevBtn = $('lightboxPrevBtn');
             const nextBtn = $('lightboxNextBtn');
-            if (prevBtn && nextBtn) { prevBtn.disabled = currentIndex <= 0; nextBtn.disabled = currentIndex >= totalItems - 1; }
+            if (prevBtn && nextBtn) {
+                const arrayType = screenshotLightbox?.dataset.arrayType || 'auto';
+                let blobArrayRef;
+                 if (arrayType === 'contactSheet') blobArrayRef = contactSheetPreviewData;
+                 else if (arrayType === 'manual') blobArrayRef = manualScreenshotBlobs;
+                 else blobArrayRef = screenshotBlobs;
+
+                // Find the indices of the previous and next valid items
+                let prevIndex = currentIndex - 1;
+                while (arrayType === 'contactSheet' && prevIndex >= 0 && !blobArrayRef[prevIndex]) {
+                    prevIndex--;
+                }
+
+                let nextIndex = currentIndex + 1;
+                while (arrayType === 'contactSheet' && nextIndex < totalItems && !blobArrayRef[nextIndex]) {
+                    nextIndex++;
+                }
+
+                prevBtn.disabled = prevIndex < 0;
+                nextBtn.disabled = nextIndex >= totalItems;
+            }
         };
+
 
         const getFileExtensionFromType = (type) => (!type || type === 'image/png') ? 'png' : (type === 'image/jpeg' ? 'jpg' : type.split('/')[1] || 'png');
 
-        // Global controls for capture format
         const getCurrentFormatSettings = () => {
              const selectedFormat = captureFormatSelect.value || 'png';
              let quality = 1.0;
@@ -2256,13 +2443,24 @@
              const zip = new JSZip();
              const { type } = getCurrentFormatSettings();
              const extension = getFileExtensionFromType(type);
-
-             blobDataArray.forEach((item, index) => {
+             let fileCount = 0;
+             blobDataArray.forEach((item) => {
                  if (!item || !item.blob) return;
-                 const timeSuffix = (item.timestamp !== undefined && item.timestamp >= 0) ? `_${formatTime(item.timestamp).replace(':','-')}` : `_${index + 1}`;
+                 fileCount++;
+                 const timestamp = item.timestamp;
+                 const timeSuffix = (timestamp !== undefined && timestamp >= 0 && isFinite(timestamp))
+                     ? `_${formatTime(timestamp).replace(/[:.]/g,'-')}`
+                     : `_${fileCount}`;
+
                  const filename = `${baseFilename}${timeSuffix}.${extension}`;
                  zip.file(filename, item.blob);
              });
+
+              if (fileCount === 0) {
+                  alert("No valid screenshots to download.");
+                  return;
+              }
+
              zip.generateAsync({ type: "blob" }).then((content) => {
                  const url = URL.createObjectURL(content);
                  const tempLink = document.createElement('a');
@@ -2276,7 +2474,20 @@
          };
 
         const handleFileLoad = (file) => {
-            if (!video || !manualVideo || !contactSheetVideo || !file) return;
+            // **MODIFICATION:** Only accept .mov files
+            if (!file || !(file.name.toLowerCase().endsWith('.mov') || file.type === 'video/quicktime')) {
+                 console.warn("Selected file is not a .mov file.");
+                 alert("Please select a .mov video file.");
+                 // Clear the input field so the same file can be selected again
+                 if (videoInput) videoInput.value = '';
+                 return;
+            }
+            if (!video || !manualVideo || !contactSheetVideo) {
+                 console.error("Video elements missing.");
+                 alert("Application error: Video elements not found.");
+                 return;
+            }
+
             uploadedFile = file;
             const fileURL = URL.createObjectURL(file);
 
@@ -2288,13 +2499,12 @@
             manualVideo.src = fileURL;
             contactSheetVideo.src = fileURL;
             updateDropZoneUI(true, file.name);
-            resetUIOnNewVideo(); // Reset counts, buttons, previews
+            resetUIOnNewVideo();
 
             const onMetadataLoaded = () => {
                 updateFileInfoDisplay();
-                updateDropZoneThumbnail(); // Attempt thumbnail after metadata
-                resetProcessingUI('all'); // Enable relevant buttons now that we have duration etc.
-                // Initial setup for contact sheet inputs based on new duration
+                updateDropZoneThumbnail();
+                resetProcessingUI('all');
                  if (currentMode === 'contactSheet') {
                     const activeGridSizeTab = $$('.grid-size-tab.active')[0];
                     const rows = parseInt(activeGridSizeTab?.getAttribute('data-rows') || 4);
@@ -2306,14 +2516,14 @@
             };
 
             if (video.readyState >= video.HAVE_METADATA) {
-                setTimeout(onMetadataLoaded, 100); // Give it a moment :D
+                setTimeout(onMetadataLoaded, 100);
             } else {
                 video.addEventListener('loadedmetadata', onMetadataLoaded, { once: true });
             }
 
             video.addEventListener('error', (e) => {
                  console.error("Video loading error:", e);
-                 alert(`Error loading video: ${file.name}. It might be corrupted or in an unsupported format.`);
+                 alert(`Error loading video: ${file.name}. It might be corrupted or in an unsupported format/codec.`);
                  updateDropZoneUI(false, null);
                  resetUIOnNewVideo();
             });
@@ -2330,17 +2540,31 @@
             }
         };
         const resetUIOnNewVideo = () => {
-             $$('.screenshot-container', screenshotsDiv).forEach(container => {
-                 if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl);
-             });
+             screenshotBlobs.concat(manualScreenshotBlobs).forEach(item => { if(item?.blobUrl) URL.revokeObjectURL(item.blobUrl); });
+             $$('.screenshot-container', screenshotsDiv).forEach(container => { if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); });
+
             if(screenshotsDiv) screenshotsDiv.innerHTML = '';
             screenshotBlobs = []; manualScreenshotBlobs = []; contactSheetBlob = null; cropData = null; currentVideoDuration = 0;
             clearContactSheetPreview(true);
-            Object.keys(gridCache).forEach(key => gridCache[key] = { data: null, blob: null, completed: false });
+            Object.keys(gridCache).forEach(key => {
+                 const cacheEntry = gridCache[key];
+                 cacheEntry?.data?.forEach(item => {
+                      if(item?.blob) {
+                          try { URL.revokeObjectURL(URL.createObjectURL(item.blob)); }
+                          catch (e) { }
+                      }
+                 });
+                 if (cacheEntry?.blob) {
+                      try { URL.revokeObjectURL(URL.createObjectURL(cacheEntry.blob)); }
+                      catch (e) { }
+                 }
+                 gridCache[key] = { data: null, blob: null, completed: false };
+            });
             $$('.grid-size-tab').forEach(tab => tab.classList.remove('completed'));
-            updateImageCount(); resetProcessingUI('all'); // Reset buttons (will be disabled until src loads)
-            if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
 
+            updateImageCount(); resetProcessingUI('all');
+             if (manualVideo) manualVideo.currentTime = 0;
+             if (contactSheetVideo) contactSheetVideo.currentTime = 0;
         };
 
         const sampleVideoFrames = (options) => {
@@ -2350,9 +2574,8 @@
              const collectedData = new Array(sampleTimestamps.length).fill(null);
              let frameRequestHandle = null;
 
-             if (!videoElement?.src || videoElement.readyState < videoElement.HAVE_METADATA || videoElement.duration <= 0 || !sampleTimestamps?.length) {
-                 const error = new Error(!videoElement?.src ? "Video not loaded." : !sampleTimestamps?.length ? "No timestamps provided." : "Video not ready for sampling.");
-                 console.error("sampleVideoFrames error:", error.message);
+             if (!videoElement?.src || videoElement.readyState < videoElement.HAVE_METADATA || videoElement.duration <= 0 || !isFinite(videoElement.duration) || !sampleTimestamps?.length) {
+                 const error = new Error(!videoElement?.src ? "Video not loaded." : !sampleTimestamps?.length ? "No timestamps provided." : "Video not ready or duration invalid for sampling.");
                  if (onErrorCallback) onErrorCallback(error); else console.error(error);
                  if (onCompleteCallback) onCompleteCallback(collectedData);
                  return { cancel: () => { localCancelRequested = true; } };
@@ -2362,11 +2585,10 @@
              const checkCancelled = () => localCancelRequested || cancelExtractionRequested;
 
              const processNext = () => {
-                 if (checkCancelled()) { console.log("Sampling cancelled."); if (onCompleteCallback) onCompleteCallback(collectedData); return; }
-                 if (currentSampleIndex >= totalSamples) { console.log("Sampling complete."); if (onCompleteCallback) onCompleteCallback(collectedData); return; }
+                 if (checkCancelled()) { if (onCompleteCallback) onCompleteCallback(collectedData); return; }
+                 if (currentSampleIndex >= totalSamples) { if (onCompleteCallback) onCompleteCallback(collectedData); return; }
 
                  const timestamp = sampleTimestamps[currentSampleIndex];
-                 // Use the currentSampleIndex as the original index for this sampling run
                  const originalIndex = currentSampleIndex;
 
                  if (onProgressCallback) onProgressCallback(Math.min(Math.round((currentSampleIndex / totalSamples) * 100), 100));
@@ -2376,45 +2598,46 @@
 
                      if (!blob) {
                          console.warn(`Failed to capture frame at ${timestamp.toFixed(2)}s (Index: ${originalIndex})`);
+                         collectedData[currentSampleIndex] = null;
                      } else {
                          try {
-                             processFrameCallback(blob, timestamp, originalIndex); // Pass original index
+                             processFrameCallback(index, blob, timestamp);
                              collectedData[currentSampleIndex] = { blob, timestamp };
                          } catch (processError) {
                              console.error(`Error in processFrameCallback at ${timestamp.toFixed(2)}s (Index: ${originalIndex}):`, processError);
                              if (onErrorCallback) onErrorCallback(processError);
+                             collectedData[currentSampleIndex] = null;
                          }
                      }
 
                      currentSampleIndex++;
                      if (!checkCancelled()) {
-                       frameRequestHandle = requestAnimationFrame(processNext);
+                       frameRequestHandle = setTimeout(processNext, 10);
                      } else {
                         if (onCompleteCallback) onCompleteCallback(collectedData);
                      }
                  }, { videoElement, useCrop, skipProgress: true });
              };
 
-             // Add a small delay before starting the first frame, especially for contact sheet
              frameRequestHandle = setTimeout(() => {
                  if (!checkCancelled()) requestAnimationFrame(processNext);
-             }, 150); // Delay before starting the rAF loop
+             }, 150);
 
 
              return { cancel: () => {
                  localCancelRequested = true;
                  if (frameRequestHandle) {
                     cancelAnimationFrame(frameRequestHandle);
-                    clearTimeout(frameRequestHandle); // Clear timeout too if it hasn't fired
+                    clearTimeout(frameRequestHandle);
                     frameRequestHandle = null;
                  }
-                 resetProcessingUI(currentMode); // Reset UI immediately on cancel
+                 resetProcessingUI(currentMode);
              }};
          };
 
          const captureFrameAtTime = (time, callback, options = {}) => {
             const { videoElement = video, useCrop = removeBarsEnabled, skipProgress = false } = options;
-            if (!videoElement || !videoElement.src || videoElement.readyState < 1 || !canvas) { callback(null); return; }
+            if (!videoElement?.src || videoElement.readyState < videoElement.HAVE_METADATA || !videoElement.duration || !isFinite(videoElement.duration) || !canvas) { console.error("[captureFrameAtTime] Video not ready, duration invalid, or canvas missing."); callback(null); return; }
 
             let seekTimeout;
             let onSeeked, onError;
@@ -2426,19 +2649,26 @@
             };
 
             const drawLogic = () => {
+                 if (cancelExtractionRequested) { console.log("[captureFrameAtTime] Draw cancelled."); callback(null); return; }
                  try {
                      const ctx = canvas.getContext('2d', { willReadFrequently: true });
                      if (!ctx) throw new Error('Canvas context not available');
-                     const effectiveCropData = useCrop && cropData ? cropData : { cropX: 0, cropY: 0, cropWidth: videoElement.videoWidth, cropHeight: videoElement.videoHeight };
-                     if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error(`Invalid effective crop dimensions: ${effectiveCropData.cropWidth}x${effectiveCropData.cropHeight}`);
+                     const effectiveCropData = useCrop && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0 ? cropData : { cropX: 0, cropY: 0, cropWidth: videoElement.videoWidth, cropHeight: videoElement.videoHeight };
 
-                     canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
-                     ctx.drawImage(videoElement, effectiveCropData.cropX, effectiveCropData.cropY, effectiveCropData.cropWidth, effectiveCropData.cropHeight, 0, 0, canvas.width, canvas.height);
+                     if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) {
+                          console.error(`[captureFrameAtTime] Final draw dimensions invalid: ${effectiveCropData.cropWidth}x${effectiveCropData.cropHeight}. Cannot capture.`);
+                          callback(null);
+                          return;
+                     }
 
-                     const { type, quality } = getCurrentFormatSettings();
+
+                    canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
+                    ctx.drawImage(videoElement, effectiveCropData.cropX, effectiveCropData.cropY, effectiveCropData.cropWidth, effectiveCropData.cropHeight, 0, 0, canvas.width, canvas.height);
+
+                    const { type, quality } = getCurrentFormatSettings();
                      canvas.toBlob((blob) => callback(blob), type, quality);
                  } catch (error) {
-                     console.error(`[captureFrameAtTime] Draw error at ${time.toFixed(2)}s:`, error);
+                     console.error(`[captureFrameAtTime] Draw error at ${videoElement.currentTime.toFixed(2)}s:`, error);
                      callback(null);
                  }
              };
@@ -2451,7 +2681,7 @@
 
             onSeeked = () => {
                 cleanupListeners();
-                setTimeout(drawLogic, 50); // Delay draw after seek completes
+                requestAnimationFrame(drawLogic);
             };
 
             onError = (e) => {
@@ -2465,23 +2695,17 @@
 
             try {
                  const duration = videoElement.duration;
-                 if (!duration || !isFinite(duration)) {
-                     throw new Error("Video duration is invalid or not available.");
-                 }
                  const targetTime = Math.max(0, Math.min(time, duration ? duration - 0.01 : 0));
 
-                 // Always set currentTime, rely on 'seeked' event or timeout
-                 if (videoElement.currentTime.toFixed(2) !== targetTime.toFixed(2)) { // Use fixed precision for comparison
+                 if (Math.abs(videoElement.currentTime - targetTime) > 0.02) {
                     videoElement.currentTime = targetTime;
                  } else {
-                    // Already at the right time, might not trigger 'seeked'
                     cleanupListeners();
-                    // console.log(`[captureFrameAtTime] Already at time ${targetTime.toFixed(2)}, triggering draw manually.`);
-                    setTimeout(drawLogic, 60); // Manually trigger draw logic slightly later
+                    requestAnimationFrame(drawLogic);
                  }
 
             } catch (error) {
-                console.error(`[captureFrameAtTime] Seek Error setting time to ${time.toFixed(2)}:`, error);
+                console.error(`[captureFrameAtTime] Error setting time to ${time.toFixed(2)}:`, error);
                 cleanupListeners();
                 callback(null);
             }
@@ -2490,28 +2714,29 @@
 
         const detectCropBoundariesMulti = (callback) => {
             if (!video?.src || video.readyState < 2 || !video.duration || !isFinite(video.duration) || video.videoWidth === 0 || video.videoHeight === 0) {
-                console.warn("Video not ready for crop detection.");
                 cropData = { cropX: 0, cropY: 0, cropWidth: video.videoWidth || 1, cropHeight: video.videoHeight || 1 };
                 if (callback) callback();
                 return;
             }
-            const sampleTimes = [0.3, 0.5, 0.7].map(p => Math.min(Math.max(p * video.duration, 0.1), video.duration - 0.1));
+            const sampleTimes = [0.3, 0.5, 0.7].map(p => Math.min(Math.max(p * video.duration, 0.1), video.duration - 0.01));
             let sampleResults = [];
             let currentSample = 0;
 
             function analyzeFrame(callbackFrame) {
                 const tempCanvas = document.createElement('canvas'); tempCanvas.width = video.videoWidth; tempCanvas.height = video.videoHeight;
-                const ctx = tempCanvas.getContext("2d"); if(!ctx) { console.error("Failed to get context for crop analysis"); callbackFrame({ topCrop: 0, bottomCrop: video.videoHeight - 1, leftCrop: 0, rightCrop: video.videoWidth - 1 }); return; }
+                const ctx = tempCanvas.getContext("2d"); if(!ctx) { callbackFrame({ topCrop: 0, bottomCrop: video.videoHeight - 1, leftCrop: 0, rightCrop: video.videoWidth - 1 }); return; }
                 try {
                     ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
                     const imageData = ctx.getImageData(0, 0, video.videoWidth, video.videoHeight); const data = imageData.data, width = video.videoWidth, height = video.videoHeight;
                     const pixelThreshold = 15, lineRatioThreshold = 0.98; let topCrop = 0, bottomCrop = height - 1, leftCrop = 0, rightCrop = width - 1;
 
                     const isBlackRow = (y) => { let blackPxCount = 0; for (let x = 0; x < width; x++) { const i = (y * width + x) * 4; if (data[i] < pixelThreshold && data[i + 1] < pixelThreshold && data[i + 2] < pixelThreshold) blackPxCount++; } return blackPxCount / width >= lineRatioThreshold; };
-                    const isBlackCol = (x, yStart, yEnd) => { let blackPxCount = 0; for (let y = yStart; y <= yEnd; y++) { const i = (y * width + x) * 4; if (data[i] < pixelThreshold && data[i + 1] < pixelThreshold && data[i + 2] < pixelThreshold) blackPxCount++; } return blackPxCount / (yEnd - yStart + 1) >= lineRatioThreshold; };
+                    const isBlackCol = (x, yStart, yEnd) => { if (yEnd < yStart) return false; let blackPxCount = 0; const totalRows = yEnd - yStart + 1; if (totalRows <= 0) return false; for (let y = yStart; y <= yEnd; y++) { const i = (y * width + x) * 4; if (data[i] < pixelThreshold && data[i + 1] < pixelThreshold && data[i + 2] < pixelThreshold) blackPxCount++; } return blackPxCount / totalRows >= lineRatioThreshold; };
+
 
                     for (let y = 0; y < height / 2; y++) { if (!isBlackRow(y)) { topCrop = y; break; } topCrop = y; }
                     for (let y = height - 1; y >= height / 2; y--) { if (!isBlackRow(y)) { bottomCrop = y; break; } bottomCrop = y; }
+
                     for (let x = 0; x < width / 2; x++) { if (!isBlackCol(x, topCrop, bottomCrop)) { leftCrop = x; break; } leftCrop = x; }
                     for (let x = width - 1; x >= width / 2; x--) { if (!isBlackCol(x, topCrop, bottomCrop)) { rightCrop = x; break; } rightCrop = x; }
                     callbackFrame({ topCrop, bottomCrop, leftCrop, rightCrop });
@@ -2521,7 +2746,7 @@
                 }
             }
 
-            function median(arr) { const sorted = arr.slice().sort((a, b) => a - b); return sorted[Math.floor(sorted.length / 2)]; }
+            function median(arr) { if (!arr || arr.length === 0) return 0; const sorted = arr.slice().sort((a, b) => a - b); return sorted[Math.floor(sorted.length / 2)]; }
 
             function processNextSample() {
                 if (currentSample >= sampleTimes.length) {
@@ -2532,7 +2757,7 @@
                     } else {
                          cropData = { cropX: 0, cropY: 0, cropWidth: video.videoWidth || 1, cropHeight: video.videoHeight || 1 };
                     }
-                    console.log("Detected black bars crop data:", cropData); if (callback) callback(); return;
+                    if (callback) callback(); return;
                 }
                 const sampleTime = sampleTimes[currentSample];
                 let seekedHandler, errorHandler;
@@ -2549,18 +2774,19 @@
                 errorHandler = (e) => {
                     console.error("Seek error during crop detection sample:", e);
                     cleanupSampleListeners();
-                    sampleResults.push({ topCrop: 0, bottomCrop: video.videoHeight - 1, leftCrop: 0, rightCrop: video.videoWidth - 1 }); // Assume no crop on error
+                    sampleResults.push({ topCrop: 0, bottomCrop: video.videoHeight - 1, leftCrop: 0, rightCrop: video.videoWidth - 1 });
                     currentSample++;
                     processNextSample();
                 };
 
                 video.addEventListener("seeked", seekedHandler, { once: true });
                 video.addEventListener("error", errorHandler, { once: true });
-                try { if (Math.abs(video.currentTime - sampleTime) > 0.1) video.currentTime = sampleTime; else { cleanupSampleListeners(); seekedHandler(); } } // Trigger manually if close
+                try { if (Math.abs(video.currentTime - sampleTime) > 0.1) video.currentTime = sampleTime; else { cleanupSampleListeners(); seekedHandler(); } }
                 catch (err) { errorHandler(err); }
             }
             processNextSample();
         };
+
 
         const updateSliderBackground = (slider) => {
             if (!slider) return;
@@ -2569,9 +2795,8 @@
             const max = parseFloat(slider.max || 100);
             const pct = max > min ? ((val - min) * 100) / (max - min) : 0;
             let color = 'var(--accent-interval)';
-             // Determine slider color
              if (slider.id === 'jpegQualityGlobal' || slider.id === 'webpQualityGlobal') {
-                 color = 'var(--text-secondary)'; // Use a neutral or primary accent for global settings
+                 color = 'var(--text-secondary)';
              }
              else if (slider.closest('#autoSmartMode')) { color = 'var(--accent-secondary)'; }
              else if (slider.closest('#manualMode')) { color = 'var(--accent-primary)'; }
@@ -2582,15 +2807,12 @@
         const setupSlider = (slider, displaySpan, suffix) => {
             if (!slider || !displaySpan) return;
             const updateUI = () => { 
-                // Special handling for histogram threshold (convert to percentage)
                 if (slider.id === 'histThresholdInput') {
                     displaySpan.textContent = Math.round(slider.value * 100) + '%';
                 }
-                // Special handling for pixel threshold (add % sign)
                 else if (slider.id === 'pixelThresholdInput') {
                     displaySpan.textContent = slider.value + '%';
                 }
-                // Default handling for other sliders
                 else {
                     displaySpan.textContent = slider.value + suffix;
                 }
@@ -2604,19 +2826,19 @@
                 const selectedFormat = captureFormatSelect.value;
                 jpegQualityGlobalRow.style.display = (selectedFormat === 'jpeg') ? 'flex' : 'none';
                 webpQualityGlobalRow.style.display = (selectedFormat === 'webp') ? 'flex' : 'none';
-                if (selectedFormat === 'jpeg') updateSliderBackground(jpegQualityGlobal);
-                if (selectedFormat === 'webp') updateSliderBackground(webpQualityGlobal);
+                if (selectedFormat === 'jpeg' && jpegQualityGlobal) updateSliderBackground(jpegQualityGlobal);
+                if (selectedFormat === 'webp' && webpQualityGlobal) updateSliderBackground(webpQualityGlobal);
              };
 
              captureFormatSelect.addEventListener('change', updateVisibility);
              setupSlider(jpegQualityGlobal, jpegQualityGlobalValue, '%');
              setupSlider(webpQualityGlobal, webpQualityGlobalValue, '%');
-             updateVisibility(); // Initial call
+             updateVisibility();
         };
 
         const updateDropZoneThumbnail = () => {
             if (!video?.src || video.readyState < 1 || !dropZone || !video.duration || !isFinite(video.duration)) return;
-            const previewTime = Math.min(Math.max(video.duration * 0.25, 0.1), video.duration - 0.01);
+            const previewTime = Math.min(Math.max(video.duration * 0.25, 0.1), video.duration ? video.duration - 0.01 : 0.01);
             captureFrameAtTime(previewTime, (blob) => {
                 if (!blob || !dropZone) return;
                 const blobUrl = URL.createObjectURL(blob);
@@ -2625,7 +2847,7 @@
                 dropZone.dataset.bgUrl = blobUrl;
                 document.documentElement.style.setProperty('--dropzone-bg-image', `url(${blobUrl})`);
                 dropZone.classList.add('has-bg-image');
-            }, { videoElement: video });
+            }, { videoElement: video, useCrop: removeBarsEnabled });
         };
 
         const initContactSheetPreview = (rows = 4, cols = 5) => {
@@ -2633,13 +2855,14 @@
             contactSheetPreviewElement.innerHTML = '';
             document.documentElement.style.setProperty('--grid-rows', rows);
             document.documentElement.style.setProperty('--grid-cols', cols);
-            contactSheetPreviewData = new Array(rows * cols).fill(null);
+            
+            const newSize = rows * cols;
+            contactSheetPreviewData = new Array(newSize).fill(null);
 
-            for (let i = 0; i < rows * cols; i++) {
+            for (let i = 0; i < newSize; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'grid-cell'; cell.dataset.index = i;
                 const img = document.createElement('img'); img.alt = `Frame ${i+1}`; cell.appendChild(img);
-                // Add click listener for lightbox
                  cell.addEventListener('click', (e) => {
                      if (!e.target.closest('.frame-adjust-btn') && cell.classList.contains('filled')) {
                         const index = parseInt(cell.dataset.index);
@@ -2652,8 +2875,7 @@
                 const btnContainer = document.createElement('div'); btnContainer.className = 'frame-adjust-buttons';
                 const createAdjustBtn = (text, offset, title) => {
                     const btn = document.createElement('div'); btn.className = 'frame-adjust-btn';
-                    // Add icon based on text
-                    if (text === '-') btn.innerHTML = `-<i class="ri-scissors-line icon-flipped"></i>`; // Flipped icon
+                    if (text === '-') btn.innerHTML = `-<i class="ri-scissors-line icon-flipped"></i>`;
                     else if (text === '+') btn.innerHTML = `<i class="ri-scissors-line"></i>+`;
                     else btn.textContent = text;
                     btn.title = title;
@@ -2664,12 +2886,12 @@
                 cell.appendChild(btnContainer);
 
                 cell.addEventListener('mouseenter', () => {
-                    cell.classList.add('highlight'); // Highlight cell on hover
+                    cell.classList.add('highlight');
                     const timeInputCont = contactSheetControlsElement?.querySelector(`.time-input-container[data-index="${i}"]`);
                     if (timeInputCont) timeInputCont.classList.add('highlight');
                 });
                 cell.addEventListener('mouseleave', () => {
-                    cell.classList.remove('highlight'); // Remove cell highlight
+                    cell.classList.remove('highlight');
                      const timeInputCont = contactSheetControlsElement?.querySelector(`.time-input-container[data-index="${i}"]`);
                     if (timeInputCont) timeInputCont.classList.remove('highlight');
                 });
@@ -2687,7 +2909,7 @@
 
         const updateTimeValue = (index, seconds, triggerFrameUpdate = false) => {
             if (isNaN(seconds)) seconds = 0;
-            const clampedTime = Math.min(Math.max(0, seconds), currentVideoDuration ? currentVideoDuration - 0.01 : 0);
+            const clampedTime = Math.max(0, Math.min(seconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
             const numberInput = $(`timeInput_${index}`);
             const formatted = $(`timeFormatted_${index}`);
             if (numberInput) numberInput.value = clampedTime.toFixed(2);
@@ -2695,58 +2917,55 @@
             if (triggerFrameUpdate) handleFineTuneChange(index, clampedTime);
         };
 
-        // This function now ONLY updates the preview cell and marks the sheet as needing regeneration
         const handleFineTuneChange = debounce((index, newTime) => {
-            if (isNaN(newTime) || newTime < 0 || !video?.src || video.readyState < 1) return;
+            if (isNaN(newTime) || newTime < 0 || !video?.src || video.readyState < video.HAVE_METADATA) return;
              captureFrameAtTime(newTime, (blob) => {
                  if (blob) {
-                     updatePreviewCell(index, blob, newTime); // Update visual cell and data array
+                     updatePreviewCell(index, blob, newTime);
 
-                     // Mark sheet as needing regeneration
-                     contactSheetBlob = null; // Invalidate the final blob
+                     contactSheetBlob = null;
                      const activeTab = $$('.grid-size-tab.active')[0];
                      if (activeTab) activeTab.classList.remove('completed');
                      const { rows, cols } = activeTab ? activeTab.dataset : { rows: 4, cols: 5 };
                      const cacheKey = `${cols}x${rows}`;
                      if (gridCache[cacheKey]) {
                          gridCache[cacheKey].completed = false;
-                         gridCache[cacheKey].blob = null; // Also clear blob from cache
+                         if (gridCache[cacheKey].blob) {
+                            try { URL.revokeObjectURL(URL.createObjectURL(gridCache[cacheKey].blob)); } catch(e) {}
+                            gridCache[cacheKey].blob = null;
+                         }
                      }
 
-                     // Update button states/styles
                      if (processContactSheetButton) {
                          processContactSheetButton.textContent = 'Update Sheet Image';
                          processContactSheetButton.classList.add('needs-update');
-                         // Use correct tertiary gradient for update indicator
                          processContactSheetButton.style.background = 'var(--gradient-tertiary)';
                      }
                      if (previewContactSheetButton) {
-                         previewContactSheetButton.disabled = true; // Disable until updated
-                         previewContactSheetButton.classList.add('needs-update'); // Add class for potential styling
+                         previewContactSheetButton.disabled = true;
+                         previewContactSheetButton.classList.add('needs-update');
                          previewContactSheetButton.title = "Sheet has been modified. Click 'Update Sheet Image'.";
                      }
                      if (downloadContactSheetButton) {
-                         downloadContactSheetButton.disabled = true; // Disable until updated
-                         downloadContactSheetButton.classList.add('needs-update'); // Add class for potential styling
+                         downloadContactSheetButton.disabled = true;
+                         downloadContactSheetButton.classList.add('needs-update');
                          downloadContactSheetButton.title = "Sheet has been modified. Click 'Update Sheet Image'.";
                      }
 
-                     // If lightbox is open for this specific index, update it too
                      if (screenshotLightbox.classList.contains('active') && parseInt(screenshotLightbox.dataset.currentIndex) === index) {
                         updateLightboxContent(index, contactSheetPreviewData);
                      }
 
-                     updateImageCount(); // Ensure overall counts/states are refreshed
+                     updateImageCount();
 
-                 } else { console.warn(`Fine-tuning failed for cell ${index} at ${newTime.toFixed(2)}s`); }
+                 }
              });
         }, 300);
 
 
         const clearContactSheetPreview = (clearInputs = true) => {
-            contactSheetPreviewData.forEach(data => { if (data?.blobUrl) URL.revokeObjectURL(data.blobUrl); });
-            const gridCells = $$('.grid-cell', contactSheetPreviewElement);
-            // Ensure preview data array matches current grid size before resetting
+             contactSheetPreviewData.forEach(data => { if (data?.blobUrl) URL.revokeObjectURL(data.blobUrl); });
+             const gridCells = $$('.grid-cell', contactSheetPreviewElement);
             contactSheetPreviewData = new Array(gridCells.length).fill(null);
             gridCells.forEach(cell => {
                  cell.classList.remove('filled'); cell.style.cursor = 'default';
@@ -2770,14 +2989,14 @@
             }
              if (processContactSheetButton) {
                  processContactSheetButton.classList.remove('needs-update');
-                 processContactSheetButton.style.background = ''; // Reset style
-                 processContactSheetButton.textContent = 'Generate/Update Sheet'; // Reset text
+                 processContactSheetButton.style.background = '';
+                 processContactSheetButton.textContent = contactSheetBlob ? 'Update Sheet Image' : 'Generate/Update Sheet';
              }
         };
 
-        const updatePreviewCell = (index, blob, timestamp) => {
+        const updatePreviewCell = (index, blob, timestamp) => { // Callback signature is (index, blob, timestamp)
             const cell = contactSheetPreviewElement?.querySelector(`.grid-cell[data-index="${index}"]`);
-            if (!cell || !blob || index < 0 || index >= contactSheetPreviewData.length) return; // Add index bounds check
+            if (!cell || !blob || index < 0 || index >= contactSheetPreviewData.length) { return; }
 
             const existingData = contactSheetPreviewData[index];
             if (existingData?.blobUrl) URL.revokeObjectURL(existingData.blobUrl);
@@ -2791,7 +3010,11 @@
             overlay.textContent = formatTime(timestamp);
 
             contactSheetPreviewData[index] = { blob, timestamp, blobUrl };
-             // Don't call updateImageCount here
+             const timeInput = $(`timeInput_${index}`);
+             const timeFormatted = $(`timeFormatted_${index}`);
+             if (timeInput) timeInput.value = timestamp.toFixed(2);
+             if (timeFormatted) timeFormatted.value = formatTime(timestamp);
+
          };
 
          const generateTimeInputs = (rows = 4, cols = 5) => {
@@ -2800,43 +3023,44 @@
               contactSheetControlsElement.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
               const numCells = rows * cols;
 
-              // Show/hide based on grid size
               const isLargeGrid = rows > 6 || cols > 6;
               contactSheetControlsElement.style.display = isLargeGrid ? 'none' : 'grid';
               largeGridDisclaimer.style.display = isLargeGrid ? 'block' : 'none';
 
-              if (isLargeGrid) return; // Don't generate inputs if hidden
+              if (isLargeGrid) return;
 
               for (let i = 0; i < numCells; i++) {
                   const container = document.createElement('div'); container.className = 'time-input-container'; container.dataset.index = i;
                   const wrapper = document.createElement('div'); wrapper.className = 'time-input-wrapper';
 
-                  // Use data from array IF it exists for this index, otherwise calculate default if duration known
                   let initialTimestamp = contactSheetPreviewData[i]?.timestamp;
-                  if (initialTimestamp === undefined || initialTimestamp === null || initialTimestamp <= 0) { // Also check if 0
-                      if (currentVideoDuration > 0) {
+                  if (initialTimestamp === undefined || initialTimestamp === null || initialTimestamp < 0 || !isFinite(initialTimestamp)) {
+                      if (currentVideoDuration > 0 && isFinite(currentVideoDuration)) {
                          const startPercent = 0.1; const endPercent = 0.9;
                          const step = numCells > 1 ? (endPercent - startPercent) / (numCells - 1) : 0;
                          const percent = startPercent + (i * step);
                          initialTimestamp = Math.max(0.01, Math.min(percent * currentVideoDuration, currentVideoDuration - 0.01));
                       } else {
-                         initialTimestamp = 0; // Default if duration unknown
+                         initialTimestamp = 0;
                       }
                   }
 
 
                   const timeInput = document.createElement('input'); timeInput.type = 'number'; timeInput.className = 'time-input'; timeInput.id = `timeInput_${i}`;
-                  timeInput.value = initialTimestamp.toFixed(2); timeInput.min = '0'; timeInput.max = currentVideoDuration ? currentVideoDuration.toFixed(2) : '999'; timeInput.step = '0.01'; timeInput.dataset.index = i;
+                  timeInput.value = initialTimestamp.toFixed(2); timeInput.min = '0'; timeInput.max = currentVideoDuration && isFinite(currentVideoDuration) ? currentVideoDuration.toFixed(2) : '999'; timeInput.step = '0.01'; timeInput.dataset.index = i;
 
                   const timeFormatted = document.createElement('input'); timeFormatted.type = 'text'; timeFormatted.className = 'time-formatted'; timeFormatted.id = `timeFormatted_${i}`;
-                  timeFormatted.value = formatTime(initialTimestamp); timeFormatted.dataset.index = i; timeFormatted.placeholder = "0:00"; timeFormatted.setAttribute('draggable', 'false');
+                  timeFormatted.value = formatTime(parseFloat(timeInput.value)); timeFormatted.dataset.index = i; timeFormatted.placeholder = "0:00"; timeFormatted.setAttribute('draggable', 'false');
 
                   timeFormatted.addEventListener('change', (e) => { updateTimeValue(parseInt(e.target.dataset.index), parseTimeString(e.target.value), true); });
                   timeFormatted.addEventListener('focus', (e) => e.target.select());
 
                   let isDragging = false; let startY = 0; let startValue = 0; let sensitivity = 0.05;
                   timeFormatted.addEventListener('mousedown', (e) => {
-                      isDragging = true; startY = e.clientY; startValue = parseFloat(timeInput.value);
+                      if (processingActive) return;
+                       if (!video?.src || currentVideoDuration <= 0 || !isFinite(currentVideoDuration)) return;
+
+                      isDragging = true; startY = e.clientY; startValue = parseFloat($(`timeInput_${i}`).value);
                       document.body.style.cursor = 'ns-resize';
                       document.addEventListener('mousemove', handleMouseMove);
                       document.addEventListener('mouseup', handleMouseUp);
@@ -2846,9 +3070,11 @@
                       if (!isDragging) return;
                       const deltaY = startY - e.clientY;
                       const newValue = Math.max(0, Math.min(startValue + (deltaY * sensitivity), (currentVideoDuration ? currentVideoDuration - 0.01 : 0)));
-                      timeInput.value = newValue.toFixed(2);
-                      timeFormatted.value = formatTime(newValue);
-                      handleFineTuneChange(parseInt(timeInput.dataset.index), newValue);
+                      const index = parseInt(e.target.dataset.index);
+
+                      $(`timeInput_${index}`).value = newValue.toFixed(2);
+                      $(`timeFormatted_${index}`).value = formatTime(newValue);
+                      handleFineTuneChange(index, newValue);
                   };
                   const handleMouseUp = () => {
                       if (!isDragging) return;
@@ -2861,7 +3087,7 @@
                   container.addEventListener('mouseenter', () => {
                       container.classList.add('highlight');
                       const cell = contactSheetPreviewElement?.querySelector(`.grid-cell[data-index="${i}"]`);
-                      if (cell) cell.classList.add('input-hover-highlight'); // Use specific class for input hover
+                      if (cell) cell.classList.add('input-hover-highlight');
                   });
                   container.addEventListener('mouseleave', () => {
                        container.classList.remove('highlight');
@@ -2872,53 +3098,43 @@
 
                   wrapper.appendChild(timeInput); wrapper.appendChild(timeFormatted); container.appendChild(wrapper); contactSheetControlsElement.appendChild(container);
               }
-             // contactSheetControlsElement.style.display = 'grid'; // Display is now handled above
           };
 
-        // Main function to generate or update the sheet
         const generateContactSheet = async () => {
-             if (!video?.src || processingActive || video.readyState < video.HAVE_METADATA) {
+             if (!video?.src || processingActive || video.readyState < video.HAVE_METADATA || !video.duration || !isFinite(video.duration)) {
                  alert("Please load a video file first or wait for it to be ready.");
                  return;
              }
              setProcessingUI('contactSheet');
-             // contactSheetBlob = null; // Clear old final blob *before* starting processing
 
              const activeGridSizeTab = $$('.grid-size-tab.active')[0];
              const rows = parseInt(activeGridSizeTab?.getAttribute('data-rows') || 4);
              const cols = parseInt(activeGridSizeTab?.getAttribute('data-cols') || 5);
              const numSamples = rows * cols;
-             const isLargeGrid = rows > 6 || cols > 6;
 
-             // --- Read timestamps from current input fields ---
-             // This ensures manual changes are captured when Update is clicked
              const sampleTimestamps = [];
              console.log("Reading current input values for sheet generation.");
-             for (let i = 0; i < numSamples; i++) {
-                const input = $(`timeInput_${i}`);
-                // If grid is large, inputs don't exist, calculate default
-                const existingValue = !isLargeGrid && input ? parseFloat(input.value) : NaN;
+             const isLargeGrid = rows > 6 || cols > 6;
 
-                 if (isLargeGrid || !input || isNaN(existingValue)) {
-                     // Calculate default if large grid or input is invalid/missing
+             for (let i = 0; i < numSamples; i++) {
+                 const input = !isLargeGrid ? $(`timeInput_${i}`) : null;
+                 const existingValue = input ? parseFloat(input.value) : NaN;
+
+                 if (isLargeGrid || isNaN(existingValue) || existingValue < 0 || !isFinite(existingValue)) {
                      const startPercent = 0.1; const endPercent = 0.9;
                      const step = numSamples > 1 ? (endPercent - startPercent) / (numSamples - 1) : 0;
                      const percent = startPercent + (i * step);
-                     const time = Math.max(0.01, Math.min(percent * currentVideoDuration, currentVideoDuration ? currentVideoDuration - 0.01 : 0.01));
+                     const time = Math.max(0.01, Math.min(percent * currentVideoDuration, currentVideoDuration - 0.01));
                      sampleTimestamps.push(time);
-                     // Update visual input only if it exists and we calculated default
-                     if (!isLargeGrid && input && isNaN(existingValue)) {
+                     if (!isLargeGrid && input && (isNaN(existingValue) || existingValue < 0 || !isFinite(existingValue))) {
                          const timeFormatted = $(`timeFormatted_${i}`);
                          input.value = time.toFixed(2);
                          if (timeFormatted) timeFormatted.value = formatTime(time);
-                         console.warn(`Calculated default for invalid input at index ${i}.`);
                      }
                  } else {
-                    // Use the valid value from the input
-                    sampleTimestamps.push(Math.max(0.01, Math.min(existingValue, currentVideoDuration ? currentVideoDuration - 0.01 : 0.01)));
+                    sampleTimestamps.push(Math.max(0.01, Math.min(existingValue, currentVideoDuration - 0.01)));
                  }
              }
-             // --- End Timestamp Reading ---
 
              if (sampleTimestamps.length === 0 || sampleTimestamps.length !== numSamples) {
                  alert("Error: Could not calculate timestamps for contact sheet.");
@@ -2926,7 +3142,6 @@
                  return;
              }
 
-             // Clear visual cells and reset preview data *before* sampling
              $$('.grid-cell', contactSheetPreviewElement).forEach(cell => {
                  cell.classList.remove('filled');
                  const img = cell.querySelector('img'); if (img) img.src = '';
@@ -2935,20 +3150,17 @@
              });
              contactSheetPreviewData.forEach(data => { if (data?.blobUrl) URL.revokeObjectURL(data.blobUrl); });
              contactSheetPreviewData = new Array(numSamples).fill(null);
-             contactSheetBlob = null; // Always clear the old final blob before regeneration
+             contactSheetBlob = null;
 
 
              try {
-                 // Don't remove: Janky fix to address a timing issue where the first frame capture would fail
                  const preCaptureTime = 0.1;
-                 console.log("Performing pre-capture seek...");
                  await new Promise((resolve, reject) => {
                      captureFrameAtTime(preCaptureTime, (blob) => {
                          if (blob) {
                              URL.revokeObjectURL(URL.createObjectURL(blob));
                              resolve();
                          } else {
-                             console.warn("Pre-capture failed, proceeding anyway...");
                              resolve();
                          }
                      }, { videoElement: video, timeout: 3000 });
@@ -2958,52 +3170,41 @@
 
                  currentSamplingProcess = sampleVideoFrames({
                      videoElement: video, sampleTimestamps, outputType: 'blob', useCrop: removeBarsEnabled,
-                     processFrameCallback: (blob, timestamp, index) => {
-                         // Index corresponds to the position in sampleTimestamps
-                         if (index >= 0 && index < contactSheetPreviewData.length) {
-                             updatePreviewCell(index, blob, timestamp); // Updates preview AND data array
-                         } else { console.warn(`Invalid index ${index} received in processFrameCallback`); }
-                     },
+                     processFrameCallback: updatePreviewCell,
                      onProgressCallback: (progress) => { if (progressBarFillContactSheet) progressBarFillContactSheet.style.width = `${progress}%`; },
-                     onCompleteCallback: async (collectedData) => { // collectedData is just confirmation
-                         if (cancelExtractionRequested) { console.log("Contact Sheet generation cancelled."); resetProcessingUI('contactSheet'); return; }
+                     onCompleteCallback: async (collectedData) => {
+                         if (cancelExtractionRequested) { resetProcessingUI('contactSheet'); return; }
                          if (progressBarFillContactSheet) progressBarFillContactSheet.style.width = `100%`;
 
                          const validPreviewData = contactSheetPreviewData.filter(data => data?.blob);
 
                          if (validPreviewData.length === 0) {
-                            console.error("Failed to collect any valid frames for final contact sheet render.");
                             alert("Failed to capture frames for the contact sheet.");
                             resetProcessingUI('contactSheet');
                             return;
                          }
 
-                         // --- Start Final Image Compositing ---
                          const renderCols = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-cols') || 5);
                          const renderRows = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-rows') || 4);
                          const targetWidth = 3000;
                          const cellWidth = Math.floor(targetWidth / renderCols);
 
-                         const imageLoadPromises = validPreviewData.map(({ blob, timestamp, blobUrl }, index) => new Promise((resolve) => {
+                         const imageLoadPromises = validPreviewData.map(item => new Promise(resolve => {
                              const img = new Image();
-                             // Find the original index in the full previewData array based on the blobUrl
-                             const originalIndex = contactSheetPreviewData.findIndex(d => d?.blobUrl === blobUrl);
-                             img.onload = () => resolve({img, tempUrl: blobUrl, aspectRatio: img.width / img.height, originalIndex });
-                             img.onerror = (err) => { console.warn(`Failed to load image for contact sheet cell (ts: ${timestamp})`); resolve(null); };
-                             img.src = blobUrl;
+                             img.onload = () => resolve({img, tempUrl: item.blobUrl, aspectRatio: img.width / img.height, originalIndex: contactSheetPreviewData.indexOf(item) });
+                             img.onerror = (err) => { resolve(null); };
+                             img.src = item.blobUrl;
                          }));
 
                          const loadedImageResults = (await Promise.all(imageLoadPromises)).filter(r => r !== null);
 
                          if (loadedImageResults.length === 0) {
-                             console.error("No images could be loaded for the contact sheet.");
                              resetProcessingUI('contactSheet');
                              return;
                          }
 
                          const rowHeights = new Array(renderRows).fill(0);
                          loadedImageResults.forEach(result => {
-                             if (result.originalIndex === -1) return;
                              const row = Math.floor(result.originalIndex / renderCols);
                              if (row < rowHeights.length) {
                                  const heightForCell = cellWidth / result.aspectRatio;
@@ -3042,39 +3243,41 @@
 
                              try { ctx.drawImage(img, offsetX, offsetY, finalDrawWidth, finalDrawHeight); imagesDrawn++; }
                              catch (drawError) { console.error(`Error drawing image for cell ${originalIndex}:`, drawError); }
-                             // No need to revoke tempUrl here
                          });
-                         // --- End Final Image Compositing ---
 
                         if (imagesDrawn > 0) {
                             contactSheetCanvas.toBlob((finalBlob) => {
                                 if (finalBlob) {
                                     contactSheetBlob = finalBlob;
                                     const activeTab = $$('.grid-size-tab.active')[0];
-                                    if (activeTab) { activeTab.classList.add('completed'); const { rows, cols } = activeTab.dataset; const cacheKey = `${cols}x${rows}`; gridCache[cacheKey] = { data: [...contactSheetPreviewData], blob: finalBlob, completed: true }; }
-                                     // Re-enable buttons and remove update indicators
+                                    if (activeTab) {
+                                         activeTab.classList.add('completed');
+                                         const { rows, cols } = activeTab.dataset; const cacheKey = `${cols}x${rows}`;
+                                         gridCache[cacheKey] = {
+                                             data: contactSheetPreviewData.map(item => item ? { ...item, blob: item.blob } : null),
+                                             blob: finalBlob,
+                                             completed: true
+                                         };
+                                     }
+
                                     if (downloadContactSheetButton) { downloadContactSheetButton.disabled = false; downloadContactSheetButton.classList.remove('needs-update'); downloadContactSheetButton.title = ''; }
                                     if (previewContactSheetButton) { previewContactSheetButton.disabled = false; previewContactSheetButton.classList.remove('needs-update'); previewContactSheetButton.title = '';}
                                 } else {
-                                    console.error("Failed to generate final contact sheet blob.");
                                     contactSheetBlob = null;
                                 }
                                 resetProcessingUI('contactSheet');
                             }, 'image/jpeg', 0.9);
                         } else {
-                            console.error("No images drawn to contact sheet.");
                             contactSheetBlob = null;
                             resetProcessingUI('contactSheet');
                         }
                      },
                      onErrorCallback: (error) => {
-                        console.error("Error during contact sheet frame sampling:", error);
                         alert(`Error generating contact sheet: ${error.message}`);
                         resetProcessingUI('contactSheet');
                      }
                  });
              } catch (error) {
-                 console.error("Failed to start contact sheet generation:", error);
                  alert(`Error starting contact sheet generation: ${error.message}`);
                  resetProcessingUI('contactSheet');
              }
@@ -3087,7 +3290,7 @@
         if (dropZone) {
              dropZone.addEventListener('dragover', (e) => { e.preventDefault(); if (!dropZone.classList.contains('file-loaded')) dropZone.classList.add('hover'); });
              dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); });
-             dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); const file = e.dataTransfer.files[0]; if (file?.type.startsWith('video/')) handleFileLoad(file); else alert("Please drop a valid video file."); });
+             dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); const file = e.dataTransfer.files[0]; if (file && (file.name.toLowerCase().endsWith('.mov') || file.type === 'video/quicktime')) handleFileLoad(file); else alert("Please drop a valid .mov video file."); });
              dropZone.addEventListener('click', (e) => { if (dropZone.classList.contains('file-loaded')) { if (selectFileButton && !selectFileButton.contains(e.target) && videoInput) videoInput.click(); } else { if (initialSelectFileButton && !initialSelectFileButton.contains(e.target) && videoInput) videoInput.click(); } });
         }
         if (selectFileButton) selectFileButton.addEventListener('click', (e) => { e.stopPropagation(); if(videoInput) videoInput.click(); });
@@ -3113,18 +3316,25 @@
                    cancelExtractionRequested = false;
                    if (currentSamplingProcess?.cancel) currentSamplingProcess.cancel();
 
-                   // Reset Manual Mode
-                   if (previousMode === 'manual' && newMode !== 'manual') {
-                       manualScreenshotBlobs = [];
-                   }
                    if (newMode === 'manual' && previousMode !== 'manual') {
-                       $$('.screenshot-container', screenshotsDiv).forEach(container => { 
-                           if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); 
+                       // Switching TO manual mode
+                       // Restore manual blobs to screenshots area
+                       if(screenshotsDiv) screenshotsDiv.innerHTML = ''; // Clear existing (likely auto/smart)
+                       manualScreenshotBlobs.forEach(item => createScreenshotContainer(item.blob, item.timestamp, manualScreenshotBlobs));
+                   } else if (previousMode === 'manual' && newMode !== 'manual') {
+                       // Switching FROM manual mode
+                       // Clear manual blobs from screenshots area
+                       $$('.screenshot-container', screenshotsDiv).forEach(container => {
+                           // Only revoke/remove manual ones if switching away
+                           if (manualScreenshotBlobs.some(item => item.blobUrl === container.dataset.blobUrl)) {
+                               if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl);
+                               container.remove();
+                           }
                        });
-                       if(screenshotsDiv) screenshotsDiv.innerHTML = '';
-                       if(downloadManualButton) downloadManualButton.disabled = true;
-                       if(clearScreenshotsButton) clearScreenshotsButton.disabled = manualScreenshotBlobs.length === 0;
+                        // Clear manual blobs array if switching away (optional, depends if you want to preserve them)
+                       // manualScreenshotBlobs = [];
                    }
+
 
                    if (newMode === 'contactSheet') {
                        const activeGridSizeTab = $$('.grid-size-tab.active')[0];
@@ -3135,57 +3345,55 @@
 
                        initContactSheetPreview(rows, cols);
 
-                        // Show/hide time inputs based on current grid size
-                        if (updateContactSheetControlsVisibility(rows, cols)) {
-                            if (cachedGrid?.data) {
-                                contactSheetPreviewData = cachedGrid.data;
-                                contactSheetBlob = cachedGrid.blob;
-                                generateTimeInputs(rows, cols); // Generate inputs *after* potentially restoring data
+                        const showInputs = updateContactSheetControlsVisibility(rows, cols);
 
-                                contactSheetPreviewData.forEach((data, index) => {
-                                    if (data?.blob) {
-                                        const blobUrl = URL.createObjectURL(data.blob);
-                                        contactSheetPreviewData[index].blobUrl = blobUrl; // Update blobUrl in restored data
-                                        updatePreviewCell(index, data.blob, data.timestamp);
-                                        $(`timeInput_${index}`).value = data.timestamp.toFixed(2);
-                                        $(`timeFormatted_${index}`).value = formatTime(data.timestamp);
-                                    }
-                                });
-                            } else {
-                                contactSheetPreviewData = new Array(rows * cols).fill(null);
-                                contactSheetBlob = null;
+                        if (cachedGrid?.data) {
+                           contactSheetPreviewData = cachedGrid.data.map(item => {
+                               if (!item?.blob) return null;
+                               const blobUrl = URL.createObjectURL(item.blob);
+                               return { ...item, blobUrl };
+                           });
+                           contactSheetBlob = cachedGrid.blob;
+                            if (showInputs) {
                                 generateTimeInputs(rows, cols);
                             }
+
+                            contactSheetPreviewData.forEach((data, index) => {
+                                if (data?.blob) {
+                                    updatePreviewCell(index, data.blob, data.timestamp);
+                                }
+                            });
                         } else {
-                            // If inputs are hidden, ensure data array is correct size but has no blobs
                             contactSheetPreviewData = new Array(rows * cols).fill(null);
                             contactSheetBlob = null;
+                            if (showInputs) {
+                                generateTimeInputs(rows, cols);
+                            }
                          }
 
                          activeGridSizeTab?.classList.toggle('completed', cachedGrid?.completed ?? false);
-                         if (processContactSheetButton) processContactSheetButton.textContent = cachedGrid?.completed ? 'Generate/Update Sheet' : 'Generate/Update Sheet';
+                         if (processContactSheetButton) processContactSheetButton.textContent = cachedGrid?.completed ? 'Update Sheet Image' : 'Generate/Update Sheet';
                          if (downloadContactSheetButton) downloadContactSheetButton.disabled = !contactSheetBlob;
                          if (previewContactSheetButton) previewContactSheetButton.disabled = !contactSheetBlob;
 
                    } else {
-                       // Clear general screenshot area if switching away from contact sheet
                         $$('.screenshot-container', screenshotsDiv).forEach(container => { if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); });
                         if(screenshotsDiv) screenshotsDiv.innerHTML = '';
-                        screenshotBlobs = []; // Clear auto/smart blobs
-                        // Keep manual blobs unless explicitly cleared
+                        screenshotBlobs = [];
                    }
 
-                   resetProcessingUI(newMode); // Reset buttons based on video presence
-                   updateImageCount(); // Ensure count is updated after mode switch
+                   resetProcessingUI(newMode);
+                   updateImageCount();
                 });
             });
         }
 
         const updateContactSheetControlsVisibility = (rows, cols) => {
-             const isLargeGrid = rows > 6 || cols > 6;
+             const totalCells = rows * cols;
+             const isLargeGrid = totalCells > 36; // Hide inputs if total cells exceed 36 (6x6)
              contactSheetControlsElement.style.display = isLargeGrid ? 'none' : 'grid';
              largeGridDisclaimer.style.display = isLargeGrid ? 'block' : 'none';
-             return !isLargeGrid; // Return true if inputs should be generated
+             return !isLargeGrid;
         };
 
 
@@ -3223,29 +3431,25 @@
                     gridSizeTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active');
 
                     const cachedGrid = gridCache[newCacheKey];
-                    clearContactSheetPreview(true); // Clear first
-                    initContactSheetPreview(rows, cols); // Initialize preview grid
+                    clearContactSheetPreview(true);
+                    initContactSheetPreview(rows, cols);
 
-                     // Show/hide controls *before* trying to generate inputs
                      const showInputs = updateContactSheetControlsVisibility(rows, cols);
 
                     if (cachedGrid?.data) {
-                        contactSheetPreviewData = cachedGrid.data;
+                        contactSheetPreviewData = cachedGrid.data.map(item => {
+                            if (!item?.blob) return null;
+                            const blobUrl = URL.createObjectURL(item.blob);
+                            return { ...item, blobUrl };
+                        });
                         contactSheetBlob = cachedGrid.blob;
                          if (showInputs) {
-                            generateTimeInputs(rows, cols); // Generate inputs only if not too large
+                            generateTimeInputs(rows, cols);
                          }
 
                         contactSheetPreviewData.forEach((data, index) => {
                             if (data?.blob) {
-                                const blobUrl = URL.createObjectURL(data.blob);
-                                contactSheetPreviewData[index].blobUrl = blobUrl; // Update blobUrl in restored data
                                 updatePreviewCell(index, data.blob, data.timestamp);
-                                // Update inputs only if they exist
-                                const timeInput = $(`timeInput_${index}`);
-                                const timeFormatted = $(`timeFormatted_${index}`);
-                                if (timeInput) timeInput.value = data.timestamp.toFixed(2);
-                                if (timeFormatted) timeFormatted.value = formatTime(data.timestamp);
                             }
                         });
                         tab.classList.toggle('completed', cachedGrid.completed);
@@ -3255,7 +3459,7 @@
                          contactSheetPreviewData = new Array(rows * cols).fill(null);
                          contactSheetBlob = null;
                          if (showInputs) {
-                            generateTimeInputs(rows, cols); // Generate default inputs only if not too large
+                            generateTimeInputs(rows, cols);
                          }
                          tab.classList.remove('completed');
                          if (processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Sheet';
@@ -3263,7 +3467,6 @@
 
                     if (downloadContactSheetButton) downloadContactSheetButton.disabled = !contactSheetBlob;
                     if (previewContactSheetButton) previewContactSheetButton.disabled = !contactSheetBlob;
-                     // Reset update button style on grid change
                      if (processContactSheetButton) {
                         processContactSheetButton.classList.remove('needs-update');
                         processContactSheetButton.style.background = '';
@@ -3289,16 +3492,14 @@
              customGridRows.addEventListener('input', updateCustomGrid);
          }
 
-        // Setup global format controls
         initGlobalFormatControls();
-        // Setup mode-specific sliders
         setupSlider(intervalInput, intervalValue, 's');
         setupSlider(histThresholdInput, histThresholdValue, '');
         setupSlider(pixelThresholdInput, pixelThresholdValue, '');
 
         if (removeBarsToggle) removeBarsToggle.addEventListener('change', (e) => {
             removeBarsEnabled = e.target.checked;
-            if (removeBarsEnabled && video?.src && video.readyState >= 2) {
+            if (video?.src && video.readyState >= video.HAVE_METADATA) {
                  detectCropBoundariesMulti(() => { updateDropZoneThumbnail(); updateFileInfoDisplay(); });
             } else if (!removeBarsEnabled) {
                 cropData = null; updateDropZoneThumbnail(); updateFileInfoDisplay();
@@ -3309,10 +3510,8 @@
             const updateThresholdSliders = (algo) => {
                 if(histThresholdSettings) histThresholdSettings.style.display = (algo === 'histogram') ? 'flex' : 'none';
                 if(pixelThresholdSettings) pixelThresholdSettings.style.display = (algo === 'pixeldiff') ? 'flex' : 'none';
-                // Also toggle the disclaimer note visibility
                 pixelDiffDisclaimer.style.display = (algo === 'pixeldiff') ? 'block' : 'none';
-                $$('#autoSmartMode .disclaimer-note:not(#pixelDiffDisclaimer)')[0].style.display = (algo === 'histogram') ? 'block' : 'none';
-
+                $$('#autoSmartMode .mode-description:not(#pixelDiffDisclaimer)')[0].style.display = (algo === 'histogram') ? 'block' : 'none';
 
                 requestAnimationFrame(() => {
                     if(histThresholdInput && algo === 'histogram') updateSliderBackground(histThresholdInput);
@@ -3347,10 +3546,10 @@
 
              const startExtraction = () => {
                  let currentTime = 0.1; const totalDuration = currentVideoDuration; let frameTimeoutId = null; let isCancelled = false;
-                 currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('auto'); } }; // Reset UI on cancel
+                 currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('auto'); } };
 
                  function processNextFrame() {
-                     if (isCancelled || cancelExtractionRequested || currentTime > totalDuration + 0.1) { if(!isCancelled) resetProcessingUI('auto'); return; } // Check cancel before processing
+                     if (isCancelled || cancelExtractionRequested || currentTime > totalDuration + 0.1) { if(!isCancelled) resetProcessingUI('auto'); return; }
                      const timestamp = currentTime;
                      if (progressBarFillAuto) progressBarFillAuto.style.width = `${Math.min((currentTime / totalDuration) * 100, 100)}%`;
 
@@ -3390,9 +3589,9 @@
             const pixelThreshold = pixelThresholdInput ? parseFloat(pixelThresholdInput.value) : 35;
 
             const startExtraction = () => {
-                 let currentTime = 0.1; const totalDuration = currentVideoDuration; let previousImageData = null; let previousHist = null; let previousPixelData = null;
+                 let currentTime = 0.1; const totalDuration = currentVideoDuration; let previousFrameData = null;
                  let frameTimeoutId = null; let isCancelled = false;
-                 currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('autoSmart'); } }; // Reset UI on cancel
+                 currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('autoSmart'); } };
 
                 function processNextSmartFrame() {
                     if (isCancelled || cancelExtractionRequested || currentTime > totalDuration + 0.1) { if(!isCancelled) resetProcessingUI('autoSmart'); return; }
@@ -3423,24 +3622,23 @@
                                  const currentImageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
 
                                  let captureThisFrame = false;
-                                 if (!previousImageData) {
+                                 if (!previousFrameData) {
                                      captureThisFrame = true;
-                                     if (smartAlgorithm === "histogram") previousHist = computeHistogram(currentImageData, sampleFactor);
-                                     if (smartAlgorithm === 'pixeldiff') previousPixelData = currentImageData.data.slice();
+                                     if (smartAlgorithm === "histogram") previousFrameData = { hist: computeHistogram(currentImageData, sampleFactor), data: currentImageData.data };
+                                     if (smartAlgorithm === 'pixeldiff') previousFrameData = { hist: computeHistogram(currentImageData, sampleFactor), data: currentImageData.data.slice() };
                                  } else {
                                      if (smartAlgorithm === "histogram") {
                                          const currentHist = computeHistogram(currentImageData, sampleFactor);
-                                         if (!previousHist || histogramDifference(currentHist, previousHist) >= histThreshold) { captureThisFrame = true; previousHist = currentHist; }
+                                         if (!previousFrameData.hist || histogramDifference(currentHist, previousFrameData.hist) >= histThreshold) { captureThisFrame = true; previousFrameData.hist = currentHist; }
                                      } else if (smartAlgorithm === "pixeldiff") {
-                                         const diff = computePixelDiff(currentImageData.data, previousPixelData, sampleFactor);
-                                         if (diff >= pixelThreshold) { captureThisFrame = true; previousPixelData = currentImageData.data.slice(); }
+                                         const diff = computePixelDiff(currentImageData.data, previousFrameData.data, sampleFactor);
+                                         if (diff >= pixelThreshold) { captureThisFrame = true; previousFrameData.data = currentImageData.data.slice(); }
                                      }
                                  }
 
                                  if (captureThisFrame) {
                                      createScreenshotContainer(blob, timestamp, screenshotBlobs);
                                      updateImageCount();
-                                     previousImageData = currentImageData;
                                  }
 
                                  if (currentTime <= totalDuration + 0.1) { currentTime += smartInterval; frameTimeoutId = setTimeout(processNextSmartFrame, 0); }
@@ -3467,12 +3665,15 @@
         };
 
         if (extractManualButton) extractManualButton.addEventListener('click', () => {
-             if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) return;
+             if (!manualVideo?.src || manualVideo.readyState < manualVideo.HAVE_METADATA || processingActive || !canvas || manualVideo.videoWidth === 0 || manualVideo.videoHeight === 0) {
+                 alert("Video not ready or has invalid dimensions.");
+                 return;
+             }
              try {
                  const { type, quality } = getCurrentFormatSettings();
                  const ctx = canvas.getContext('2d'); if(!ctx) throw new Error("Canvas context not available");
-                 const effectiveCropData = removeBarsEnabled && cropData ? cropData : { cropX: 0, cropY: 0, cropWidth: manualVideo.videoWidth, cropHeight: manualVideo.videoHeight };
-                 if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error("Invalid video or crop dimensions for Save Frame.");
+                 const effectiveCropData = removeBarsEnabled && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0 ? cropData : { cropX: 0, cropY: 0, cropWidth: manualVideo.videoWidth, cropHeight: manualVideo.videoHeight };
+                 if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error("Invalid dimensions for Save Frame.");
 
                  canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
                  ctx.drawImage(manualVideo, effectiveCropData.cropX, effectiveCropData.cropY, effectiveCropData.cropWidth, effectiveCropData.cropHeight, 0, 0, canvas.width, canvas.height);
@@ -3482,24 +3683,26 @@
                          const url = URL.createObjectURL(blob);
                          const tempLink = document.createElement('a'); tempLink.href = url;
                          const extension = getFileExtensionFromType(type);
-                         tempLink.download = `quick_frame_${formatTime(manualVideo.currentTime).replace(':','-')}.${extension}`;
+                         tempLink.download = `quick_frame_${formatTime(manualVideo.currentTime).replace(/[:.]/g,'-')}.${extension}`;
                          document.body.appendChild(tempLink); tempLink.click(); document.body.removeChild(tempLink); URL.revokeObjectURL(url);
                      }
                  }, type, quality);
-             } catch(error) { console.error("[Manual Save Frame] Error:", error); alert("An error occurred during Save Frame: " + error.message); }
+             } catch(error) { alert("An error occurred during Save Frame: " + error.message); }
          });
 
         if (addManualButton) addManualButton.addEventListener('click', () => {
-             // Scissors icon animation only for Manual Cut Frame button
              addManualButton.classList.add('cutting'); setTimeout(() => { addManualButton.classList.remove('cutting'); }, 300);
 
-             if (!manualVideo?.src || manualVideo.readyState < 1 || processingActive || !canvas) return;
+             if (!manualVideo?.src || manualVideo.readyState < manualVideo.HAVE_METADATA || processingActive || !canvas) {
+                  // Alert not needed here, button should just not function correctly
+                 return;
+             }
 
              try {
                  const { type, quality } = getCurrentFormatSettings();
                  const ctx = canvas.getContext('2d'); if(!ctx) throw new Error("Canvas context not available");
-                 const effectiveCropData = removeBarsEnabled && cropData ? cropData : { cropX: 0, cropY: 0, cropWidth: manualVideo.videoWidth, cropHeight: manualVideo.videoHeight };
-                 if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error("Invalid video or crop dimensions for Manual Add.");
+                 const effectiveCropData = removeBarsEnabled && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0 ? cropData : { cropX: 0, cropY: 0, cropWidth: manualVideo.videoWidth, cropHeight: manualVideo.videoHeight };
+                 if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error("Invalid dimensions for Cut Frame.");
 
                  canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
                  ctx.drawImage(manualVideo, effectiveCropData.cropX, effectiveCropData.cropY, effectiveCropData.cropWidth, effectiveCropData.cropHeight, 0, 0, canvas.width, canvas.height);
@@ -3511,7 +3714,7 @@
                         updateImageCount();
                      }
                  }, type, quality);
-             } catch(error) { console.error("[Manual Add] Error:", error); alert("An error occurred while adding the frame: " + error.message); }
+             } catch(error) { alert("An error occurred while adding the frame: " + error.message); }
          });
 
         if(downloadAllButton) downloadAllButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(screenshotBlobs.filter(item => item?.blob), "auto_screenshots"); });
@@ -3537,30 +3740,43 @@
              const hasAnyOutput = (screenshotBlobs.length + manualScreenshotBlobs.length > 0) || contactSheetPreviewData.some(d => d !== null) || contactSheetBlob;
              if (hasAnyOutput && confirm("Are you sure you want to clear all generated output (screenshots and contact sheet preview)?")) {
                  screenshotBlobs.concat(manualScreenshotBlobs).forEach(item => { if(item?.blobUrl) URL.revokeObjectURL(item.blobUrl); });
+                 $$('.screenshot-container', screenshotsDiv).forEach(container => { if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); });
+
                  if(screenshotsDiv) screenshotsDiv.innerHTML = '';
                  screenshotBlobs = []; manualScreenshotBlobs = [];
 
                  clearContactSheetPreview(true);
                  contactSheetBlob = null;
 
-                 Object.keys(gridCache).forEach(key => { gridCache[key] = { data: null, blob: null, completed: false }; });
+                 Object.keys(gridCache).forEach(key => {
+                     gridCache[key] = { data: null, blob: null, completed: false };
+                 });
                  $$('.grid-size-tab').forEach(tab => tab.classList.remove('completed'));
 
-                 if(downloadContactSheetButton) downloadContactSheetButton.disabled = true;
-                 if(previewContactSheetButton) previewContactSheetButton.disabled = true;
-                 if(processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Sheet';
+                 if(processContactSheetButton) processContactSheetButton.textContent = contactSheetBlob ? 'Update Sheet Image' : 'Generate/Update Sheet';
+
                  updateImageCount();
              }
         });
 
-        // Initial setup calls
-        currentMode = $$('.mode-tab.active')[0]?.getAttribute('data-mode') || 'manual';
+        const initialActiveModeTab = $$('.mode-tab.active')[0];
+        if (initialActiveModeTab) {
+             currentMode = initialActiveModeTab.getAttribute('data-mode') || 'manual';
+        } else {
+             currentMode = 'manual';
+             const manualTab = $$('.mode-tab[data-mode="manual"]')[0];
+             if (manualTab) manualTab.classList.add('active');
+        }
+
         smartAlgorithm = $$('.smart-tab.active')[0]?.getAttribute('data-algo') || 'histogram';
         $$('input[type="range"]').forEach(updateSliderBackground);
 
          if (buttonGroups[currentMode]) {
             Object.values(buttonGroups).forEach(group => { if (group) group.style.display = 'none'; });
             buttonGroups[currentMode].style.display = 'flex';
+         } else {
+             currentMode = 'manual';
+             if (buttonGroups.manual) buttonGroups.manual.style.display = 'flex';
          }
 
         resetProcessingUI('all');
@@ -3569,28 +3785,34 @@
         initGlobalFormatControls();
 
         const initialActiveGridTab = $$('.grid-size-tab.active')[0];
+        let initialRows = 4, initialCols = 5;
         if (initialActiveGridTab) {
-            const rows = parseInt(initialActiveGridTab.getAttribute('data-rows') || 4);
-            const cols = parseInt(initialActiveGridTab.getAttribute('data-cols') || 5);
-            initContactSheetPreview(rows, cols);
-             if (updateContactSheetControlsVisibility(rows, cols)) {
-                 generateTimeInputs(rows, cols);
-             }
-
-            if (initialActiveGridTab.textContent.trim() === 'Custom' && customGridControls) {
-                customGridControls.style.display = 'block';
-                if (customGridRows && customGridCols) {
-                    customGridRows.value = initialActiveGridTab.getAttribute('data-rows') || '2';
-                    customGridCols.value = initialActiveGridTab.getAttribute('data-cols') || '3';
-                }
-            }
+             initialRows = parseInt(initialActiveGridTab.getAttribute('data-rows') || 4);
+             initialCols = parseInt(initialActiveGridTab.getAttribute('data-cols') || 5);
         } else {
-             initContactSheetPreview(4, 5);
-             generateTimeInputs(4, 5);
+             const defaultGridTab = $$('.grid-size-tab[data-rows="4"][data-cols="5"]')[0];
+             if (defaultGridTab) defaultGridTab.classList.add('active');
         }
 
+        initContactSheetPreview(initialRows, initialCols);
+         if (updateContactSheetControlsVisibility(initialRows, initialCols)) {
+             generateTimeInputs(initialRows, initialCols);
+         }
 
-      } catch (error) { console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.textContent = `Initialization Error: ${error.message}. Please refresh or check console (F12).`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
+
+        if (initialActiveGridTab && initialActiveGridTab.textContent.trim() === 'Custom' && customGridControls) {
+            customGridControls.style.display = 'block';
+            if (customGridRows && customGridCols) {
+                customGridRows.value = initialActiveGridTab.getAttribute('data-rows') || '2';
+                customGridCols.value = initialActiveGridTab.getAttribute('data-cols') || '3';
+            }
+        }
+
+         if (currentMode === 'contactSheet') {
+             outputColumn.classList.add('show-contact-sheet');
+         }
+
+      } catch (error) { console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.innerHTML = `<h2>Initialization Error</h2><p>${error.message}</p><p>Please check the console (F12) for more details or refresh the page.</p>`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
     });
   </script>
 
