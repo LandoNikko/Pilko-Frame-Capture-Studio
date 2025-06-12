@@ -61,6 +61,6 @@ The tool finds timestamps (or you pick them). Your browser's built-in capabiliti
 
 ## ![Feedback Shield][feedback-shield]
 
-[![Email][gmail-shield]][gmail-url]   ![Discord: ABC Status][discord-shield-static]
+[![Email][gmail-shield]][gmail-url]   ![Discord: landomrandom Status][discord-shield-static]
 
 [feedback-shield]: https://img.shields.io/badge/Feedback-242c44?style=for-the-badge&color=121727&logo=github&logoColor=00c6ff
