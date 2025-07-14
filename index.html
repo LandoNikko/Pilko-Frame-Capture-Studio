@@ -325,9 +325,9 @@
         font-size: 0.9rem;
     }
     .value-input {
-        width: 80px;
+        width: 110px;
         padding: 0.35rem 0.6rem;
-        background-color: var(--input-bg);
+        background-color: var(--bg-secondary);
         color: var(--text-primary);
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius-sm);
@@ -335,18 +335,7 @@
         font-family: inherit;
         text-align: center;
     }
-    .value-display-static {
-        font-weight: 500;
-        min-width: 60px;
-        text-align: center;
-        font-family: var(--data-font);
-        color: var(--text-primary);
-        font-size: 0.9rem;
-        padding: 0.35rem 0.6rem;
-        background-color: var(--input-bg);
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius-sm);
-    }
+
     input[type="range"] { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--text-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; }
     input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.1s ease-out; }
     input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.1s ease-out; }
@@ -584,8 +573,12 @@
     .time-input-wrapper {
         position: relative;
         display: inline-block;
-        width: 100%;
         height: 2rem;
+    }
+    
+    /* Manual mode time input wrapper - specific width for manual controls */
+    #manualMode .time-input-container .time-input-wrapper {
+        width: 120px;
     }
     .time-input {
         position: absolute;
@@ -615,7 +608,8 @@
     }
     .time-formatted:hover {
         background-color: var(--bg-tertiary);
-        border-color: var(--accent-tertiary);
+        border-color: var(--accent-primary);
+        cursor: ns-resize;
     }
     .time-formatted:focus {
         outline: none;
@@ -633,7 +627,7 @@
     }
     .time-formatted:hover::after {
         opacity: 1;
-        color: var(--accent-tertiary);
+        color: var(--accent-primary);
     }
 
     #contactSheetPreview {
@@ -1219,7 +1213,81 @@
         background-color: var(--border-color);
         border-color: var(--text-secondary);
     }
+    
+    .manual-time-btn {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        padding: 0.3rem 0.6rem;
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        font-size: 0.9rem;
+        line-height: 1;
+        transition: background-color 0.2s, border-color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2em;
+        width: 2em;
+        height: 2em;
+    }
+    
+    .manual-time-btn:hover {
+        background-color: var(--border-color);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+    }
 
+    #manualDragControl {
+        cursor: ew-resize;
+        border-radius: var(--border-radius-full);
+        width: 100%;
+        justify-content: center;
+        background-image: repeating-linear-gradient(
+            -45deg,
+            var(--border-color),
+            var(--border-color) 4px,
+            var(--bg-secondary) 4px,
+            var(--bg-secondary) 8px
+        );
+    }
+    
+    #manualDragControl:hover {
+        background-color: var(--bg-tertiary);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+        background-image: repeating-linear-gradient(
+            -45deg,
+            var(--border-color),
+            var(--border-color) 4px,
+            var(--bg-secondary) 4px,
+            var(--bg-secondary) 8px
+        );
+    }
+
+    .drag-helper-text {
+        text-align: center;
+        margin-top: 0.3rem;
+        font-style: italic;
+        color: var(--text-tertiary);
+        font-size: 0.85rem;
+    }
+
+    .time-input-row {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .time-input-controls {
+        display: flex;
+        align-items: center;
+    }
+
+    .time-input-field {
+        width: 100px;
+    }
 
     #lightboxTimestamp {
         font-family: 'Source Code Pro', monospace;
@@ -1414,6 +1482,42 @@
                 <div id="manualMode" class="active">
                     <p class="mode-description">Use the video player to navigate and press Cut Frame to extract screenshots.</p>
                     <video id="manualVideo" controls></video>
+                    
+                    <h3 class="setting-group-title">Fine-tune current frame</h3>
+                    <div class="time-input-container" style="margin-bottom: 1rem;">
+                        <div class="time-input-row">
+                            <h3 class="slider-label">Time</h3>
+                            <div class="time-input-controls">
+                                <button class="manual-time-btn" id="manualTimePrevBtn" title="Go back 1 second">
+                                    <i class="ri-arrow-drop-left-line"></i>
+                                </button>
+                                <input type="text" id="manualTimeInput" class="value-input time-input-field" value="0:00" placeholder="0:00">
+                                <button class="manual-time-btn" id="manualTimeNextBtn" title="Go forward 1 second">
+                                    <i class="ri-arrow-drop-right-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="time-input-row">
+                            <h3 class="slider-label">Frame <i class="ri-error-warning-line info-icon-inline" title='Frame rate detection is currently bugged, so the displayed Frame is not "accurate". Defaulting to 30 fps (value display only).' id="frameWarningIcon"></i></h3>
+                            <div class="time-input-controls">
+                                <button class="manual-time-btn" id="manualFramePrevBtn" title="Go back 1 frame">
+                                    <i class="ri-arrow-drop-left-line"></i>
+                                </button>
+                                <input type="text" id="manualFrameInput" class="value-input time-input-field" value="0" placeholder="0" inputmode="numeric" pattern="[0-9]*">
+                                <button class="manual-time-btn" id="manualFrameNextBtn" title="Go forward 1 frame">
+                                    <i class="ri-arrow-drop-right-line"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="drag-control-container">
+                        <button class="manual-time-btn" id="manualDragControl">
+                            <i class="ri-expand-horizontal-s-line"></i>
+                        </button>
+                        <div class="drag-helper-text">
+                            Drag the bar above horizontally to adjust video position
+                        </div>
+                    </div>
                 </div>
                 <div id="autoMode">
                     <p class="mode-description">Captures screenshots at regular time intervals. Lower value creates more images, higher value creates fewer.</p>
@@ -1604,13 +1708,13 @@
                 <button class="lightbox-adjust-btn" id="lightboxAdjustPrev" title="Cut backward by 1s (Hotkey: Q)">-<i class="ri-scissors-line icon-flipped"></i></button>
             </div>
             <button class="lightbox-nav-btn prev-btn" id="lightboxPrevBtn" title="Hotkeys: 🡨, A">
-              <span class="nav-icon"><i class="ri-arrow-left-line"></i></span>
+              <span class="nav-icon"><i class="ri-arrow-drop-left-line"></i></span>
               <span class="nav-text">Previous Frame</span>
             </button>
             <span id="lightboxTimestamp"></span>
             <button class="lightbox-nav-btn next-btn" id="lightboxNextBtn" title="Hotkeys: 🡪, D">
               <span class="nav-text">Next Frame</span>
-              <span class="nav-icon"><i class="ri-arrow-right-line"></i></span>
+              <span class="nav-icon"><i class="ri-arrow-drop-right-line"></i></span>
             </button>
              <div class="lightbox-frame-adjust-controls">
                 <button class="lightbox-adjust-btn" id="lightboxAdjustNext" title="Cut forward by 1s (Hotkey: E)"><i class="ri-scissors-line"></i>+</button>
@@ -2417,6 +2521,8 @@
                             generateTimeInputs(rows, cols);
                          }
                      }
+                     // Setup manual fine-tune controls
+                     setupManualFineTuneControls();
                 };
 
             if (video.readyState >= video.HAVE_METADATA) {
@@ -2641,13 +2747,11 @@
                  }
                  const targetTime = Math.max(0, Math.min(time, duration ? duration - 0.01 : 0));
 
-                 // Always set currentTime, rely on 'seeked' event or timeout
-                 if (videoElement.currentTime.toFixed(2) !== targetTime.toFixed(2)) { // Use fixed precision for comparison
+                 if (videoElement.currentTime.toFixed(2) !== targetTime.toFixed(2)) {
                     videoElement.currentTime = targetTime;
                  } else {
                     // Already at the right time, might not trigger 'seeked'
                     cleanupListeners();
-                    // console.log(`[captureFrameAtTime] Already at time ${targetTime.toFixed(2)}, triggering draw manually.`);
                     setTimeout(drawLogic, 60); // Manually trigger draw logic slightly later
                  }
 
@@ -3555,17 +3659,21 @@
             }
         });
 
-        // Mobile-friendly tooltip for Remove Black Bars info icon
-        const removeBarsInfoIcon = $('removeBarsInfoIcon');
-        if (removeBarsInfoIcon) {
-            removeBarsInfoIcon.addEventListener('click', (e) => {
-                // Check if it's a touch device (mobile)
-                if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-                    e.preventDefault();
-                    alert('Automatically detect and crop black bars from letterboxed videos');
-                }
-            });
-        }
+        // Mobile-friendly tooltip handler
+        const createMobileTooltip = (element, message) => {
+            if (element) {
+                element.addEventListener('click', (e) => {
+                    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                        e.preventDefault();
+                        alert(message);
+                    }
+                });
+            }
+        };
+
+        // Setup mobile tooltips
+        createMobileTooltip($('removeBarsInfoIcon'), 'Automatically detect and crop black bars from letterboxed videos');
+        createMobileTooltip($('frameWarningIcon'), 'Frame rate detection is currently bugged, so the displayed Frame is not "accurate". Defaulting to 30 fps (value display only).');
 
         if (smartAlgoTabs.length > 0) {
             const updateThresholdSliders = (algo) => {
@@ -3851,6 +3959,212 @@
              generateTimeInputs(4, 5);
         }
 
+        // Manual fine-tune controls functionality
+        const setupManualFineTuneControls = () => {
+            const manualTimeInput = $('manualTimeInput');
+            const manualFrameInput = $('manualFrameInput');
+            const manualTimePrevBtn = $('manualTimePrevBtn');
+            const manualTimeNextBtn = $('manualTimeNextBtn');
+            const manualFramePrevBtn = $('manualFramePrevBtn');
+            const manualFrameNextBtn = $('manualFrameNextBtn');
+            const manualTimeDragBtn = $('manualTimeDragBtn');
+            const manualFrameDragBtn = $('manualFrameDragBtn');
+            
+            if (!manualTimeInput || !manualFrameInput || !manualVideo) return;
+            
+            // Calculate frame rate (assuming 30fps if not available)
+            const getFrameRate = () => {
+                return 30;
+            };
+            
+            const frameRate = getFrameRate();
+            
+            // Update time and frame displays from video currentTime
+            const updateManualDisplays = () => {
+                if (!manualVideo.src || manualVideo.readyState < 1) return;
+                
+                const currentTime = manualVideo.currentTime;
+                const currentFrame = Math.round(currentTime * frameRate);
+                
+                manualTimeInput.value = formatTime(currentTime);
+                manualFrameInput.value = currentFrame;
+            };
+            
+            // Update video position from time input
+            const updateVideoFromTime = (newTime) => {
+                if (!manualVideo.src || manualVideo.readyState < 1) return;
+                const clampedTime = Math.max(0, Math.min(newTime, manualVideo.duration || 0));
+                manualVideo.currentTime = clampedTime;
+            };
+            
+            // Update video position from frame input
+            const updateVideoFromFrame = (newFrame) => {
+                if (!manualVideo.src || manualVideo.readyState < 1) return;
+                const newTime = newFrame / frameRate;
+                const clampedTime = Math.max(0, Math.min(newTime, manualVideo.duration || 0));
+                manualVideo.currentTime = clampedTime;
+            };
+            
+            manualTimeInput.addEventListener('change', (e) => {
+                const newTime = parseTimeString(e.target.value);
+                if (newTime >= 0) {
+                    updateVideoFromTime(newTime);
+                }
+            });
+            
+            manualFrameInput.addEventListener('input', (e) => {
+                // Only allow numbers
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+            
+            manualFrameInput.addEventListener('change', (e) => {
+                const newFrame = parseInt(e.target.value);
+                if (!isNaN(newFrame) && newFrame >= 0) {
+                    updateVideoFromFrame(newFrame);
+                }
+            });
+            
+            let isDraggingTime = false;
+            let startXTime = 0;
+            let startValueTime = 0;
+            let sensitivityTime = 0.05;
+            
+            if (manualTimeDragBtn) {
+                manualTimeDragBtn.addEventListener('mousedown', (e) => {
+                    isDraggingTime = true;
+                    startXTime = e.clientX;
+                    startValueTime = parseTimeString(manualTimeInput.value);
+                    document.body.style.cursor = 'ew-resize';
+                    document.addEventListener('mousemove', handleTimeMouseMove);
+                    document.addEventListener('mouseup', handleTimeMouseUp);
+                    e.preventDefault();
+                });
+            }
+            
+            const handleTimeMouseMove = (e) => {
+                if (!isDraggingTime) return;
+                const deltaX = e.clientX - startXTime;
+                const newValue = Math.max(0, Math.min(startValueTime + (deltaX * sensitivityTime), manualVideo.duration || 0));
+                manualTimeInput.value = formatTime(newValue);
+                updateVideoFromTime(newValue);
+            };
+            
+            const handleTimeMouseUp = () => {
+                if (!isDraggingTime) return;
+                isDraggingTime = false;
+                document.body.style.cursor = '';
+                document.removeEventListener('mousemove', handleTimeMouseMove);
+                document.removeEventListener('mouseup', handleTimeMouseUp);
+            };
+            
+            let isDraggingFrame = false;
+            let startXFrame = 0;
+            let startValueFrame = 0;
+            let sensitivityFrame = 1;
+            
+            if (manualFrameDragBtn) {
+                manualFrameDragBtn.addEventListener('mousedown', (e) => {
+                    isDraggingFrame = true;
+                    startXFrame = e.clientX;
+                    startValueFrame = parseInt(manualFrameInput.value);
+                    document.body.style.cursor = 'ew-resize';
+                    document.addEventListener('mousemove', handleFrameMouseMove);
+                    document.addEventListener('mouseup', handleFrameMouseUp);
+                    e.preventDefault();
+                });
+            }
+            
+            const handleFrameMouseMove = (e) => {
+                if (!isDraggingFrame) return;
+                const deltaX = e.clientX - startXFrame;
+                const newValue = Math.max(0, startValueFrame + Math.round(deltaX * sensitivityFrame));
+                manualFrameInput.value = newValue;
+                updateVideoFromFrame(newValue);
+            };
+            
+            const handleFrameMouseUp = () => {
+                if (!isDraggingFrame) return;
+                isDraggingFrame = false;
+                document.body.style.cursor = '';
+                document.removeEventListener('mousemove', handleFrameMouseMove);
+                document.removeEventListener('mouseup', handleFrameMouseUp);
+            };
+            
+            if (manualTimePrevBtn) {
+                manualTimePrevBtn.addEventListener('click', () => {
+                    const currentTime = parseTimeString(manualTimeInput.value);
+                    const newTime = Math.max(0, currentTime - 1);
+                    updateVideoFromTime(newTime);
+                });
+            }
+            
+            if (manualTimeNextBtn) {
+                manualTimeNextBtn.addEventListener('click', () => {
+                    const currentTime = parseTimeString(manualTimeInput.value);
+                    const newTime = Math.min(manualVideo.duration || 0, currentTime + 1);
+                    updateVideoFromTime(newTime);
+                });
+            }
+            
+            if (manualFramePrevBtn) {
+                manualFramePrevBtn.addEventListener('click', () => {
+                    const currentFrame = parseInt(manualFrameInput.value);
+                    const newFrame = Math.max(0, currentFrame - 1);
+                    updateVideoFromFrame(newFrame);
+                });
+            }
+            
+            if (manualFrameNextBtn) {
+                manualFrameNextBtn.addEventListener('click', () => {
+                    const currentFrame = parseInt(manualFrameInput.value);
+                    const newFrame = currentFrame + 1;
+                    updateVideoFromFrame(newFrame);
+                });
+            }
+            
+            manualTimeInput.addEventListener('focus', (e) => e.target.select());
+            manualFrameInput.addEventListener('focus', (e) => e.target.select());
+            
+            // Listen to video time updates
+            manualVideo.addEventListener('timeupdate', updateManualDisplays);
+            
+            // Initial update
+            updateManualDisplays();
+        };
+
+        const manualDragControl = $('manualDragControl');
+        
+        let isDraggingManual = false;
+        let startXManual = 0;
+        let startTimeManual = 0;
+        let sensitivityManual = 0.05;
+
+        if (manualDragControl) {
+            manualDragControl.addEventListener('mousedown', (e) => {
+                isDraggingManual = true;
+                startXManual = e.clientX;
+                startTimeManual = manualVideo.currentTime;
+                document.body.style.cursor = 'ew-resize';
+                document.addEventListener('mousemove', handleManualDragMove);
+                document.addEventListener('mouseup', handleManualDragUp);
+                e.preventDefault();
+            });
+        }
+
+        const handleManualDragMove = (e) => {
+            if (!isDraggingManual) return;
+            const deltaX = e.clientX - startXManual;
+            const newTime = Math.max(0, Math.min(startTimeManual + (deltaX * sensitivityManual), manualVideo.duration || 0));
+            manualVideo.currentTime = newTime;
+        };
+
+        const handleManualDragUp = () => {
+            if (!isDraggingManual) return;
+            isDraggingManual = false;
+            document.body.style.cursor = '';
+            document.removeEventListener('mousemove', handleManualDragMove);
+            document.removeEventListener('mouseup', handleManualDragUp);
+        };
 
       } catch (error) { console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.textContent = `Initialization Error: ${error.message}. Please refresh or check console (F12).`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
     });
