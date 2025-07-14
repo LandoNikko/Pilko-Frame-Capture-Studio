@@ -17,7 +17,7 @@ Try it here: https://pilko.studio
 
 Offline download: `index.html`
 
-<video src="https://github.com/user-attachments/assets/b3decfc6-0834-4eaa-b5ee-46a7a0797ce7" controls width="600"></video>
+<video src="https://github.com/user-attachments/assets/77a1a585-3999-433d-a160-4b2940083120" controls width="600"></video>
 
 ## ![Features Shield][features-shield]
 
@@ -32,7 +32,7 @@ Offline download: `index.html`
   - `Grid` - Create a grid of frames to a single image.
 - Preview frames in a gallery/lightbox, remove unwanted frames, download individually or as ZIP.
 
-![Pilko_Panel](https://github.com/user-attachments/assets/5c9c2363-09c0-4ba6-b508-e760baaf3619)
+![Pilko_Panel](https://github.com/user-attachments/assets/46d4e68b-6992-43e3-83b4-92b56397703b)
 
 [features-shield]: https://img.shields.io/badge/Features-00c6ff?style=for-the-badge&color=121727
 
