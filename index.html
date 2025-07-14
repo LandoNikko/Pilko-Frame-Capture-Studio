@@ -160,11 +160,11 @@
     }
 
     #dropZone:hover { border-color: var(--text-primary); }
-    #dropZone #uploadIcon { margin-bottom: 0.75rem; color: var(--text-tertiary); transition: color 0.3s ease, transform 0.3s ease; display: block; }
+    #dropZone #uploadIcon { color: var(--text-tertiary); transition: color 0.3s ease, transform 0.3s ease; display: block; }
     #dropZone:hover #uploadIcon { color: var(--text-primary); transform: scale(1.1); }
-    #dropZone #uploadIcon svg { width: 44px; height: 44px; fill: currentColor; }
+    #dropZone #uploadIcon svg { width: 50px; height: 50px; fill: currentColor; }
     
-    #spinnerIcon { width: 44px; height: 44px; fill: currentColor; }
+    #spinnerIcon { width: 40px; height: 40px; fill: currentColor; }
     #dropZone #dropZoneText { font-size: 0.95rem; color: var(--text-tertiary); display: block; }
     #dropZone #loadedFileInfo { display: none; }
     #dropZone.file-loaded { padding: 1rem 1.25rem 0.75rem; align-items: stretch; text-align: left; justify-content: flex-start; cursor: default; }
@@ -1340,7 +1340,7 @@
 
         <div id="dropZone">
             <div id="uploadIcon">
-                <svg viewBox="0 0 24 24" fill="currentColor" id="uploadIconSvg"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="uploadIconSvg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-miterlimit="10" d="M9.047 9.5v5"/><path stroke-linejoin="round" d="M11.34 11.605L9.373 9.638a.458.458 0 0 0-.651 0l-1.968 1.967"/><path stroke-linejoin="round" d="M12 5.32H6.095A3.595 3.595 0 0 0 2.5 8.923v6.162a3.595 3.595 0 0 0 3.595 3.595H12a3.595 3.595 0 0 0 3.595-3.595V8.924A3.594 3.594 0 0 0 12 5.32m9.5 4.118v5.135c0 .25-.071.496-.205.708a1.355 1.355 0 0 1-.555.493a1.27 1.27 0 0 1-.73.124a1.366 1.366 0 0 1-.677-.278l-3.225-2.588a1.377 1.377 0 0 1-.503-1.047c0-.2.045-.396.133-.575c.092-.168.218-.315.37-.432l3.225-2.567a1.36 1.36 0 0 1 .678-.278c.25-.032.504.011.729.124a1.325 1.325 0 0 1 .76 1.181"/></g></svg>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="spinnerIcon" style="display: none;"><path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path fill="currentColor" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
             </div>
             <div id="dropZoneText">Upload a video file</div>
