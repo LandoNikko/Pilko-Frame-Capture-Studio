@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -70,7 +70,7 @@
     .vertical-separator { position: absolute; top: 0; bottom: 0; left: var(--side-panel-width); width: var(--separator-width); background-image: linear-gradient(to bottom, var(--border-dashed) 60%, transparent 40%); background-size: 100% 8px; background-repeat: repeat-y; z-index: 10; pointer-events: none; transition: background-image 0.3s ease; }
     .vertical-separator.loading { background-image: linear-gradient(to bottom, var(--accent-interval) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 10s linear infinite; }
     .vertical-separator.loading-smart { background-image: linear-gradient(to bottom, var(--accent-secondary) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 10s linear infinite; }
-    .vertical-separator.loading-contact-sheet { background-image: linear-gradient(to bottom, var(--accent-tertiary) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 8s linear infinite; }
+    .vertical-separator.loading-grid { background-image: linear-gradient(to bottom, var(--accent-tertiary) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 8s linear infinite; }
     @keyframes loadingAnimation { 0% { background-position: 0 0; } 100% { background-position: 0 100vh; } }
 
     .side-panel { flex: 0 0 var(--side-panel-width); position: relative; height: 100%; overflow-y: auto; overflow-x: hidden; direction: rtl; background-color: var(--bg-secondary); padding: 0; }
@@ -79,8 +79,8 @@
     .output-column { flex: 1; display: flex; flex-direction: column; background-color: var(--bg-primary); overflow-y: auto; padding: var(--content-padding); }
     #screenshots { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.5rem; align-content: start; }
 
-    .output-column.show-contact-sheet #screenshots { display: none; }
-    .output-column:not(.show-contact-sheet) #contactSheetPreview { display: none; }
+    .output-column.show-grid #screenshots { display: none; }
+    .output-column:not(.show-grid) #contactSheetPreview { display: none; }
 
 
     h1 { font-family: 'Cairo Play', sans-serif; text-align: center; padding-bottom: 1rem; font-weight: 400; font-size: 2em; color: var(--white); position: relative; cursor: pointer; user-select: none; transition: color 0.3s ease; }
@@ -163,7 +163,9 @@
     #dropZone #uploadIcon { margin-bottom: 0.75rem; color: var(--text-tertiary); transition: color 0.3s ease, transform 0.3s ease; display: block; }
     #dropZone:hover #uploadIcon { color: var(--text-primary); transform: scale(1.1); }
     #dropZone #uploadIcon svg { width: 44px; height: 44px; fill: currentColor; }
-    #dropZone #dropZoneText { margin-bottom: 1rem; font-size: 0.95rem; color: var(--text-tertiary); display: block; }
+    
+    #spinnerIcon { width: 44px; height: 44px; fill: currentColor; }
+    #dropZone #dropZoneText { font-size: 0.95rem; color: var(--text-tertiary); display: block; }
     #dropZone #loadedFileInfo { display: none; }
     #dropZone.file-loaded { padding: 1rem 1.25rem 0.75rem; align-items: stretch; text-align: left; justify-content: flex-start; cursor: default; }
     #dropZone.file-loaded #uploadIcon, #dropZone.file-loaded #dropZoneText { display: none; }
@@ -186,8 +188,15 @@
     }
     #loadedFileStats .leader { display: none; }
 
-    #initialSelectFileButton { padding: 0.6rem 1.5rem; font-size: 0.9rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; font-weight: 500; width: fit-content; align-self: center; }
-    #dropZone:not(.file-loaded):hover #initialSelectFileButton { background-color: rgba(255, 255, 255, 0.1); border-color: var(--text-tertiary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+    #buttonRow { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1rem; }
+    
+    #initialSelectFileButton { padding: 0.6rem 1.5rem; font-size: 0.9rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; font-weight: 500; }
+    #initialSelectFileButton:hover { background-color: rgba(255, 255, 255, 0.1); border-color: var(--text-tertiary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+
+    #orText { color: var(--text-tertiary); font-size: 0.9rem; }
+    
+    #tryExampleButton { padding: 0.6rem 1.5rem; font-size: 0.9rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; font-weight: 500; }
+    #tryExampleButton:hover { background-color: rgba(255, 255, 255, 0.1); border-color: var(--text-tertiary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
 
     #selectFileButton {
       font-size: 0.8rem;
@@ -201,7 +210,7 @@
     }
     #selectFileButton:hover { background-color: var(--text-primary); color: var(--bg-primary); }
 
-    #dropZone.file-loaded #initialSelectFileButton { display: none; }
+    #dropZone.file-loaded #buttonRow { display: none; }
 
     #videoInput { display: none; }
 
@@ -214,7 +223,7 @@
     #imageCountValue.interval-mode { color: var(--accent-interval); }
     #imageCountValue.smart-mode { color: var(--accent-secondary); }
     #imageCountValue.manual-mode { color: var(--accent-primary); }
-    #imageCountValue.contact-sheet-mode { color: var(--accent-tertiary); }
+    #imageCountValue.grid-mode { color: var(--accent-tertiary); }
 
     .setting-row { display: flex; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; background-color: var(--bg-tertiary); padding: 0.8rem 1rem; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); flex-shrink: 0; }
     .setting-label { flex: 1; font-size: 0.9rem; color: var(--text-primary); font-weight: 500; margin-right: 0.8rem; margin: 0; cursor: default; display: inline-flex; align-items: center; }
@@ -314,6 +323,29 @@
         font-family: var(--data-font);
         color: var(--text-primary);
         font-size: 0.9rem;
+    }
+    .value-input {
+        width: 80px;
+        padding: 0.35rem 0.6rem;
+        background-color: var(--input-bg);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-sm);
+        font-size: 0.85rem;
+        font-family: inherit;
+        text-align: center;
+    }
+    .value-display-static {
+        font-weight: 500;
+        min-width: 60px;
+        text-align: center;
+        font-family: var(--data-font);
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        padding: 0.35rem 0.6rem;
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-sm);
     }
     input[type="range"] { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--text-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; }
     input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.1s ease-out; }
@@ -547,7 +579,7 @@
 
     #contactSheetVideo { width: 100%; border-radius: var(--border-radius-lg); background-color: var(--black); margin-bottom: 1rem; aspect-ratio: 16 / 9; border: 1px solid var(--border-color); }
     .fine-tune-message { color: var(--accent-tertiary); font-size: 0.85rem; margin: 0.5rem 0 1rem; text-align: center; display: none; }
-    .contact-sheet-controls { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.2rem; margin-bottom: 1rem; }
+    .grid-controls { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.2rem; margin-bottom: 1rem; }
     .time-input-container { display: flex; flex-direction: column; gap: 0.3rem; position: relative; }
     .time-input-wrapper {
         position: relative;
@@ -651,7 +683,7 @@
         position: absolute;
     }
     .grid-cell:hover .screenshot-overlay { opacity: 1; pointer-events: auto; }
-    .contact-sheet-label { color: var(--accent-tertiary); font-size: 0.9rem; font-weight: 500; margin: 1rem 0 0.5rem; text-align: center; width: 100%; }
+    .grid-label { color: var(--accent-tertiary); font-size: 0.9rem; font-weight: 500; margin: 1rem 0 0.5rem; text-align: center; width: 100%; }
 
     .time-input-container .time-formatted {
         transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
@@ -693,6 +725,10 @@
     }
 
     .grid-cell.highlight:not(.input-hover-highlight) .frame-adjust-buttons {
+        display: flex;
+    }
+    
+    .screenshot-container:hover .frame-adjust-buttons {
         display: flex;
     }
 
@@ -1143,10 +1179,10 @@
          margin-left: 5px;
          font-family: var(--data-font);
      }
-     .screenshot-lightbox-content:not(.contact-sheet-mode) #lightboxFrameNumber {
+     .screenshot-lightbox-content:not(.grid-mode) #lightboxFrameNumber {
          display: none;
      }
-     .screenshot-lightbox-content.contact-sheet-mode #lightboxDeleteBtn {
+     .screenshot-lightbox-content.grid-mode #lightboxDeleteBtn {
          display: none;
      }
     .lightbox-frame-adjust-controls {
@@ -1154,7 +1190,8 @@
         align-items: center;
         gap: 5px;
     }
-    .screenshot-lightbox-content.contact-sheet-mode .lightbox-frame-adjust-controls {
+    .screenshot-lightbox-content.grid-mode .lightbox-frame-adjust-controls,
+    .screenshot-lightbox-content:not(.grid-mode) .lightbox-frame-adjust-controls[style*="inline-flex"] {
         display: inline-flex;
     }
     .lightbox-adjust-btn {
@@ -1302,8 +1339,11 @@
         <h1 id="pageTitle" data-text="Pilko Studio">Pilko Studio</h1>
 
         <div id="dropZone">
-            <div id="uploadIcon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg></div>
-            <div id="dropZoneText">Drag & drop video file or</div>
+            <div id="uploadIcon">
+                <svg viewBox="0 0 24 24" fill="currentColor" id="uploadIconSvg"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="spinnerIcon" style="display: none;"><path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path fill="currentColor" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+            </div>
+            <div id="dropZoneText">Upload a video file</div>
             <div id="loadedFileInfo">
                 <div class="file-name-row">
                     <div id="loadedFileName">Filename goes here</div>
@@ -1316,7 +1356,11 @@
                     <div class="info-row"><div class="info-label">Bitrate</div><div class="info-value" id="bitrateValue">-</div></div>
                 </div>
             </div>
-            <button id="initialSelectFileButton" type="button">Select a File</button>
+            <div id="buttonRow">
+                <button id="initialSelectFileButton" type="button">Select a File</button>
+                <span id="orText">or</span>
+                <button id="tryExampleButton" type="button">Try Example Video</button>
+            </div>
             <input type="file" id="videoInput" accept="video/*">
         </div>
 
@@ -1324,7 +1368,7 @@
             <div class="setting-row toggle-row">
                 <label class="setting-label toggle-label">
                     Remove Black Bars
-                    <i class="ri-question-line info-icon-inline" title="Automatically detect and crop black bars from letterboxed videos"></i>
+                    <i class="ri-question-line info-icon-inline" title="Automatically detect and crop black bars from letterboxed videos" id="removeBarsInfoIcon"></i>
                 </label>
                 <div class="toggle-switch">
                     <input type="checkbox" id="removeBarsToggle" class="toggle-input">
@@ -1363,7 +1407,7 @@
                 <button class="mode-tab active" data-mode="manual">Manual</button>
                 <button class="mode-tab" data-mode="auto">Interval</button>
                 <button class="mode-tab" data-mode="autoSmart">Smart Auto</button>
-                <button class="mode-tab" data-mode="contactSheet">Contact Sheet</button>
+                <button class="mode-tab" data-mode="contactSheet">Grid</button>
             </div>
 
             <div class="mode-content">
@@ -1377,7 +1421,7 @@
                     <div class="slider-wrapper"><input type="range" id="intervalInput" min="1" max="30" value="10" step="1"><span id="intervalValue" class="value-display"></span></div></div>
                 </div>
                 <div id="autoSmartMode">
-                    <p class="mode-description">Identifies scenes and visual changes. Default value <strong>aims to capture one screenshot per scene</strong>.</p>
+                    <p class="mode-description">Identifies scenes and visual changes<br>- <strong>Aims to capture one frame per scene</strong>.<br>- It's not perfect, but provides a good foundation.<br>You can fine-tune a frame with <i class="ri-scissors-line"></i> buttons below it.</p>
                     <h3 class="setting-group-title">Algorithm</h3>
                     <div class="segmented-controls smart-algo-tabs">
                         <button class="smart-tab active" data-algo="histogram">Histogram Diff</button>
@@ -1386,19 +1430,19 @@
                     <div class="slider-row" id="histThresholdSettings">
                         <h3 class="slider-label">Hist Thresh</h3>
                         <div class="slider-wrapper">
-                            <input type="range" id="histThresholdInput" min="0.05" max="0.80" value="0.40" step="0.01">
+                            <input type="range" id="histThresholdInput" min="0.05" max="0.80" value="0.60" step="0.01">
                             <span id="histThresholdValue" class="value-display"></span>
                         </div>
                     </div>
-                    <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold means more sensitivity to changes. <strong>Recommended value: 40%</strong></p>
+                    <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold means more sensitivity to changes.<br><strong>Default value: 60%</strong></p>
                     <div class="slider-row" id="pixelThresholdSettings" style="display:none;">
                         <h3 class="slider-label">Pixel Thresh</h3>
                         <div class="slider-wrapper">
-                            <input type="range" id="pixelThresholdInput" min="5" max="80" value="35" step="1">
+                            <input type="range" id="pixelThresholdInput" min="5" max="80" value="50" step="1">
                             <span id="pixelThresholdValue" class="value-display"></span>
                         </div>
                     </div>
-                    <p class="disclaimer-note" id="pixelDiffDisclaimer" style="display: none;">Measures the percentage of pixel changes between frames. Higher threshold means more sensitivity to changes. <strong>Recommended value: 35%</strong></p>
+                    <p class="disclaimer-note" id="pixelDiffDisclaimer" style="display: none;">Measures the percentage of pixel changes between frames. Higher threshold means more sensitivity to changes.<br><strong>Default value: 50%</strong></p>
                 </div>
                 <div id="contactSheetMode">
                     <p class="mode-description">Choose a grid size for screenshots. After generating, you can fine-tune the captured frames.</p>
@@ -1420,11 +1464,27 @@
                             </label>
                         </div>
                     </div>
+                    
                     <div class="video-container">
                         <video id="contactSheetVideo" controls></video>
                     </div>
                     <p id="largeGridDisclaimer" class="disclaimer-note">Time inputs hidden for grids larger than 6x6.</p>
-                    <div class="contact-sheet-controls">
+                    <div class="grid-controls">
+                    </div>
+                    
+                    <h3 class="setting-group-title">Output Resolution</h3>
+                    <div class="slider-row">
+                        <h3 class="slider-label">Width</h3>
+                        <div class="slider-wrapper">
+                            <input type="range" id="gridOutputWidthSlider" min="1000" max="10000" value="3000" step="500">
+                            <input type="number" id="gridOutputWidth" min="100" max="10000" value="3000" class="value-input">
+                        </div>
+                    </div>
+                    <div class="slider-row">
+                        <h3 class="slider-label">Height</h3>
+                        <div class="slider-wrapper">
+                        </div>
+                        <span id="gridOutputWidthValue" class="value-display">-</span>
                     </div>
                 </div>
             </div>
@@ -1450,7 +1510,7 @@
             </div>
 
             <div class="button-group" id="contactSheetModeButtons" style="display:none;">
-                <button id="processContactSheetButton" class="action-button">Generate/Update Sheet</button>
+                <button id="processContactSheetButton" class="action-button">Generate/Update Grid</button>
                 <div class="action-button-row">
                     <button id="previewContactSheetButton" class="action-button secondary-button" disabled>Preview <i class="ri-image-line"></i></button>
                     <button id="downloadContactSheetButton" class="action-button secondary-button" disabled>Download <i class="ri-download-2-line"></i></button>
@@ -1507,7 +1567,7 @@
                 <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
               </ul>
             </li>
-            <li><strong style="color: var(--accent-tertiary)">Contact Sheet</strong><br><span>Generate a grid of screenshots to a single image.</span></li>
+            <li><strong style="color: var(--accent-tertiary)">Grid</strong><br><span>Generate a grid of screenshots to a single image.</span></li>
           </ul>
 
         <h3>Features</h3>
@@ -1643,6 +1703,7 @@
         const videoInput = $('videoInput');
         const selectFileButton = $('selectFileButton');
         const initialSelectFileButton = $('initialSelectFileButton');
+        const tryExampleButton = $('tryExampleButton');
         const resolutionValue = $('resolutionValue');
         const lengthValue = $('lengthValue');
         const aspectRatioValue = $('aspectRatioValue');
@@ -1684,9 +1745,9 @@
         const extractManualButton = $('extractManualButton');
         const addManualButton = $('addManualButton');
         const downloadManualButton = $('downloadManualButton');
-        // Contact Sheet Controls
+        // Grid Controls
         const contactSheetVideo = $('contactSheetVideo');
-        const contactSheetControlsElement = $$('.contact-sheet-controls')[0];
+        const contactSheetControlsElement = $$('.grid-controls')[0];
         const processContactSheetButton = $('processContactSheetButton');
         const downloadContactSheetButton = $('downloadContactSheetButton');
         const previewContactSheetButton = $('previewContactSheetButton');
@@ -1707,6 +1768,9 @@
         const customGridControls = $('customGridControls');
         const customGridCols = $('customGridCols');
         const customGridRows = $('customGridRows');
+        const gridOutputWidth = $('gridOutputWidth');
+        const gridOutputWidthSlider = $('gridOutputWidthSlider');
+        const gridOutputWidthValue = $('gridOutputWidthValue');
 
         verticalSeparatorElement = $$('.vertical-separator')[0];
 
@@ -1798,6 +1862,35 @@
             aspectRatioValue.textContent = getCommonAspectRatio(width, height);
             if (uploadedFile?.size > 0 && currentVideoDuration > 0) { const bitrateKbps = Math.round((uploadedFile.size * 8) / currentVideoDuration / 1000); bitrateValue.textContent = `${bitrateKbps} kbps`; } else { bitrateValue.textContent = "N/A"; }
         };
+        const calculateGridOutputHeight = () => {
+            if (!gridOutputWidth || !video?.videoWidth || !video?.videoHeight) {
+                // No video loaded, show dash
+                if (gridOutputWidthValue) {
+                    gridOutputWidthValue.textContent = '-';
+                }
+                return;
+            }
+            
+            const activeGridSizeTab = $$('.grid-size-tab.active')[0];
+            if (!activeGridSizeTab) return;
+            
+            const cols = parseInt(activeGridSizeTab.getAttribute('data-cols') || 5);
+            const rows = parseInt(activeGridSizeTab.getAttribute('data-rows') || 4);
+            
+            const outputWidth = parseInt(gridOutputWidth.value) || 3000;
+            const videoAspectRatio = video.videoWidth / video.videoHeight;
+            
+            // Calculate cell width and height
+            const cellWidth = outputWidth / cols;
+            const cellHeight = cellWidth / videoAspectRatio;
+            const outputHeight = Math.round(cellHeight * rows);
+            
+            // Update height value display
+            if (gridOutputWidthValue) {
+                gridOutputWidthValue.textContent = `${outputHeight}px`;
+            }
+        };
+
         const updateImageCount = () => { // Counting
             const screenshotCount = screenshotBlobs.length;
             const manualCount = manualScreenshotBlobs.length;
@@ -1808,11 +1901,11 @@
 
             if (imageCountValue) {
                 imageCountValue.textContent = totalCount;
-                imageCountValue.classList.remove('interval-mode', 'smart-mode', 'manual-mode', 'contact-sheet-mode');
+                imageCountValue.classList.remove('interval-mode', 'smart-mode', 'manual-mode', 'grid-mode');
                 if (currentMode === 'auto') imageCountValue.classList.add('interval-mode');
                 else if (currentMode === 'autoSmart') imageCountValue.classList.add('smart-mode');
                 else if (currentMode === 'manual') imageCountValue.classList.add('manual-mode');
-                else if (currentMode === 'contactSheet') imageCountValue.classList.add('contact-sheet-mode');
+                else if (currentMode === 'contactSheet') imageCountValue.classList.add('grid-mode');
             }
             const hasAutoOrSmartScreenshots = screenshotBlobs.length > 0;
             const hasManualScreenshots = manualScreenshotBlobs.length > 0;
@@ -1821,7 +1914,7 @@
             if(downloadAllButton) downloadAllButton.disabled = !hasAutoOrSmartScreenshots || processingActive;
             if(downloadAllSmartButton) downloadAllSmartButton.disabled = !hasAutoOrSmartScreenshots || processingActive;
             if(downloadManualButton) downloadManualButton.disabled = !hasManualScreenshots || processingActive;
-            // Contact Sheet buttons depend on whether a blob exists *and* it's not marked as needing update
+            // Grid buttons depend on whether a blob exists *and* it's not marked as needing update
             const needsUpdate = processContactSheetButton?.classList.contains('needs-update');
             if(downloadContactSheetButton) downloadContactSheetButton.disabled = !contactSheetBlob || processingActive || needsUpdate;
             if(previewContactSheetButton) previewContactSheetButton.disabled = !contactSheetBlob || processingActive || needsUpdate;
@@ -1849,18 +1942,19 @@
             selectFileButton.textContent = "Change File";
             selectFileButton.classList.remove('file-selected');
             if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
+            if(intervalInput) intervalInput.value = '10'; if(intervalValue) intervalValue.textContent = '10s';
+            if(histThresholdInput) histThresholdInput.value = '0.60'; if(histThresholdValue) histThresholdValue.textContent = '60%';
+            if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
           }
         };
         const resetProcessingUI = (mode = 'all') => {
             processingActive = false; cancelExtractionRequested = false; currentSamplingProcess = null;
-            if (verticalSeparatorElement) verticalSeparatorElement.classList.remove('loading', 'loading-smart', 'loading-contact-sheet');
+            if (verticalSeparatorElement) verticalSeparatorElement.classList.remove('loading', 'loading-smart', 'loading-grid');
 
             const resetBtn = (btn, text, startHandler, iconClass = null) => {
                  if (!btn) return;
-                 // Enable button only if video source exists
                  btn.disabled = !video?.src;
-                 // Clear existing content and add text/icon
-                 btn.innerHTML = ''; // Clear first
+                 btn.innerHTML = '';
                  
                  // All buttons now have icon after text
                  btn.appendChild(document.createTextNode(text));
@@ -1887,7 +1981,7 @@
 
             resetBtn(processButton, 'Extract Screenshots', startAutoExtraction, 'ri-scissors-line');
             resetBtn(processSmartButton, 'Extract Smart Shots', startSmartExtraction, 'ri-scissors-line');
-            resetBtn(processContactSheetButton, 'Generate/Update Sheet', generateContactSheet);
+            resetBtn(processContactSheetButton, 'Generate/Update Grid', generateContactSheet);
             resetBtn(addManualButton, 'Cut Frame', addManualButton.onclick, 'ri-scissors-line');
             resetBtn(extractManualButton, 'Save Frame', extractManualButton.onclick, 'ri-download-line');
 
@@ -1899,7 +1993,6 @@
                 if (progressBarFillElements[key]) progressBarFillElements[key].style.width = '0%';
             });
 
-            // Reset contact sheet specific button titles etc.
             if(downloadContactSheetButton) {
                 downloadContactSheetButton.title = '';
                 downloadContactSheetButton.classList.remove('needs-update');
@@ -1909,7 +2002,7 @@
                 previewContactSheetButton.classList.remove('needs-update');
             }
 
-            updateImageCount(); // Recalculate download/clear button states
+            updateImageCount();
         };
 
         const setProcessingUI = (mode) => {
@@ -1921,14 +2014,13 @@
             let processBtn, progressBar, loadingClass, startHandler;
             if (mode === 'auto') { processBtn = processButton; progressBar = progressBarElements.auto; loadingClass = 'loading'; startHandler = startAutoExtraction; }
             else if (mode === 'autoSmart') { processBtn = processSmartButton; progressBar = progressBarElements.autoSmart; loadingClass = 'loading-smart'; startHandler = startSmartExtraction; }
-            else if (mode === 'contactSheet') { processBtn = processContactSheetButton; progressBar = progressBarElements.contactSheet; loadingClass = 'loading-contact-sheet'; startHandler = generateContactSheet;}
+            else if (mode === 'contactSheet') { processBtn = processContactSheetButton; progressBar = progressBarElements.contactSheet; loadingClass = 'loading-grid'; startHandler = generateContactSheet;}
             else return;
 
             if (verticalSeparatorElement && loadingClass) verticalSeparatorElement.classList.add(loadingClass);
             if (progressBar) progressBar.style.display = 'block';
-            if (progressBarFillElements[mode]) progressBarFillElements[mode].style.width = '0%'; // Reset progress fill
+            if (progressBarFillElements[mode]) progressBarFillElements[mode].style.width = '0%';
 
-             // Clear icon before setting text
              const icon = processBtn.querySelector('i, svg');
              if(icon) icon.remove();
 
@@ -1943,7 +2035,7 @@
 
             processBtn.removeEventListener('click', handleCancelClick);
             processBtn.addEventListener('click', handleCancelClick);
-            processBtn.disabled = false; // Enable the cancel button
+            processBtn.disabled = false;
         };
 
         const handleCancelClick = () => {
@@ -1972,7 +2064,6 @@
                      console.warn("Could not find DOM element to remove for index:", indexToRemove, "Timestamp:", removedItem.timestamp);
                  }
 
-                 // Re-index remaining DOM elements *after* removal
                  const remainingContainers = $$('.screenshot-container', parentDiv);
                  remainingContainers.forEach((container, newIndex) => {
                      container.dataset.index = newIndex.toString();
@@ -2025,7 +2116,6 @@
                  let clickedItem = null;
                  let actualIndex = -1;
 
-                 // Verify index and get item directly
                  if (!isNaN(indexFromData) && indexFromData >= 0 && indexFromData < blobArrayRef.length) {
                       clickedItem = blobArrayRef[indexFromData];
                       actualIndex = indexFromData;
@@ -2065,14 +2155,37 @@
 
             container.appendChild(delBtn);
 
-             // Insert or append DOM node
+            // Add frame adjustment buttons for auto/autoSmart screenshots
+            if (blobArrayRef === screenshotBlobs && timestamp >= 0) {
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'frame-adjust-buttons';
+                
+                const createAdjustBtn = (text, offset, title) => {
+                    const btn = document.createElement('div');
+                    btn.className = 'frame-adjust-btn';
+                    if (text === '-') btn.innerHTML = `-<i class="ri-scissors-line icon-flipped"></i>`;
+                    else if (text === '+') btn.innerHTML = `<i class="ri-scissors-line"></i>+`;
+                    else btn.textContent = text;
+                    btn.title = title;
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const arrayType = currentMode === 'autoSmart' ? 'autoSmart' : 'auto';
+                        adjustFrameTime(currentIndex, offset, arrayType);
+                    });
+                    return btn;
+                };
+                
+                btnContainer.appendChild(createAdjustBtn('-', -1, 'Cut forward by 1s'));
+                btnContainer.appendChild(createAdjustBtn('+', 1, 'Cut backward by 1s'));
+                container.appendChild(btnContainer);
+            }
+
             if (insertBeforeNode) {
                 screenshotsDiv.insertBefore(container, insertBeforeNode);
             } else {
                 screenshotsDiv.appendChild(container);
             }
 
-            // Re-index *all* screenshot containers after insertion/append
             const allContainers = $$('.screenshot-container', screenshotsDiv);
             allContainers.forEach((cont, idx) => {
                 cont.dataset.index = idx.toString();
@@ -2091,25 +2204,27 @@
              const nextBtn = $('lightboxNextBtn');
              const deleteBtnContainer = $('lightboxDeleteBtn').parentNode;
              let deleteBtn = $('lightboxDeleteBtn');
-             const lightboxAdjustControls = $$('.lightbox-frame-adjust-controls')[0];
+             const lightboxAdjustControls = $$('.lightbox-frame-adjust-controls');
              const lightboxAdjustPrev = $('lightboxAdjustPrev');
              const lightboxAdjustNext = $('lightboxAdjustNext');
              const lightboxContent = $$('.info-box-content.screenshot-lightbox-content')[0];
              const frameNumberSpan = $('lightboxFrameNumber');
 
-             if (!lightboxImage || !lightboxTimestamp || !lightboxDownload || !screenshotLightbox || !prevBtn || !nextBtn || !item || !deleteBtnContainer || !lightboxAdjustControls || !lightboxAdjustPrev || !lightboxAdjustNext || !lightboxContent || !frameNumberSpan) return;
+             if (!lightboxImage || !lightboxTimestamp || !lightboxDownload || !screenshotLightbox || !prevBtn || !nextBtn || !item || !deleteBtnContainer || !lightboxAdjustControls || lightboxAdjustControls.length === 0 || !lightboxAdjustPrev || !lightboxAdjustNext || !lightboxContent || !frameNumberSpan) return;
 
              const arrayType = blobArrayRef === contactSheetPreviewData ? 'contactSheet' : (blobArrayRef === manualScreenshotBlobs ? 'manual' : 'auto');
              screenshotLightbox.dataset.currentIndex = currentIndex.toString();
              screenshotLightbox.dataset.arrayType = arrayType;
              screenshotLightbox.dataset.itemId = item.timestamp;
 
-             // Show/hide contact sheet specific controls
              const isContactSheet = arrayType === 'contactSheet';
-             lightboxAdjustControls.style.display = isContactSheet ? 'inline-flex' : 'none';
-             lightboxContent.classList.toggle('contact-sheet-mode', isContactSheet);
+             const isSmartAuto = arrayType === 'auto';
+             const shouldShowAdjustControls = isContactSheet || isSmartAuto;
+             lightboxAdjustControls.forEach(control => {
+                 control.style.display = shouldShowAdjustControls ? 'inline-flex' : 'none';
+             });
+             lightboxContent.classList.toggle('grid-mode', isContactSheet);
 
-             // Store the blob array reference in the lightbox dataset
              screenshotLightbox.dataset.blobArrayRef = arrayType;
 
              updateLightboxContent(currentIndex, blobArrayRef);
@@ -2118,13 +2233,11 @@
              prevBtn.onclick = () => navigateLightbox(-1);
              nextBtn.onclick = () => navigateLightbox(1);
 
-             // --- Delete Button Handling ---
              const newDeleteBtn = document.createElement('button');
              newDeleteBtn.id = 'lightboxDeleteBtn';
              newDeleteBtn.className = "clear-delete-button lightbox-delete-btn";
              newDeleteBtn.title = "Delete this screenshot (Hotkeys: 🡫, S)";
              newDeleteBtn.innerHTML = DELETE_ICON_SVG;
-             // Hide if contact sheet
              if (isContactSheet) {
                  newDeleteBtn.style.display = 'none';
              }
@@ -2157,11 +2270,8 @@
                  }
              };
 
-             // --- Lightbox Frame Adjustment Handling ---
-             if (isContactSheet) {
-                lightboxAdjustPrev.onclick = () => adjustFrameTimeFromLightbox(-1);
-                lightboxAdjustNext.onclick = () => adjustFrameTimeFromLightbox(1);
-             }
+             lightboxAdjustPrev.onclick = () => adjustFrameTimeFromLightbox(-1);
+             lightboxAdjustNext.onclick = () => adjustFrameTimeFromLightbox(1);
 
              updateNavButtonVisibility(currentIndex, blobArrayRef.length);
          };
@@ -2169,9 +2279,9 @@
         const adjustFrameTimeFromLightbox = (offset) => {
             if (!screenshotLightbox.classList.contains('active')) return;
             const currentIndex = parseInt(screenshotLightbox.dataset.currentIndex || '-1');
-            if (currentIndex >= 0 && screenshotLightbox.dataset.arrayType === 'contactSheet') {
-                adjustFrameTime(currentIndex, offset);
-                 // Lightbox image itself will be updated via handleFineTuneChange -> updatePreviewCell -> updateLightboxContent
+            const arrayType = screenshotLightbox.dataset.arrayType || 'auto';
+            if (currentIndex >= 0) {
+                adjustFrameTime(currentIndex, offset, arrayType);
             }
         };
 
@@ -2185,12 +2295,11 @@
 
              if (index >= 0 && index < blobArrayRef.length && lightboxImage && lightboxTimestamp && lightboxDownload && frameNumberSpan) {
                  const item = blobArrayRef[index];
-                 // Handle case where item might be null (e.g., deleted contact sheet cell)
                  if (!item || !item.blobUrl) {
-                     lightboxImage.src = ''; // Clear image
+                     lightboxImage.src = '';
                      lightboxTimestamp.textContent = '-';
                      lightboxDownload.href = '#';
-                     frameNumberSpan.textContent = ''; // Clear frame number
+                     frameNumberSpan.textContent = '';
                      return;
                  }
                  const newBlobUrl = item.blobUrl;
@@ -2238,7 +2347,6 @@
 
         const getFileExtensionFromType = (type) => (!type || type === 'image/png') ? 'png' : (type === 'image/jpeg' ? 'jpg' : type.split('/')[1] || 'png');
 
-        // Global controls for capture format
         const getCurrentFormatSettings = () => {
              const selectedFormat = captureFormatSelect.value || 'png';
              let quality = 1.0;
@@ -2276,6 +2384,11 @@
 
         const handleFileLoad = (file) => {
             if (!video || !manualVideo || !contactSheetVideo || !file) return;
+            
+            if (file.name === 'ElephantsDream.mp4' || file.name === 'sample-mp4-file.mp4') {
+                showSpinner();
+            }
+            
             uploadedFile = file;
             const fileURL = URL.createObjectURL(file);
 
@@ -2287,31 +2400,34 @@
             manualVideo.src = fileURL;
             contactSheetVideo.src = fileURL;
             updateDropZoneUI(true, file.name);
-            resetUIOnNewVideo(); // Reset counts, buttons, previews
+            resetUIOnNewVideo();
 
-            const onMetadataLoaded = () => {
-                updateFileInfoDisplay();
-                updateDropZoneThumbnail(); // Attempt thumbnail after metadata
-                resetProcessingUI('all'); // Enable relevant buttons now that we have duration etc.
-                // Initial setup for contact sheet inputs based on new duration
-                 if (currentMode === 'contactSheet') {
-                    const activeGridSizeTab = $$('.grid-size-tab.active')[0];
-                    const rows = parseInt(activeGridSizeTab?.getAttribute('data-rows') || 4);
-                    const cols = parseInt(activeGridSizeTab?.getAttribute('data-cols') || 5);
-                     if (updateContactSheetControlsVisibility(rows, cols)) {
-                        generateTimeInputs(rows, cols);
+                            const onMetadataLoaded = () => {
+                    hideSpinner();
+                    updateFileInfoDisplay();
+                    updateDropZoneThumbnail();
+                    resetProcessingUI('all');
+                    calculateGridOutputHeight();
+                    // Initial setup for grid inputs based on new duration
+                     if (currentMode === 'contactSheet') {
+                        const activeGridSizeTab = $$('.grid-size-tab.active')[0];
+                        const rows = parseInt(activeGridSizeTab?.getAttribute('data-rows') || 4);
+                        const cols = parseInt(activeGridSizeTab?.getAttribute('data-cols') || 5);
+                         if (updateContactSheetControlsVisibility(rows, cols)) {
+                            generateTimeInputs(rows, cols);
+                         }
                      }
-                 }
-            };
+                };
 
             if (video.readyState >= video.HAVE_METADATA) {
-                setTimeout(onMetadataLoaded, 100); // Give it a moment :D
+                setTimeout(onMetadataLoaded, 100);
             } else {
                 video.addEventListener('loadedmetadata', onMetadataLoaded, { once: true });
             }
 
             video.addEventListener('error', (e) => {
                  console.error("Video loading error:", e);
+                 hideSpinner();
                  alert(`Error loading video: ${file.name}. It might be corrupted or in an unsupported format.`);
                  updateDropZoneUI(false, null);
                  resetUIOnNewVideo();
@@ -2328,6 +2444,61 @@
                 }, { once: true });
             }
         };
+
+        const loadVideoFromURL = async (url, filename) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const blob = await response.blob();
+                const file = new File([blob], filename, { type: 'video/mp4' });
+                handleFileLoad(file);
+                hideSpinner();
+            } catch (error) {
+                console.error('Error loading video from URL:', error);
+                hideSpinner();
+                throw error;
+            }
+        };
+
+        const handleExampleVideoLoad = async () => {
+            const primaryURL = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
+            const backupURL = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4';
+            
+            showSpinner();
+            try {
+                await loadVideoFromURL(primaryURL, 'ElephantsDream.mp4');
+            } catch (error) {
+                console.log('Primary video failed, trying backup:', error);
+                try {
+                    await loadVideoFromURL(backupURL, 'sample-mp4-file.mp4');
+                } catch (backupError) {
+                    console.error('Backup video also failed:', backupError);
+                    alert('Failed to load example video. Please try selecting a file manually.');
+                    hideSpinner();
+                }
+            }
+        };
+
+        const showSpinner = () => {
+            const uploadIconSvg = $('uploadIconSvg');
+            const spinnerIcon = $('spinnerIcon');
+            if (uploadIconSvg && spinnerIcon) {
+                uploadIconSvg.style.display = 'none';
+                spinnerIcon.style.display = 'block';
+            }
+        };
+
+        const hideSpinner = () => {
+            const uploadIconSvg = $('uploadIconSvg');
+            const spinnerIcon = $('spinnerIcon');
+            if (uploadIconSvg && spinnerIcon) {
+                uploadIconSvg.style.display = 'block';
+                spinnerIcon.style.display = 'none';
+            }
+        };
+
         const resetUIOnNewVideo = () => {
              $$('.screenshot-container', screenshotsDiv).forEach(container => {
                  if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl);
@@ -2337,8 +2508,11 @@
             clearContactSheetPreview(true);
             Object.keys(gridCache).forEach(key => gridCache[key] = { data: null, blob: null, completed: false });
             $$('.grid-size-tab').forEach(tab => tab.classList.remove('completed'));
-            updateImageCount(); resetProcessingUI('all'); // Reset buttons (will be disabled until src loads)
+            updateImageCount(); resetProcessingUI('all');
             if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
+            if(intervalInput) intervalInput.value = '10'; if(intervalValue) intervalValue.textContent = '10s';
+            if(histThresholdInput) histThresholdInput.value = '0.60'; if(histThresholdValue) histThresholdValue.textContent = '60%';
+            if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
 
         };
 
@@ -2365,7 +2539,6 @@
                  if (currentSampleIndex >= totalSamples) { console.log("Sampling complete."); if (onCompleteCallback) onCompleteCallback(collectedData); return; }
 
                  const timestamp = sampleTimestamps[currentSampleIndex];
-                 // Use the currentSampleIndex as the original index for this sampling run
                  const originalIndex = currentSampleIndex;
 
                  if (onProgressCallback) onProgressCallback(Math.min(Math.round((currentSampleIndex / totalSamples) * 100), 100));
@@ -2377,7 +2550,7 @@
                          console.warn(`Failed to capture frame at ${timestamp.toFixed(2)}s (Index: ${originalIndex})`);
                      } else {
                          try {
-                             processFrameCallback(blob, timestamp, originalIndex); // Pass original index
+                             processFrameCallback(blob, timestamp, originalIndex);
                              collectedData[currentSampleIndex] = { blob, timestamp };
                          } catch (processError) {
                              console.error(`Error in processFrameCallback at ${timestamp.toFixed(2)}s (Index: ${originalIndex}):`, processError);
@@ -2394,20 +2567,19 @@
                  }, { videoElement, useCrop, skipProgress: true });
              };
 
-             // Add a small delay before starting the first frame, especially for contact sheet
              frameRequestHandle = setTimeout(() => {
                  if (!checkCancelled()) requestAnimationFrame(processNext);
-             }, 150); // Delay before starting the rAF loop
+             }, 150);
 
 
              return { cancel: () => {
                  localCancelRequested = true;
                  if (frameRequestHandle) {
                     cancelAnimationFrame(frameRequestHandle);
-                    clearTimeout(frameRequestHandle); // Clear timeout too if it hasn't fired
+                    clearTimeout(frameRequestHandle);
                     frameRequestHandle = null;
                  }
-                 resetProcessingUI(currentMode); // Reset UI immediately on cancel
+                 resetProcessingUI(currentMode);
              }};
          };
 
@@ -2677,11 +2849,47 @@
             }
         };
 
-        const adjustFrameTime = debounce((index, offsetSeconds) => {
-            const timeInput = $(`timeInput_${index}`); if (!timeInput) return;
-            const currentValue = parseFloat(timeInput.value); if (isNaN(currentValue)) return;
-            const newValue = Math.max(0, Math.min(currentValue + offsetSeconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
-            updateTimeValue(index, newValue, true);
+        const adjustFrameTime = debounce((index, offsetSeconds, arrayType = 'contactSheet') => {
+            if (arrayType === 'contactSheet') {
+                const timeInput = $(`timeInput_${index}`); if (!timeInput) return;
+                const currentValue = parseFloat(timeInput.value); if (isNaN(currentValue)) return;
+                const newValue = Math.max(0, Math.min(currentValue + offsetSeconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
+                updateTimeValue(index, newValue, true);
+            } else if (arrayType === 'auto' || arrayType === 'autoSmart') {
+                const blobArrayRef = arrayType === 'autoSmart' ? screenshotBlobs : screenshotBlobs;
+                if (index >= 0 && index < blobArrayRef.length) {
+                    const currentItem = blobArrayRef[index];
+                    if (currentItem && currentItem.timestamp !== undefined) {
+                        const newTime = Math.max(0, Math.min(currentItem.timestamp + offsetSeconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
+                        captureFrameAtTime(newTime, (blob) => {
+                            if (blob) {
+                                const oldBlobUrl = currentItem.blobUrl;
+                                if (oldBlobUrl) URL.revokeObjectURL(oldBlobUrl);
+                                
+                                const newBlobUrl = URL.createObjectURL(blob);
+                                currentItem.blob = blob;
+                                currentItem.timestamp = newTime;
+                                currentItem.blobUrl = newBlobUrl;
+                                
+                                const container = screenshotsDiv?.querySelector(`.screenshot-container[data-index="${index}"]`);
+                                if (container) {
+                                    const img = container.querySelector('img');
+                                    if (img) img.src = newBlobUrl;
+                                    
+                                    const overlay = container.querySelector('.screenshot-overlay');
+                                    if (overlay) overlay.textContent = formatTime(newTime);
+                                    
+                                    container.dataset.timestamp = newTime.toString();
+                                }
+                                
+                                if (screenshotLightbox.classList.contains('active') && parseInt(screenshotLightbox.dataset.currentIndex) === index) {
+                                    updateLightboxContent(index, blobArrayRef);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
         }, 150);
 
         const updateTimeValue = (index, seconds, triggerFrameUpdate = false) => {
@@ -2712,30 +2920,27 @@
                          gridCache[cacheKey].blob = null; // Also clear blob from cache
                      }
 
-                     // Update button states/styles
                      if (processContactSheetButton) {
                          processContactSheetButton.textContent = 'Update Sheet Image';
                          processContactSheetButton.classList.add('needs-update');
-                         // Use correct tertiary gradient for update indicator
                          processContactSheetButton.style.background = 'var(--gradient-tertiary)';
                      }
                      if (previewContactSheetButton) {
-                         previewContactSheetButton.disabled = true; // Disable until updated
-                         previewContactSheetButton.classList.add('needs-update'); // Add class for potential styling
+                         previewContactSheetButton.disabled = true;
+                         previewContactSheetButton.classList.add('needs-update');
                          previewContactSheetButton.title = "Sheet has been modified. Click 'Update Sheet Image'.";
                      }
                      if (downloadContactSheetButton) {
-                         downloadContactSheetButton.disabled = true; // Disable until updated
-                         downloadContactSheetButton.classList.add('needs-update'); // Add class for potential styling
+                         downloadContactSheetButton.disabled = true;
+                         downloadContactSheetButton.classList.add('needs-update');
                          downloadContactSheetButton.title = "Sheet has been modified. Click 'Update Sheet Image'.";
                      }
 
-                     // If lightbox is open for this specific index, update it too
                      if (screenshotLightbox.classList.contains('active') && parseInt(screenshotLightbox.dataset.currentIndex) === index) {
                         updateLightboxContent(index, contactSheetPreviewData);
                      }
 
-                     updateImageCount(); // Ensure overall counts/states are refreshed
+                     updateImageCount();
 
                  } else { console.warn(`Fine-tuning failed for cell ${index} at ${newTime.toFixed(2)}s`); }
              });
@@ -2745,7 +2950,6 @@
         const clearContactSheetPreview = (clearInputs = true) => {
             contactSheetPreviewData.forEach(data => { if (data?.blobUrl) URL.revokeObjectURL(data.blobUrl); });
             const gridCells = $$('.grid-cell', contactSheetPreviewElement);
-            // Ensure preview data array matches current grid size before resetting
             contactSheetPreviewData = new Array(gridCells.length).fill(null);
             gridCells.forEach(cell => {
                  cell.classList.remove('filled'); cell.style.cursor = 'default';
@@ -2769,14 +2973,14 @@
             }
              if (processContactSheetButton) {
                  processContactSheetButton.classList.remove('needs-update');
-                 processContactSheetButton.style.background = ''; // Reset style
-                 processContactSheetButton.textContent = 'Generate/Update Sheet'; // Reset text
+                 processContactSheetButton.style.background = '';
+                 processContactSheetButton.textContent = 'Generate/Update Sheet';
              }
         };
 
         const updatePreviewCell = (index, blob, timestamp) => {
             const cell = contactSheetPreviewElement?.querySelector(`.grid-cell[data-index="${index}"]`);
-            if (!cell || !blob || index < 0 || index >= contactSheetPreviewData.length) return; // Add index bounds check
+            if (!cell || !blob || index < 0 || index >= contactSheetPreviewData.length) return;
 
             const existingData = contactSheetPreviewData[index];
             if (existingData?.blobUrl) URL.revokeObjectURL(existingData.blobUrl);
@@ -2790,7 +2994,6 @@
             overlay.textContent = formatTime(timestamp);
 
             contactSheetPreviewData[index] = { blob, timestamp, blobUrl };
-             // Don't call updateImageCount here
          };
 
          const generateTimeInputs = (rows = 4, cols = 5) => {
@@ -2799,27 +3002,25 @@
               contactSheetControlsElement.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
               const numCells = rows * cols;
 
-              // Show/hide based on grid size
               const isLargeGrid = rows > 6 || cols > 6;
               contactSheetControlsElement.style.display = isLargeGrid ? 'none' : 'grid';
               largeGridDisclaimer.style.display = isLargeGrid ? 'block' : 'none';
 
-              if (isLargeGrid) return; // Don't generate inputs if hidden
+              if (isLargeGrid) return;
 
               for (let i = 0; i < numCells; i++) {
                   const container = document.createElement('div'); container.className = 'time-input-container'; container.dataset.index = i;
                   const wrapper = document.createElement('div'); wrapper.className = 'time-input-wrapper';
 
-                  // Use data from array IF it exists for this index, otherwise calculate default if duration known
                   let initialTimestamp = contactSheetPreviewData[i]?.timestamp;
-                  if (initialTimestamp === undefined || initialTimestamp === null || initialTimestamp <= 0) { // Also check if 0
+                  if (initialTimestamp === undefined || initialTimestamp === null || initialTimestamp <= 0) {
                       if (currentVideoDuration > 0) {
                          const startPercent = 0.1; const endPercent = 0.9;
                          const step = numCells > 1 ? (endPercent - startPercent) / (numCells - 1) : 0;
                          const percent = startPercent + (i * step);
                          initialTimestamp = Math.max(0.01, Math.min(percent * currentVideoDuration, currentVideoDuration - 0.01));
                       } else {
-                         initialTimestamp = 0; // Default if duration unknown
+                         initialTimestamp = 0;
                       }
                   }
 
@@ -2860,7 +3061,7 @@
                   container.addEventListener('mouseenter', () => {
                       container.classList.add('highlight');
                       const cell = contactSheetPreviewElement?.querySelector(`.grid-cell[data-index="${i}"]`);
-                      if (cell) cell.classList.add('input-hover-highlight'); // Use specific class for input hover
+                      if (cell) cell.classList.add('input-hover-highlight');
                   });
                   container.addEventListener('mouseleave', () => {
                        container.classList.remove('highlight');
@@ -2871,17 +3072,15 @@
 
                   wrapper.appendChild(timeInput); wrapper.appendChild(timeFormatted); container.appendChild(wrapper); contactSheetControlsElement.appendChild(container);
               }
-             // contactSheetControlsElement.style.display = 'grid'; // Display is now handled above
+
           };
 
-        // Main function to generate or update the sheet
         const generateContactSheet = async () => {
              if (!video?.src || processingActive || video.readyState < video.HAVE_METADATA) {
                  alert("Please load a video file first or wait for it to be ready.");
                  return;
              }
              setProcessingUI('contactSheet');
-             // contactSheetBlob = null; // Clear old final blob *before* starting processing
 
              const activeGridSizeTab = $$('.grid-size-tab.active')[0];
              const rows = parseInt(activeGridSizeTab?.getAttribute('data-rows') || 4);
@@ -2920,7 +3119,7 @@
              // --- End Timestamp Reading ---
 
              if (sampleTimestamps.length === 0 || sampleTimestamps.length !== numSamples) {
-                 alert("Error: Could not calculate timestamps for contact sheet.");
+                 alert("Error: Could not calculate timestamps for grid.");
                  resetProcessingUI('contactSheet');
                  return;
              }
@@ -2965,14 +3164,14 @@
                      },
                      onProgressCallback: (progress) => { if (progressBarFillContactSheet) progressBarFillContactSheet.style.width = `${progress}%`; },
                      onCompleteCallback: async (collectedData) => { // collectedData is just confirmation
-                         if (cancelExtractionRequested) { console.log("Contact Sheet generation cancelled."); resetProcessingUI('contactSheet'); return; }
+                         if (cancelExtractionRequested) { console.log("Grid generation cancelled."); resetProcessingUI('contactSheet'); return; }
                          if (progressBarFillContactSheet) progressBarFillContactSheet.style.width = `100%`;
 
                          const validPreviewData = contactSheetPreviewData.filter(data => data?.blob);
 
                          if (validPreviewData.length === 0) {
-                            console.error("Failed to collect any valid frames for final contact sheet render.");
-                            alert("Failed to capture frames for the contact sheet.");
+                                                console.error("Failed to collect any valid frames for final grid render.");
+                    alert("Failed to capture frames for the grid.");
                             resetProcessingUI('contactSheet');
                             return;
                          }
@@ -2980,7 +3179,7 @@
                          // --- Start Final Image Compositing ---
                          const renderCols = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-cols') || 5);
                          const renderRows = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-rows') || 4);
-                         const targetWidth = 3000;
+                         const targetWidth = parseInt(gridOutputWidth?.value || 2000);
                          const cellWidth = Math.floor(targetWidth / renderCols);
 
                          const imageLoadPromises = validPreviewData.map(({ blob, timestamp, blobUrl }, index) => new Promise((resolve) => {
@@ -2988,14 +3187,14 @@
                              // Find the original index in the full previewData array based on the blobUrl
                              const originalIndex = contactSheetPreviewData.findIndex(d => d?.blobUrl === blobUrl);
                              img.onload = () => resolve({img, tempUrl: blobUrl, aspectRatio: img.width / img.height, originalIndex });
-                             img.onerror = (err) => { console.warn(`Failed to load image for contact sheet cell (ts: ${timestamp})`); resolve(null); };
+                             img.onerror = (err) => { console.warn(`Failed to load image for grid cell (ts: ${timestamp})`); resolve(null); };
                              img.src = blobUrl;
                          }));
 
                          const loadedImageResults = (await Promise.all(imageLoadPromises)).filter(r => r !== null);
 
                          if (loadedImageResults.length === 0) {
-                             console.error("No images could be loaded for the contact sheet.");
+                             console.error("No images could be loaded for the grid.");
                              resetProcessingUI('contactSheet');
                              return;
                          }
@@ -3017,7 +3216,7 @@
                              currentOffset += Math.ceil(height);
                          }
 
-                         const ctx = contactSheetCanvas.getContext('2d'); if (!ctx) throw new Error("Could not get contact sheet canvas context");
+                         const ctx = contactSheetCanvas.getContext('2d'); if (!ctx) throw new Error("Could not get grid canvas context");
                          contactSheetCanvas.width = targetWidth;
                          contactSheetCanvas.height = totalHeight;
                          ctx.fillStyle = 'black'; ctx.fillRect(0, 0, targetWidth, totalHeight);
@@ -3055,26 +3254,26 @@
                                     if (downloadContactSheetButton) { downloadContactSheetButton.disabled = false; downloadContactSheetButton.classList.remove('needs-update'); downloadContactSheetButton.title = ''; }
                                     if (previewContactSheetButton) { previewContactSheetButton.disabled = false; previewContactSheetButton.classList.remove('needs-update'); previewContactSheetButton.title = '';}
                                 } else {
-                                    console.error("Failed to generate final contact sheet blob.");
+                                    console.error("Failed to generate final grid blob.");
                                     contactSheetBlob = null;
                                 }
                                 resetProcessingUI('contactSheet');
                             }, 'image/jpeg', 0.9);
                         } else {
-                            console.error("No images drawn to contact sheet.");
+                            console.error("No images drawn to grid.");
                             contactSheetBlob = null;
                             resetProcessingUI('contactSheet');
                         }
                      },
                      onErrorCallback: (error) => {
-                        console.error("Error during contact sheet frame sampling:", error);
-                        alert(`Error generating contact sheet: ${error.message}`);
+                                        console.error("Error during grid frame sampling:", error);
+                alert(`Error generating grid: ${error.message}`);
                         resetProcessingUI('contactSheet');
                      }
                  });
              } catch (error) {
-                 console.error("Failed to start contact sheet generation:", error);
-                 alert(`Error starting contact sheet generation: ${error.message}`);
+                                 console.error("Failed to start grid generation:", error);
+                alert(`Error starting grid generation: ${error.message}`);
                  resetProcessingUI('contactSheet');
              }
          };
@@ -3087,10 +3286,29 @@
              dropZone.addEventListener('dragover', (e) => { e.preventDefault(); if (!dropZone.classList.contains('file-loaded')) dropZone.classList.add('hover'); });
              dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); });
              dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); const file = e.dataTransfer.files[0]; if (file?.type.startsWith('video/')) handleFileLoad(file); else alert("Please drop a valid video file."); });
-             dropZone.addEventListener('click', (e) => { if (dropZone.classList.contains('file-loaded')) { if (selectFileButton && !selectFileButton.contains(e.target) && videoInput) videoInput.click(); } else { if (initialSelectFileButton && !initialSelectFileButton.contains(e.target) && videoInput) videoInput.click(); } });
+             dropZone.addEventListener('click', (e) => { if (dropZone.classList.contains('file-loaded')) { if (selectFileButton && !selectFileButton.contains(e.target) && videoInput) videoInput.click(); } else { if (initialSelectFileButton && !initialSelectFileButton.contains(e.target) && !tryExampleButton.contains(e.target) && videoInput) videoInput.click(); } });
         }
         if (selectFileButton) selectFileButton.addEventListener('click', (e) => { e.stopPropagation(); if(videoInput) videoInput.click(); });
         if (initialSelectFileButton) initialSelectFileButton.addEventListener('click', (e) => { e.stopPropagation(); if(videoInput) videoInput.click(); });
+        if (tryExampleButton) tryExampleButton.addEventListener('click', (e) => { e.stopPropagation(); handleExampleVideoLoad(); });
+
+        // Add hover effects for buttons to trigger dropzone hover
+        if (initialSelectFileButton) {
+            initialSelectFileButton.addEventListener('mouseenter', () => {
+                if (!dropZone.classList.contains('file-loaded')) dropZone.classList.add('hover');
+            });
+            initialSelectFileButton.addEventListener('mouseleave', () => {
+                dropZone.classList.remove('hover');
+            });
+        }
+        if (tryExampleButton) {
+            tryExampleButton.addEventListener('mouseenter', () => {
+                if (!dropZone.classList.contains('file-loaded')) dropZone.classList.add('hover');
+            });
+            tryExampleButton.addEventListener('mouseleave', () => {
+                dropZone.classList.remove('hover');
+            });
+        }
 
         if (modeTabs.length > 0 && modeContentDiv) {
             modeTabs.forEach(tab => {
@@ -3101,7 +3319,7 @@
                    if (!newMode || !modeContentDiv) return; currentMode = newMode;
                    modeTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active');
                    $$('.mode-content > div', modeContentDiv).forEach(contentDiv => { contentDiv.classList.toggle('active', contentDiv.id === `${newMode}Mode`); });
-                   outputColumn.classList.toggle('show-contact-sheet', newMode === 'contactSheet');
+                   outputColumn.classList.toggle('show-grid', newMode === 'contactSheet');
 
                    Object.values(buttonGroups).forEach(group => { if (group) group.style.display = 'none'; });
                    if (buttonGroups[newMode]) buttonGroups[newMode].style.display = 'flex';
@@ -3167,7 +3385,7 @@
                          if (previewContactSheetButton) previewContactSheetButton.disabled = !contactSheetBlob;
 
                    } else {
-                       // Clear general screenshot area if switching away from contact sheet
+                       // Clear general screenshot area if switching away from grid
                         $$('.screenshot-container', screenshotsDiv).forEach(container => { if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); });
                         if(screenshotsDiv) screenshotsDiv.innerHTML = '';
                         screenshotBlobs = []; // Clear auto/smart blobs
@@ -3267,6 +3485,9 @@
                         processContactSheetButton.classList.remove('needs-update');
                         processContactSheetButton.style.background = '';
                      }
+                     
+                     // Recalculate output height when grid size changes
+                     calculateGridOutputHeight();
                 });
             });
         }
@@ -3288,12 +3509,42 @@
              customGridRows.addEventListener('input', updateCustomGrid);
          }
 
+        // Add event listeners for output width controls
+        if (gridOutputWidth && gridOutputWidthSlider) {
+            gridOutputWidth.addEventListener('input', () => {
+                const value = parseInt(gridOutputWidth.value) || 3000;
+                gridOutputWidthSlider.value = value;
+                updateSliderBackground(gridOutputWidthSlider);
+                calculateGridOutputHeight();
+            });
+            
+            gridOutputWidthSlider.addEventListener('input', () => {
+                const value = parseInt(gridOutputWidthSlider.value) || 3000;
+                gridOutputWidth.value = value;
+                updateSliderBackground(gridOutputWidthSlider);
+                calculateGridOutputHeight();
+            });
+        }
+
         // Setup global format controls
         initGlobalFormatControls();
         // Setup mode-specific sliders
         setupSlider(intervalInput, intervalValue, 's');
         setupSlider(histThresholdInput, histThresholdValue, '');
         setupSlider(pixelThresholdInput, pixelThresholdValue, '');
+        
+        // Initialize grid output width slider background
+        if (gridOutputWidthSlider) {
+            updateSliderBackground(gridOutputWidthSlider);
+        }
+        
+        // Reset grid output width to default values on page load
+        if (gridOutputWidth && gridOutputWidthSlider) {
+            gridOutputWidth.value = 3000;
+            gridOutputWidthSlider.value = 3000;
+            updateSliderBackground(gridOutputWidthSlider);
+            calculateGridOutputHeight();
+        }
 
         if (removeBarsToggle) removeBarsToggle.addEventListener('change', (e) => {
             removeBarsEnabled = e.target.checked;
@@ -3303,6 +3554,18 @@
                 cropData = null; updateDropZoneThumbnail(); updateFileInfoDisplay();
             }
         });
+
+        // Mobile-friendly tooltip for Remove Black Bars info icon
+        const removeBarsInfoIcon = $('removeBarsInfoIcon');
+        if (removeBarsInfoIcon) {
+            removeBarsInfoIcon.addEventListener('click', (e) => {
+                // Check if it's a touch device (mobile)
+                if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+                    e.preventDefault();
+                    alert('Automatically detect and crop black bars from letterboxed videos');
+                }
+            });
+        }
 
         if (smartAlgoTabs.length > 0) {
             const updateThresholdSliders = (algo) => {
@@ -3520,21 +3783,21 @@
         if(previewContactSheetButton) previewContactSheetButton.addEventListener('click', () => {
              if (!processingActive && contactSheetBlob) {
                  const url = URL.createObjectURL(contactSheetBlob); window.open(url, '_blank');
-             } else { alert("Please generate or update the contact sheet first."); }
+             } else { alert("Please generate or update the grid first."); }
          });
         if(downloadContactSheetButton) downloadContactSheetButton.addEventListener('click', () => {
              if (!processingActive && contactSheetBlob) {
                  const url = URL.createObjectURL(contactSheetBlob);
                  const tempLink = document.createElement('a'); tempLink.href = url;
-                 tempLink.download = `contact_sheet_${uploadedFile?.name.split('.')[0] || 'video'}.jpg`;
+                 tempLink.download = `grid_${uploadedFile?.name.split('.')[0] || 'video'}.jpg`;
                  document.body.appendChild(tempLink); tempLink.click(); document.body.removeChild(tempLink); URL.revokeObjectURL(url);
-             } else { alert("Please generate or update the contact sheet first."); }
+             } else { alert("Please generate or update the grid first."); }
          });
 
         if (clearScreenshotsButton) clearScreenshotsButton.addEventListener('click', () => {
              if (processingActive) return;
              const hasAnyOutput = (screenshotBlobs.length + manualScreenshotBlobs.length > 0) || contactSheetPreviewData.some(d => d !== null) || contactSheetBlob;
-             if (hasAnyOutput && confirm("Are you sure you want to clear all generated output (screenshots and contact sheet preview)?")) {
+             if (hasAnyOutput && confirm("Are you sure you want to clear all generated output (screenshots and grid preview)?")) {
                  screenshotBlobs.concat(manualScreenshotBlobs).forEach(item => { if(item?.blobUrl) URL.revokeObjectURL(item.blobUrl); });
                  if(screenshotsDiv) screenshotsDiv.innerHTML = '';
                  screenshotBlobs = []; manualScreenshotBlobs = [];
@@ -3547,7 +3810,7 @@
 
                  if(downloadContactSheetButton) downloadContactSheetButton.disabled = true;
                  if(previewContactSheetButton) previewContactSheetButton.disabled = true;
-                 if(processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Sheet';
+                 if(processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Grid';
                  updateImageCount();
              }
         });

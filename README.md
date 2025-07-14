@@ -21,6 +21,7 @@ Offline download: `index.html`
 
 ## ![Features Shield][features-shield]
 
+- Example video for first testing.
 - Video metadata display (resolution, duration, aspect ratio, bitrate).
 - Capture format (PNG, JPEG, WEBP) and quality (1-100%).
 - Automatically remove black bars.
@@ -28,7 +29,7 @@ Offline download: `index.html`
   - `Manual` - Navigate video player to capture and save specific frames.
   - `Interval` - Capture frames automatically at set time intervals (seconds).
   - `Smart Auto` - Use algorithms (Histogram or Pixel Difference) to detect and capture visually distinct frames with adjustable sensitivity.
-  - `Contact Sheet` - Generate a grid of frames as a single image.
+  - `Grid` - Create a grid of frames to a single image.
 - Preview frames in a gallery/lightbox, remove unwanted frames, download individually or as ZIP.
 
 ![Pilko_Panel](https://github.com/user-attachments/assets/5c9c2363-09c0-4ba6-b508-e760baaf3619)
