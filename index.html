@@ -1127,8 +1127,10 @@
     #processButton { background: var(--gradient-interval); }
 
     .screenshot-lightbox-content {
+        width: auto;
         max-width: 90%;
         max-height: 90vh;
+        min-width: 600px;
         display: flex;
         flex-direction: column;
         padding: 0;
@@ -1449,6 +1451,7 @@
         .output-column { width: 100%; overflow-y: visible; }
         #screenshots { padding: 0; }
         .mode-content { overflow: visible; }
+        .screenshot-lightbox-content { width: auto; min-width: auto; max-width: 95%; }
         .lightbox-nav-btn .nav-text { display: none; }
         #lightboxDownload span { display: none; }
         #lightboxFrameNumber { display: none; }
