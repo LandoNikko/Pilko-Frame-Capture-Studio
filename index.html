@@ -16,11 +16,11 @@
       --bg-tertiary: #242c44;
       --text-primary: #e0e6f7;
       --text-secondary: #aeb9dd;
-      --text-tertiary: #8a94b6;
+      --text-tertiary: #b2b8cf;
       --border-color: #3a4466;
       --border-dashed: #525c8f;
 
-      --accent-primary: #00c6ff;
+      --accent-primary: #00c6ff;    
       --accent-primary-dark: #00a8ff;
       --accent-secondary: #5eead4;
       --accent-secondary-dark: #2dd4bf;
@@ -277,33 +277,36 @@
     .toggle-input:checked + .toggle-label-switch:before { transform: translateX(24px); background-color: var(--white); }
 
     #format-options-row { display: flex; }
-    .format-controls { display: flex; }
-    #captureFormatSelect {
-        background-color: var(--input-bg);
+    .format-controls { display: flex; align-items: center; }
+    
+    .corner-position-btn {
+        background-color: var(--bg-tertiary);
+        border-color: var(--border-color);
         color: var(--text-primary);
-        border: 1px solid var(--border-color);
+        border:1px solid var(--border-color);
         border-radius: var(--border-radius-sm);
-        padding: 0.35rem 0.6rem;
-        font-size: 0.85rem;
-        font-family: inherit;
+        padding: 0.15rem;
         cursor: pointer;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23aeb9dd'%3E%3Cpath d='M12 16L6 10H18L12 16Z'%3E%3C/path%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.5rem center;
-        background-size: 1em;
-        min-width: 90px;
-        transition: border-color 0.2s ease;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
     }
-    #captureFormatSelect:focus {
-        outline: none;
-        border-color: var(--text-primary);
+    
+    .corner-position-btn:hover {
+        background: var(--border-color);
+        color: var(--text-primary);
     }
+    
+    .corner-position-btn svg {
+        transition: transform 0.2s ease;
+    }
+
 
     #jpegQualityGlobalRow, #webpQualityGlobalRow {
         display: none;
         flex-basis: 100%;
-        margin-top: 0.75rem;
         background-color: transparent;
         border: none;
         margin-bottom: 0;
@@ -317,7 +320,7 @@
         flex-basis: 100%;
     }
 
-    .segmented-controls { display: flex; border-radius: var(--border-radius-md); overflow: hidden; background-color: var(--bg-tertiary); margin-bottom: 1rem; border: 1px solid var(--border-color); flex-shrink: 0; width: 100%; /* Ensure segmented controls take full width */ }
+    .segmented-controls { display: flex; border-radius: var(--border-radius-md); overflow: hidden; background-color: var(--bg-tertiary); margin-bottom: 1rem; border: 1px solid var(--border-color); flex-shrink: 0; width: 100%; }
     .segmented-controls button { flex: 1; background-color: transparent; text-align: center; border: none; padding: 0.65rem 0.5rem; color: var(--text-tertiary); cursor: pointer; transition: background 0.2s, color 0.3s, box-shadow 0.2s; font-family: inherit; font-size: 0.85rem; font-weight: 500; border-left: 1px solid var(--border-color); position: relative; white-space: nowrap; }
     .segmented-controls button:first-child { border-left: none; }
     .segmented-controls button:hover:not(.active) { background-color: var(--border-color); color: var(--text-primary); }
@@ -344,15 +347,16 @@
     .grid-size-tabs button.active.completed::after {
         color: var(--bg-primary);
     }
-    .smart-algo-tabs, .grid-size-tabs { margin-bottom: 0.8rem; }
-    .smart-algo-tabs button, .grid-size-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
+    .smart-algo-tabs, .grid-size-tabs, .timecode-size-tabs { margin-bottom: 0.8rem; }
+    .smart-algo-tabs button, .grid-size-tabs button, .timecode-size-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
+    .timecode-size-tabs button.active { background: var(--text-secondary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
 
     .settings-panel { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
     .mode-content > div { display: none; }
     .mode-content > div.active { display: block; }
 
     .slider-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0; padding-bottom: 0.75rem; flex-wrap: wrap; }
-    .slider-label, h3.slider-label { width: 100px; text-align: left; font-size: 0.85rem; color: var(--text-tertiary); flex-shrink: 0; margin: 0; font-weight: normal; }
+    .slider-label, h3.slider-label { padding-left:1em; text-align: left; font-size: 0.85rem; color: var(--text-tertiary); flex-shrink: 0; margin: 0; font-weight: normal; }
     .slider-wrapper { flex: 1; display: flex; align-items: center; gap: 0.8rem; min-width: 150px; }
     .value-display {
         font-weight: 500;
@@ -363,15 +367,14 @@
         font-size: 0.9rem;
     }
     .value-input {
-        width: 110px;
-        padding: 0.35rem 0.6rem;
+        width: 150px;
+        padding: 0.35rem 1rem;
         background-color: var(--bg-secondary);
         color: var(--text-primary);
         border: 1px solid var(--border-color);
         border-radius: var(--border-radius-sm);
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         font-family: inherit;
-        text-align: center;
     }
 
     input[type="range"] { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--text-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; }
@@ -1127,10 +1130,9 @@
     #processButton { background: var(--gradient-interval); }
 
     .screenshot-lightbox-content {
-        width: auto;
         max-width: 90%;
         max-height: 90vh;
-        min-width: 600px;
+        width: fit-content;
         display: flex;
         flex-direction: column;
         padding: 0;
@@ -1148,8 +1150,6 @@
         width: 36px;
         height: 36px;
         display: flex;
-        align-items: center;
-        justify-content: center;
         z-index: 10;
     }
 
@@ -1158,6 +1158,11 @@
         display: flex;
         overflow: hidden;
         position: relative;
+        width: fit-content;
+        max-width: 100%;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: center;
     }
 
     .screenshot-lightbox-container img {
@@ -1542,6 +1547,31 @@
         <div class="settings-panel">
             <div class="setting-row">
                 <div class="setting-control-group">
+                    <label class="setting-label format-label">Capture Format</label>
+                    <div class="format-controls">
+                        <select id="captureFormatSelect" class="value-input" style="width:90px;">
+                            <option value="png" selected>PNG</option>
+                            <option value="jpeg">JPEG</option>
+                            <option value="webp">WEBP</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Quality sliders (hidden by default, shown based on format selection) -->
+                <div class="slider-row" id="jpegQualityGlobalRow">
+                    <h3 class="slider-label">JPEG Quality</h3>
+                    <div class="slider-wrapper">
+                        <input type="range" id="jpegQualityGlobal" min="1" max="100" value="90" step="1">
+                        <span id="jpegQualityGlobalValue" class="value-display">90%</span>
+                    </div>
+                </div>
+                <div class="slider-row" id="webpQualityGlobalRow">
+                    <h3 class="slider-label">WEBP Quality</h3>
+                    <div class="slider-wrapper">
+                        <input type="range" id="webpQualityGlobal" min="1" max="100" value="90" step="1">
+                        <span id="webpQualityGlobalValue" class="value-display">90%</span>
+                    </div>
+                </div>
+                <div class="setting-control-group">
                     <label class="setting-label toggle-label">
                         Remove Black Bars
                         <i class="ri-question-line info-icon-inline" title="Automatically detect and crop black bars from letterboxed videos" id="removeBarsInfoIcon"></i>
@@ -1551,41 +1581,74 @@
                         <label for="removeBarsToggle" class="toggle-label-switch"></label>
                     </div>
                 </div>
+                <!-- Pro Mode toggle -->
                 <div class="setting-control-group">
                     <label class="setting-label toggle-label">
-                        Add Timestamp
-                        <i class="ri-question-line info-icon-inline" title="Add timestamp overlay to bottom right corner of generated frames" id="timestampInfoIcon"></i>
+                        Pro Mode
                     </label>
                     <div class="toggle-switch">
-                        <input type="checkbox" id="addTimestampToggle" class="toggle-input">
-                        <label for="addTimestampToggle" class="toggle-label-switch"></label>
+                        <input type="checkbox" id="proModeToggle" class="toggle-input">
+                        <label for="proModeToggle" class="toggle-label-switch"></label>
                     </div>
                 </div>
-                <div class="setting-control-group">
-                    <label class="setting-label format-label">Capture Format</label>
+                <!-- Framerate input, hidden unless Pro Mode -->
+                <div class="setting-control-group" id="framerateRow" style="display:none;">
+                    <label class="slider-label">
+                        Set Framerate
+                        <i class="ri-question-line info-icon-inline" title="Set your input video's framerate. This ensures accurate timecode data for the generated frames and manual fine-tuning." id="framerateInfoIcon"></i>
+                    </label>
+                    <div class="time-input-controls" style="margin-left:auto; max-width: 180px;">
+                        <button class="manual-time-btn" id="frameratePrevBtn" title="Decrease framerate" tabindex="-1" style="min-width:32px;">-</button>
+                        <input type="text" id="framerateInput" class="value-input time-input-field" value="30" style="width:87px; text-align:center;" inputmode="decimal">
+                        <button class="manual-time-btn" id="framerateNextBtn" title="Increase framerate" tabindex="-1" style="min-width:32px;">+</button>
+                    </div>
+                </div>
+                <!-- Add Timecode, hidden unless Pro Mode -->
+                <div class="setting-control-group" id="addTimestampGroup" >
+                    <label class="slider-label">
+                        Add TC Overlay
+                        <i class="ri-question-line info-icon-inline" title="Burn-in SMPTE timecode overlay to bottom right corner of generated frames" id="timestampInfoIcon"></i>
+                    </label>
                     <div class="format-controls">
-                        <select id="captureFormatSelect">
-                            <option value="png" selected>PNG</option>
-                            <option value="jpeg">JPEG</option>
-                            <option value="webp">WEBP</option>
+                        <select id="timecodeFormatSelect" class="value-input">
+                            <option value="off" selected>Off</option>
+                            <option value="hh:mm:ss:ff">hh:mm:ss:ff</option>
+                            <option value="hh:mm:ss">hh:mm:ss</option>
+                            <option value="mm:ss:ff">mm:ss:ff</option>
+                            <option value="mm:ss">mm:ss</option>
+                            <option value="ss:ff">ss:ff</option>
+                            <option value="ss">ss</option>
+                            <option value="ff">ff</option>
                         </select>
                     </div>
                 </div>
-            </div>
-
-            <!-- Quality sliders (hidden by default, shown based on format selection) -->
-            <div class="slider-row" id="jpegQualityGlobalRow">
-                <h3 class="slider-label">JPEG Quality</h3>
-                <div class="slider-wrapper">
-                    <input type="range" id="jpegQualityGlobal" min="1" max="100" value="90" step="1">
-                    <span id="jpegQualityGlobalValue" class="value-display">90%</span>
+                <!-- Custom Text Overlay, hidden unless Pro Mode -->
+                <div class="setting-control-group" id="customTextGroup" style="display:none;">
+                    <label class="slider-label">
+                        Add Text Overlay
+                        <i class="ri-question-line info-icon-inline" title="Add custom text overlay to generated frames and rotate its position with the button on the right." id="customTextInfoIcon"></i>
+                    </label>
+                    <div class="format-controls">
+                        <input type="text" id="customTextInput" class="value-input" placeholder="Enter custom text..." style="width: 170px;">
+                        <button class="corner-position-btn" id="cornerPositionBtn" title="Toggle text position">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m4 8l.01.011M4 4l.01.011M8 4l.01.011M12 4l.01.011M16 4l.01.011M20 4l.01.011M20 8l.01.011M20 12l.01.011M20 16l.01.011M20 20l.01.011M16 20l.01.011M4 12.01v8h8v-8z"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="slider-row" id="webpQualityGlobalRow">
-                <h3 class="slider-label">WEBP Quality</h3>
-                <div class="slider-wrapper">
-                    <input type="range" id="webpQualityGlobal" min="1" max="100" value="90" step="1">
-                    <span id="webpQualityGlobalValue" class="value-display">90%</span>
+                <!-- Overlay Size, hidden unless Pro Mode -->
+                <div class="setting-control-group" id="timecodeSizeGroup" style="display:none;">
+                    <label class="slider-label">
+                        Overlay Size
+                        <i class="ri-question-line info-icon-inline" title="Set the font size for timecode and custom text overlays." id="overlaySizeInfoIcon"></i>
+                    </label>
+                    <div class="segmented-controls timecode-size-tabs" style="max-width: 200px; margin-bottom: 0;">
+                        <button class="timecode-size-tab" data-size="S">S</button>
+                        <button class="timecode-size-tab active" data-size="M">M</button>
+                        <button class="timecode-size-tab" data-size="L">L</button>
+                        <button class="timecode-size-tab" data-size="XL">XL</button>
+                    </div>
                 </div>
             </div>
 
@@ -1616,7 +1679,7 @@
                             </div>
                         </div>
                         <div class="time-input-row">
-                            <h3 class="slider-label">Frame <i class="ri-error-warning-line info-icon-inline" title='Frame rate detection is currently bugged, so the displayed Frame is not "accurate". Defaulting to 30 fps (value display only).' id="frameWarningIcon"></i></h3>
+                            <h3 class="slider-label">Frame <i class="ri-error-warning-line info-icon-inline" title='You need to enable "Pro Mode" -option and use "Set Framerate" -option to set the framerate of your input video for accurate frame display.' id="frameWarningIcon"></i></h3>
                             <div class="time-input-controls">
                                 <button class="manual-time-btn" id="manualFramePrevBtn" title="Go back 1 frame">
                                     <i class="ri-arrow-drop-left-line"></i>
@@ -1652,15 +1715,15 @@
                     <div class="slider-row" id="histThresholdSettings">
                         <h3 class="slider-label">Hist Thresh</h3>
                         <div class="slider-wrapper">
-                            <input type="range" id="histThresholdInput" min="0.05" max="0.80" value="0.60" step="0.01">
+                            <input type="range" id="histThresholdInput" min="0.20" max="0.80" value="0.50" step="0.05">
                             <span id="histThresholdValue" class="value-display"></span>
                         </div>
                     </div>
-                    <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold means more sensitivity to changes.<br><strong>Default value: 60%</strong></p>
+                    <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold means more sensitivity to changes.<br><strong>Default value: 50%</strong></p>
                     <div class="slider-row" id="pixelThresholdSettings" style="display:none;">
                         <h3 class="slider-label">Pixel Thresh</h3>
                         <div class="slider-wrapper">
-                            <input type="range" id="pixelThresholdInput" min="5" max="80" value="50" step="1">
+                            <input type="range" id="pixelThresholdInput" min="20" max="80" value="50" step="5">
                             <span id="pixelThresholdValue" class="value-display"></span>
                         </div>
                     </div>
@@ -1876,8 +1939,6 @@
             <label class="setting-label">Prefix</label>
             <input type="text" id="filenamePrefix" class="value-input" value="screenshot_" placeholder="screenshot_">
           </div>
-        </div>
-        <div class="setting-row">
           <div class="setting-control-group">
             <label class="setting-label">Numbering Style</label>
             <select id="numberingStyleSelect" class="value-input">
@@ -1887,8 +1948,6 @@
               <option value="1">1</option>
             </select>
           </div>
-        </div>
-        <div class="setting-row">
           <div class="setting-control-group">
             <label class="setting-label">Timestamp</label>
             <div class="setting-controls">
@@ -1897,6 +1956,21 @@
                 <label for="includeTimestamp" class="toggle-label-switch"></label>
               </div>
             </div>
+          </div>
+          <!-- Frame toggle-switch -->
+          <div class="setting-control-group">
+            <label class="setting-label">Frame</label>
+            <div class="setting-controls">
+              <div class="toggle-switch">
+                <input type="checkbox" id="includeFrame" class="toggle-input">
+                <label for="includeFrame" class="toggle-label-switch"></label>
+              </div>
+            </div>
+          </div>
+          <!-- Framerate input, hidden unless Frame is enabled -->
+          <div class="setting-control-group" id="framerateRow" style="display:none; align-items:center;">
+            <label class="slider-label" style="margin-bottom:0;">Set Framerate</label>
+            <input type="number" id="framerateInput" class="value-input" value="30" min="1" max="240" step="1" style="width:70px; margin-left:auto;">
           </div>
         </div>
         <div class="disclaimer-note" id="namingSettingsExample" style="background-color: var(--bg-primary); text-align: right; padding: 0.75rem; border-radius: var(--border-radius-md); font-family: monospace; margin: 1rem 0;">
@@ -1931,7 +2005,9 @@
       prefix: 'screenshot_',
       numberingStyle: '001',
       includeTimestamp: false,
-      includeIndex: true
+      includeIndex: true,
+      includeFrame: false,
+      framerate: 30
     };
 
     const toolInfoIcon = document.getElementById('toolInfoButton');
@@ -1993,13 +2069,16 @@
     const saveNamingSettings = document.getElementById('saveNamingSettings');
     const namingSettingsExample = document.getElementById('namingSettingsExample');
     const namingSettingsExampleText = document.getElementById('namingSettingsExampleText');
+    const includeFrame = document.getElementById('includeFrame');
+    const framerateInput = document.getElementById('framerateInput');
 
     const openNamingSettingsModal = () => {
-        // Load current settings into modal
         if (filenamePrefix) filenamePrefix.value = namingSettings.prefix;
         if (includeTimestamp) includeTimestamp.checked = namingSettings.includeTimestamp;
         if (numberingStyleSelect) numberingStyleSelect.value = namingSettings.numberingStyle;
-        
+        if (includeFrame) includeFrame.checked = namingSettings.includeFrame;
+        if (framerateInput) framerateInput.value = namingSettings.framerate;
+        if (framerateRow) framerateRow.style.display = namingSettings.includeFrame ? 'flex' : 'none';
         updateNamingSettingsExample();
         toggleModal(namingSettingsModal, true);
     };
@@ -2023,7 +2102,6 @@
         namingSettingsButtonManual.addEventListener('click', openNamingSettingsModal);
     }
 
-    // Numbering style dropdown
     if (numberingStyleSelect) {
         numberingStyleSelect.addEventListener('change', () => {
             namingSettings.numberingStyle = numberingStyleSelect.value;
@@ -2031,13 +2109,13 @@
         });
     }
 
-    // Save naming settings
     if (saveNamingSettings) {
         saveNamingSettings.addEventListener('click', () => {
             if (filenamePrefix) namingSettings.prefix = filenamePrefix.value || 'screenshot_';
             if (includeTimestamp) namingSettings.includeTimestamp = includeTimestamp.checked;
             if (numberingStyleSelect) namingSettings.numberingStyle = numberingStyleSelect.value;
-            
+            if (includeFrame) namingSettings.includeFrame = includeFrame.checked;
+            if (framerateInput) namingSettings.framerate = parseInt(framerateInput.value) || 30;
             toggleModal(namingSettingsModal, false);
         });
     }
@@ -2236,7 +2314,6 @@
         };
         const calculateGridOutputHeight = () => {
             if (!gridOutputWidth || !video?.videoWidth || !video?.videoHeight) {
-                // No video loaded, show dash
                 if (gridOutputWidthValue) {
                     gridOutputWidthValue.textContent = '-';
                 }
@@ -2252,18 +2329,16 @@
             const outputWidth = parseInt(gridOutputWidth.value) || 3000;
             const videoAspectRatio = video.videoWidth / video.videoHeight;
             
-            // Calculate cell width and height
             const cellWidth = outputWidth / cols;
             const cellHeight = cellWidth / videoAspectRatio;
             const outputHeight = Math.round(cellHeight * rows);
             
-            // Update height value display
             if (gridOutputWidthValue) {
                 gridOutputWidthValue.textContent = `${outputHeight}px`;
             }
         };
 
-        const updateImageCount = () => { // Counting
+        const updateImageCount = () => {
             const screenshotCount = screenshotBlobs.length;
             const manualCount = manualScreenshotBlobs.length;
             let totalCount = 0;
@@ -2318,7 +2393,7 @@
             selectFileButton.classList.remove('file-selected');
             if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
             if(intervalInput) intervalInput.value = '10'; if(intervalValue) intervalValue.textContent = '10s';
-            if(histThresholdInput) histThresholdInput.value = '0.60'; if(histThresholdValue) histThresholdValue.textContent = '60%';
+            if(histThresholdInput) histThresholdInput.value = '0.50'; if(histThresholdValue) histThresholdValue.textContent = '50%';
             if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
             if(removeBarsToggle) removeBarsToggle.checked = false;
             if(addTimestampToggle) addTimestampToggle.checked = false;
@@ -2766,7 +2841,9 @@
              const { type } = getCurrentFormatSettings();
              const extension = getFileExtensionFromType(type);
              
-             let filename = namingSettings.prefix;
+             // Use the current prefix from the input field, or fall back to namingSettings.prefix
+             const currentPrefix = filenamePrefix?.value ?? namingSettings.prefix;
+             let filename = currentPrefix;
              
              // Add index if enabled
              if (namingSettings.includeIndex) {
@@ -2778,6 +2855,12 @@
              if (namingSettings.includeTimestamp && item.timestamp !== undefined && item.timestamp >= 0) {
                  const timestampStr = formatTime(item.timestamp).replace(/:/g, '-');
                  filename += filename.length > namingSettings.prefix.length ? '_' + timestampStr : timestampStr;
+             }
+             // Add frame if enabled
+             if (namingSettings.includeFrame && item.timestamp !== undefined && item.timestamp >= 0) {
+                 const framerate = namingSettings.framerate || 30;
+                 const frameNum = Math.round(item.timestamp * framerate);
+                 filename += `_${frameNum}`;
              }
              
              return `${filename}.${extension}`;
@@ -4076,29 +4159,137 @@
         });
 
         const drawTimestampOverlay = (canvas, timestamp) => {
-            if (!addTimestampEnabled || !timestamp || timestamp < 0) return;
+            // Only draw if Pro Mode is enabled
+            const proModeToggle = document.getElementById('proModeToggle');
+            if (!proModeToggle || !proModeToggle.checked) return;
             
             const ctx = canvas.getContext('2d');
-            const timestampText = formatTime(timestamp);
             
-            ctx.font = 'bold 16px "Courier New", "Lucida Console", monospace';
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'bottom';
+            // Draw timecode overlay if enabled
+            const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
+            if (timecodeFormatSelect && timecodeFormatSelect.value !== 'off' && timestamp && timestamp >= 0) {
+                const timestampText = formatTimecode(timestamp, timecodeFormatSelect.value, canvas.framerate || 30);
+                
+                // Calculate font size based on timecode size selection
+                let fontSize = 16; // Default M size
+                switch (window.timecodeSize || 'M') {
+                    case 'S': fontSize = 16; break;
+                    case 'L': fontSize = 64; break;
+                    case 'XL': fontSize = 96; break;
+                    default: fontSize = 32; break; // M
+                }
+                
+                ctx.font = `bold ${fontSize}px "Courier New", "Lucida Console", monospace`;
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'bottom';
+                const textMetrics = ctx.measureText(timestampText);
+                const textWidth = textMetrics.width;
+                const textHeight = fontSize + 4; // Adjust height based on font size
+                const padding = Math.max(10, fontSize / 4); // Scale padding with font size
+                const x = canvas.width - padding;
+                const y = canvas.height - padding;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(x - textWidth - padding, y - textHeight - padding, textWidth + padding * 2, textHeight + padding * 2);
+                ctx.fillStyle = 'white';
+                ctx.fillText(timestampText, x, y);
+            }
             
-            const textMetrics = ctx.measureText(timestampText);
-            const textWidth = textMetrics.width;
-            const textHeight = 20;
-            
-            const padding = 10;
-            const x = canvas.width - padding;
-            const y = canvas.height - padding;
-            
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-            ctx.fillRect(x - textWidth - padding, y - textHeight - padding, textWidth + padding * 2, textHeight + padding * 2);
-            
-            ctx.fillStyle = 'white';
-            ctx.fillText(timestampText, x, y);
+            // Draw custom text overlay if provided
+            const customTextInput = document.getElementById('customTextInput');
+            if (customTextInput && customTextInput.value.trim()) {
+                const customText = customTextInput.value.trim();
+                
+                // Use same font size as timecode for consistency
+                let fontSize = 16; // Default M size
+                switch (window.timecodeSize || 'M') {
+                    case 'S': fontSize = 16; break;
+                    case 'L': fontSize = 64; break;
+                    case 'XL': fontSize = 96; break;
+                    default: fontSize = 32; break; // M
+                }
+                
+                ctx.font = `bold ${fontSize}px "Courier New", "Lucida Console", monospace`;
+                const textMetrics = ctx.measureText(customText);
+                const textWidth = textMetrics.width;
+                const textHeight = fontSize + 4;
+                const padding = Math.max(10, fontSize / 4);
+                
+                // Position based on selected corner
+                let x, y, textAlign, textBaseline;
+                const position = window.customTextPosition || 'bottom-left';
+                
+                switch (position) {
+                    case 'bottom-left':
+                        x = padding;
+                        y = canvas.height - padding;
+                        textAlign = 'left';
+                        textBaseline = 'bottom';
+                        break;
+                    case 'top-right':
+                        x = canvas.width - padding;
+                        y = padding;
+                        textAlign = 'right';
+                        textBaseline = 'top';
+                        break;
+                    case 'top-left':
+                        x = padding;
+                        y = padding;
+                        textAlign = 'left';
+                        textBaseline = 'top';
+                        break;
+                    default:
+                        x = padding;
+                        y = canvas.height - padding;
+                        textAlign = 'left';
+                        textBaseline = 'bottom';
+                }
+                
+                ctx.textAlign = textAlign;
+                ctx.textBaseline = textBaseline;
+                
+                // Calculate background rectangle position
+                let bgX, bgY;
+                if (textAlign === 'left') {
+                    bgX = x - padding;
+                } else {
+                    bgX = x - textWidth - padding;
+                }
+                
+                if (textBaseline === 'bottom') {
+                    bgY = y - textHeight - padding;
+                } else {
+                    bgY = y - padding;
+                }
+                
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(bgX, bgY, textWidth + padding * 2, textHeight + padding * 2);
+                ctx.fillStyle = 'white';
+                ctx.fillText(customText, x, y);
+            }
         };
+
+        // Helper to format timecode
+        function formatTimecode(seconds, format, framerate) {
+            if (isNaN(seconds)) seconds = 0;
+            framerate = framerate || 30;
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            // Use absolute frame number for ff (timeline style)
+            const absFrame = Math.floor(seconds * framerate);
+            // Use sub-second frame for :ff (as in SMPTE)
+            const subFrame = Math.floor((seconds % 1) * framerate);
+            switch (format) {
+                case 'hh:mm:ss:ff': return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}:${subFrame.toString().padStart(2, '0')}`;
+                case 'hh:mm:ss': return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                case 'mm:ss:ff': return `${(h*60+m).toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}:${subFrame.toString().padStart(2, '0')}`;
+                case 'mm:ss': return `${(h*60+m).toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                case 'ss:ff': return `${(h*3600+m*60+s).toString().padStart(2, '0')}:${subFrame.toString().padStart(2, '0')}`;
+                case 'ss': return `${(h*3600+m*60+s).toString().padStart(2, '0')}`;
+                case 'ff': return `${absFrame}`;
+                default: return `${(h*60+m).toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            }
+        }
 
         // Mobile-friendly tooltip handler
         const createMobileTooltip = (element, message) => {
@@ -4114,8 +4305,11 @@
 
         // Setup mobile tooltips
         createMobileTooltip($('removeBarsInfoIcon'), 'Automatically detect and crop black bars from letterboxed videos');
-        createMobileTooltip($('timestampInfoIcon'), 'Add timestamp overlay to bottom right corner of generated frames');
-        createMobileTooltip($('frameWarningIcon'), 'Frame rate detection is currently bugged, so the displayed Frame is not "accurate". Defaulting to 30 fps (value display only).');
+        createMobileTooltip($('timestampInfoIcon'), 'Burn-in SMPTE timecode overlay to bottom right corner of generated frames');
+        createMobileTooltip($('frameWarningIcon'), 'You need to enable "Pro Mode" -option and use "Set Framerate" -option to set the framerate of your input video for accurate frame display.');
+        createMobileTooltip($('framerateInfoIcon'), 'Set your input video\'s framerate. This ensures accurate timecode data for the generated frames and manual fine-tuning.');
+        createMobileTooltip($('customTextInfoIcon'), 'Add custom text overlay to generated frames and rotate its position with the button on the right.');
+        createMobileTooltip($('overlaySizeInfoIcon'), 'Set the font size for timecode and custom text overlays.');
 
         if (smartAlgoTabs.length > 0) {
             const updateThresholdSliders = (algo) => {
@@ -4289,6 +4483,8 @@
                  canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
                  ctx.drawImage(manualVideo, effectiveCropData.cropX, effectiveCropData.cropY, effectiveCropData.cropWidth, effectiveCropData.cropHeight, 0, 0, canvas.width, canvas.height);
 
+                 const timestamp = manualVideo.currentTime;
+                 drawTimestampOverlay(canvas, timestamp);
                  canvas.toBlob((blob) => {
                      if (blob) {
                          const url = URL.createObjectURL(blob);
@@ -4317,6 +4513,7 @@
                  ctx.drawImage(manualVideo, effectiveCropData.cropX, effectiveCropData.cropY, effectiveCropData.cropWidth, effectiveCropData.cropHeight, 0, 0, canvas.width, canvas.height);
 
                  const timestamp = manualVideo.currentTime;
+                 drawTimestampOverlay(canvas, timestamp);
                  canvas.toBlob((blob) => {
                      if (blob) {
                         createScreenshotContainer(blob, timestamp, manualScreenshotBlobs);
@@ -4416,7 +4613,13 @@
             
             // Calculate frame rate (assuming 30fps if not available)
             const getFrameRate = () => {
-                return 30;
+                const framerateInput = document.getElementById('framerateInput');
+                if (!framerateInput) return 30;
+                
+                // Handle both comma and dot as decimal separators
+                const value = framerateInput.value.replace(',', '.');
+                const framerate = parseFloat(value);
+                return isNaN(framerate) ? 30 : framerate;
             };
             
             const frameRate = getFrameRate();
@@ -4426,6 +4629,7 @@
                 if (!manualVideo.src || manualVideo.readyState < 1) return;
                 
                 const currentTime = manualVideo.currentTime;
+                const frameRate = getFrameRate();
                 const currentFrame = Math.round(currentTime * frameRate);
                 
                 manualTimeInput.value = formatTime(currentTime);
@@ -4442,6 +4646,7 @@
             // Update video position from frame input
             const updateVideoFromFrame = (newFrame) => {
                 if (!manualVideo.src || manualVideo.readyState < 1) return;
+                const frameRate = getFrameRate();
                 const newTime = newFrame / frameRate;
                 const clampedTime = Math.max(0, Math.min(newTime, manualVideo.duration || 0));
                 manualVideo.currentTime = clampedTime;
@@ -4582,6 +4787,7 @@
         let sensitivityManual = 0.05;
 
         if (manualDragControl) {
+            // Mouse events for desktop
             manualDragControl.addEventListener('mousedown', (e) => {
                 isDraggingManual = true;
                 startXManual = e.clientX;
@@ -4589,6 +4795,16 @@
                 document.body.style.cursor = 'ew-resize';
                 document.addEventListener('mousemove', handleManualDragMove);
                 document.addEventListener('mouseup', handleManualDragUp);
+                e.preventDefault();
+            });
+
+            // Touch events for mobile
+            manualDragControl.addEventListener('touchstart', (e) => {
+                isDraggingManual = true;
+                startXManual = e.touches[0].clientX;
+                startTimeManual = manualVideo.currentTime;
+                document.addEventListener('touchmove', handleManualDragMoveTouch, { passive: false });
+                document.addEventListener('touchend', handleManualDragUpTouch);
                 e.preventDefault();
             });
         }
@@ -4608,6 +4824,21 @@
             document.removeEventListener('mouseup', handleManualDragUp);
         };
 
+        const handleManualDragMoveTouch = (e) => {
+            if (!isDraggingManual) return;
+            const deltaX = e.touches[0].clientX - startXManual;
+            const newTime = Math.max(0, Math.min(startTimeManual + (deltaX * sensitivityManual), manualVideo.duration || 0));
+            manualVideo.currentTime = newTime;
+            e.preventDefault();
+        };
+
+        const handleManualDragUpTouch = () => {
+            if (!isDraggingManual) return;
+            isDraggingManual = false;
+            document.removeEventListener('touchmove', handleManualDragMoveTouch);
+            document.removeEventListener('touchend', handleManualDragUpTouch);
+        };
+
       } catch (error) { console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.textContent = `Initialization Error: ${error.message}. Please refresh or check console (F12).`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
     });
 
@@ -4616,19 +4847,201 @@
     if (numberingStyleSelect) numberingStyleSelect.addEventListener('change', updateNamingSettingsExample);
     function updateNamingSettingsExample() {
       if (!namingSettingsExampleText) return;
-      // Use current modal values if open, else settings
-      const prefix = filenamePrefix?.value || namingSettings.prefix;
+      const prefix = filenamePrefix?.value ?? namingSettings.prefix;
       const numberingStyle = numberingStyleSelect?.value || namingSettings.numberingStyle;
       const includeTs = includeTimestamp?.checked ?? namingSettings.includeTimestamp;
-      // Example values
+      const includeFr = includeFrame?.checked ?? namingSettings.includeFrame;
+      const framerate = parseInt(framerateInput?.value || namingSettings.framerate);
       const exampleIndex = 0;
       const exampleTimestamp = 10;
       let filename = prefix;
       filename += (exampleIndex + 1).toString().padStart(numberingStyle.length, '0');
       if (includeTs) filename += '_0-10';
+      if (includeFr) {
+        const frameNum = Math.round(exampleTimestamp * framerate);
+        filename += `_${frameNum}`;
+      }
       filename += '.png';
       namingSettingsExampleText.textContent = filename;
     }
+
+    if (includeFrame) {
+      includeFrame.addEventListener('change', () => {
+        updateNamingSettingsExample();
+      });
+    }
+
+    if (framerateInput) {
+      framerateInput.addEventListener('input', () => {
+        let val = framerateInput.value.replace(',', '.');
+        val = val.replace(/[^0-9.]/g, '');
+        const parts = val.split('.');
+        if (parts.length > 2) {
+          val = parts[0] + '.' + parts.slice(1).join('');
+        }
+        
+        let num = parseFloat(val);
+        if (isNaN(num)) num = 30;
+        
+        framerateInput.value = val;
+        updateNamingSettingsExample();
+        const manualFrameInput = document.getElementById('manualFrameInput');
+        const manualVideo = document.getElementById('manualVideo');
+        const fr = num;
+        if (manualFrameInput && manualVideo && !isNaN(manualVideo.currentTime)) {
+          manualFrameInput.value = Math.round(manualVideo.currentTime * fr);
+        }
+      });
+
+      const frameratePrevBtn = document.getElementById('frameratePrevBtn');
+      const framerateNextBtn = document.getElementById('framerateNextBtn');
+      if (frameratePrevBtn) {
+        frameratePrevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const currentValue = framerateInput.value.replace(',', '.');
+          let num = parseFloat(currentValue) || 30;
+          num = num - 1;
+          framerateInput.value = Math.round(num);
+          framerateInput.dispatchEvent(new Event('input'));
+        });
+      }
+      if (framerateNextBtn) {
+        framerateNextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const currentValue = framerateInput.value.replace(',', '.');
+          let num = parseFloat(currentValue) || 30;
+          num = num + 1;
+          framerateInput.value = Math.round(num);
+          framerateInput.dispatchEvent(new Event('input'));
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const manualFrameInput = document.getElementById('manualFrameInput');
+      const manualTimeInput = document.getElementById('manualTimeInput');
+      const manualVideo = document.getElementById('manualVideo');
+      const framerateInput = document.getElementById('framerateInput');
+      function getCurrentFramerate() {
+        return parseInt(framerateInput?.value) || 30;
+      }
+      if (manualVideo && manualFrameInput && framerateInput) {
+        manualVideo.addEventListener('timeupdate', () => {
+          manualFrameInput.value = Math.round(manualVideo.currentTime * getCurrentFramerate());
+        });
+        manualFrameInput.addEventListener('change', (e) => {
+          const frame = parseInt(e.target.value);
+          if (!isNaN(frame)) {
+            manualVideo.currentTime = frame / getCurrentFramerate();
+          }
+        });
+      }
+      
+      window.timecodeSize = 'M';
+      const timecodeSizeTabs = document.querySelectorAll('.timecode-size-tab');
+      timecodeSizeTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const size = tab.getAttribute('data-size');
+          if (!size) return;
+          
+          timecodeSizeTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          window.timecodeSize = size;
+        });
+      });
+      
+      // Custom text corner position toggle
+      window.customTextPosition = 'bottom-left'; // bottom-left, top-right, top-left
+      const cornerPositionBtn = document.getElementById('cornerPositionBtn');
+      if (cornerPositionBtn) {
+        cornerPositionBtn.addEventListener('click', () => {
+          const positions = ['bottom-left', 'top-left', 'top-right'];
+          const currentIndex = positions.indexOf(window.customTextPosition);
+          const nextIndex = (currentIndex + 1) % positions.length;
+          window.customTextPosition = positions[nextIndex];
+          
+          // Update button appearance based on position
+          const svg = cornerPositionBtn.querySelector('svg');
+          if (window.customTextPosition === 'bottom-left') {
+            cornerPositionBtn.title = 'Text position: Bottom Left';
+            svg.style.transform = 'rotate(0deg)';
+          } else if (window.customTextPosition === 'top-right') {
+            cornerPositionBtn.title = 'Text position: Top Right';
+            svg.style.transform = 'rotate(180deg)';
+          } else if (window.customTextPosition === 'top-left') {
+            cornerPositionBtn.title = 'Text position: Top Left';
+            svg.style.transform = 'rotate(90deg)';
+          }
+        });
+        
+        // Set initial title and rotation
+        cornerPositionBtn.title = 'Text position: Bottom Left';
+        const svg = cornerPositionBtn.querySelector('svg');
+        svg.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    // Pro Mode
+    const proModeToggle = document.getElementById('proModeToggle');
+    const addTimestampGroup = document.getElementById('addTimestampGroup');
+    const timecodeSizeGroup = document.getElementById('timecodeSizeGroup');
+    const customTextGroup = document.getElementById('customTextGroup');
+    const customTextInput = document.getElementById('customTextInput');
+    const customTextInfoIcon = document.getElementById('customTextInfoIcon');
+    const framerateRow = document.getElementById('framerateRow');
+    const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
+    let timecodeFormat = 'off';
+
+    function initializeProModeDefaults() {
+      if (framerateInput) framerateInput.value = '30';
+      if (timecodeFormatSelect) timecodeFormatSelect.value = 'off';
+      if (proModeToggle) proModeToggle.checked = false;
+      if (addTimestampGroup) addTimestampGroup.style.display = 'none';
+      if (customTextGroup) customTextGroup.style.display = 'none';
+      if (framerateRow) framerateRow.style.display = 'none';
+      if (customTextInput) customTextInput.value = '';
+      
+      // Don't hide timecodeSizeGroup here, let the timecode format logic handle it
+    }
+    
+    if (proModeToggle && addTimestampGroup) {
+      proModeToggle.checked = false;
+      addTimestampGroup.style.display = 'none';
+      if (framerateRow) framerateRow.style.display = 'none';
+      
+      if (framerateInput) {
+        framerateInput.value = '30';
+      }
+      
+      if (timecodeFormatSelect) {
+        timecodeFormatSelect.value = 'off';
+      }
+      
+      proModeToggle.addEventListener('change', () => {
+        const isEnabled = proModeToggle.checked;
+        addTimestampGroup.style.display = isEnabled ? '' : 'none';
+        customTextGroup.style.display = isEnabled ? 'flex' : 'none';
+        timecodeSizeGroup.style.display = isEnabled ? 'flex' : 'none';
+        framerateRow.style.display = isEnabled ? 'flex' : 'none';
+        
+        if (!isEnabled) {
+          initializeProModeDefaults();
+        }
+      });
+    }
+    
+    initializeProModeDefaults();
+
+    if (timecodeFormatSelect) {
+      timecodeFormatSelect.addEventListener('change', (e) => {
+        timecodeFormat = e.target.value;
+        addTimestampEnabled = timecodeFormat !== 'off';
+      });
+      timecodeFormat = timecodeFormatSelect.value;
+      addTimestampEnabled = timecodeFormat !== 'off';
+    }
+
+
   </script>
 
 </body>

@@ -25,11 +25,13 @@ Offline download: `index.html`
 - Video metadata display (resolution, duration, aspect ratio, bitrate).
 - Capture format (PNG, JPEG, WEBP) and quality (1-100%).
 - Automatically remove black bars.
+- Add text and/or timecode overlays.
 - Output
   - `Manual` - Navigate video player to capture and save specific frames.
   - `Interval` - Capture frames automatically at set time intervals (seconds).
   - `Smart Auto` - Use algorithms (Histogram or Pixel Difference) to detect and capture visually distinct frames with adjustable sensitivity.
   - `Grid` - Create a grid of frames to a single image.
+- Configure filenames.
 - Preview frames in a gallery/lightbox, remove unwanted frames, download individually or as ZIP.
 
 ![Pilko_Panel](https://github.com/user-attachments/assets/46d4e68b-6992-43e3-83b4-92b56397703b)
