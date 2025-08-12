@@ -11,7 +11,7 @@
 
 [discord-shield-static]: https://img.shields.io/badge/Discord-landomrandom-121727?style=for-the-badge&labelColor=080c19&messageColor=e0e6f7&logo=discord&logoColor=00c6ff
 
-**Pilko Frame Capture Studio** is a privacy-first, browser-based tool for extracting frames from your video files locally, offering a range of flexible extraction options. It works seamlessly on both desktop and mobile devices.
+**Pilko Studio** is a privacy-first, browser-based tool for extracting frames from your video files locally, offering a range of flexible extraction options. It works seamlessly on both desktop and mobile devices.
 
 Try it here: https://pilko.studio
 
