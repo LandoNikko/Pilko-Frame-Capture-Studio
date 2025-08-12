@@ -3,12 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pilko Studio</title>
+      <title>Pilko Studio - Local Video Screenshot Extraction</title>
+    <meta name="description" content="Extract screenshots from video locally in browser. Supports interval, manual and automatic frame capture with timestamps.">
+    <meta name="keywords" content="video screenshot, frame extraction, automated screenshot, timestamp overlay, scene detection">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo+Play:wght@400&family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Pilko Studio","applicationCategory":"MultimediaApplication","operatingSystem":"Web","url":"https://pilko.studio/","description":"Extract screenshots from video locally in your browser. Supports interval, manual and automatic scene-change for frame capture.","browserRequirements":"Requires JavaScript. Works in all modern browsers.","featureList":"Video screenshot extraction, interval capture, scene detection, Pro Mode timestamps, black bar removal, contact sheet generation","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Pilko Studio","url":"https://pilko.studio/","description":"Professional video editing tools and utilities","sameAs":["https://github.com/pilkostudio"]}}</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root {
@@ -1515,11 +1518,11 @@
 
     <div class="vertical-separator"></div>
 
-    <div class="side-panel">
+    <div class="side-panel" role="complementary" aria-label="Settings and Controls">
       <div class="content-wrapper">
         <h1 id="pageTitle" data-text="Pilko Studio">Pilko Studio</h1>
 
-        <div id="dropZone">
+        <div id="dropZone" role="button" tabindex="0" aria-label="Upload video file" aria-describedby="dropZoneText">
             <div id="uploadIcon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="uploadIconSvg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-miterlimit="10" d="M9.047 9.5v5"/><path stroke-linejoin="round" d="M11.34 11.605L9.373 9.638a.458.458 0 0 0-.651 0l-1.968 1.967"/><path stroke-linejoin="round" d="M12 5.32H6.095A3.595 3.595 0 0 0 2.5 8.923v6.162a3.595 3.595 0 0 0 3.595 3.595H12a3.595 3.595 0 0 0 3.595-3.595V8.924A3.594 3.594 0 0 0 12 5.32m9.5 4.118v5.135c0 .25-.071.496-.205.708a1.355 1.355 0 0 1-.555.493a1.27 1.27 0 0 1-.73.124a1.366 1.366 0 0 1-.677-.278l-3.225-2.588a1.377 1.377 0 0 1-.503-1.047c0-.2.045-.396.133-.575c.092-.168.218-.315.37-.432l3.225-2.567a1.36 1.36 0 0 1 .678-.278c.25-.032.504.011.729.124a1.325 1.325 0 0 1 .76 1.181"/></g></svg>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="spinnerIcon" style="display: none;"><path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path fill="currentColor" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
@@ -1538,14 +1541,14 @@
                 </div>
             </div>
             <div id="buttonRow">
-                <button id="initialSelectFileButton" type="button">Select a File</button>
+                <button id="initialSelectFileButton" type="button" aria-label="Select a video file to process">Select a File</button>
                 <span id="orText">or</span>
-                <button id="tryExampleButton" type="button">Try Example Video</button>
+                <button id="tryExampleButton" type="button" aria-label="Try with example video">Try Example Video</button>
             </div>
-            <input type="file" id="videoInput" accept="video/*">
+            <input type="file" id="videoInput" accept="video/*" aria-label="Select video file">
         </div>
 
-        <div class="settings-panel">
+        <div class="settings-panel" role="region" aria-label="Capture Settings">
             <div class="setting-row">
                 <div class="setting-control-group">
                     <label class="setting-label format-label">Capture Format</label>
@@ -1561,14 +1564,14 @@
                 <div class="slider-row" id="jpegQualityGlobalRow">
                     <h3 class="slider-label">JPEG Quality</h3>
                     <div class="slider-wrapper">
-                        <input type="range" id="jpegQualityGlobal" min="1" max="100" value="90" step="1">
+                        <input type="range" id="jpegQualityGlobal" min="1" max="100" value="90" step="1" aria-label="JPEG quality setting">
                         <span id="jpegQualityGlobalValue" class="value-display">90%</span>
                     </div>
                 </div>
                 <div class="slider-row" id="webpQualityGlobalRow">
                     <h3 class="slider-label">WEBP Quality</h3>
                     <div class="slider-wrapper">
-                        <input type="range" id="webpQualityGlobal" min="1" max="100" value="90" step="1">
+                        <input type="range" id="webpQualityGlobal" min="1" max="100" value="90" step="1" aria-label="WEBP quality setting">
                         <span id="webpQualityGlobalValue" class="value-display">90%</span>
                     </div>
                 </div>
@@ -1644,26 +1647,26 @@
                         Overlay Size
                         <i class="ri-question-line info-icon-inline" title="Set the font size for timecode and custom text overlays." id="overlaySizeInfoIcon"></i>
                     </label>
-                    <div class="segmented-controls timecode-size-tabs" style="max-width: 200px; margin-bottom: 0;">
-                        <button class="timecode-size-tab" data-size="S">S</button>
-                        <button class="timecode-size-tab active" data-size="M">M</button>
-                        <button class="timecode-size-tab" data-size="L">L</button>
-                        <button class="timecode-size-tab" data-size="XL">XL</button>
-                    </div>
+                                    <div class="segmented-controls timecode-size-tabs" style="max-width: 200px; margin-bottom: 0;" role="group" aria-label="Overlay size options">
+                    <button class="timecode-size-tab" data-size="S" aria-pressed="false">S</button>
+                    <button class="timecode-size-tab active" data-size="M" aria-pressed="true">M</button>
+                    <button class="timecode-size-tab" data-size="L" aria-pressed="false">L</button>
+                    <button class="timecode-size-tab" data-size="XL" aria-pressed="false">XL</button>
+                </div>
                 </div>
             </div>
 
-            <div class="segmented-controls mode-tabs">
-                <button class="mode-tab active" data-mode="manual">Manual</button>
-                <button class="mode-tab" data-mode="auto">Interval</button>
-                <button class="mode-tab" data-mode="autoSmart">Smart Auto</button>
-                <button class="mode-tab" data-mode="contactSheet">Grid</button>
+            <div class="segmented-controls mode-tabs" role="tablist" aria-label="Capture modes">
+                <button id="manualModeTab" class="mode-tab active" data-mode="manual" role="tab" aria-selected="true" aria-controls="manualMode">Manual</button>
+                <button id="autoModeTab" class="mode-tab" data-mode="auto" role="tab" aria-selected="false" aria-controls="autoMode">Interval</button>
+                <button id="autoSmartModeTab" class="mode-tab" data-mode="autoSmart" role="tab" aria-selected="false" aria-controls="autoSmartMode">Smart Auto</button>
+                <button id="contactSheetModeTab" class="mode-tab" data-mode="contactSheet" role="tab" aria-selected="false" aria-controls="contactSheetMode">Grid</button>
             </div>
 
             <div class="mode-content">
-                <div id="manualMode" class="active">
+                <div id="manualMode" class="active" role="tabpanel" aria-labelledby="manualModeTab">
                     <p class="mode-description">Use the video player to navigate and press Cut Frame to extract screenshots.</p>
-                    <video id="manualVideo" controls></video>
+                    <video id="manualVideo" controls aria-label="Manual mode video player"></video>
                     
                     <h3 class="setting-group-title">Fine-tune current frame</h3>
                     <div class="time-input-container" style="margin-bottom: 1rem;">
@@ -1701,22 +1704,22 @@
                         </div>
                     </div>
                 </div>
-                <div id="autoMode">
+                <div id="autoMode" role="tabpanel" aria-labelledby="autoModeTab">
                     <p class="mode-description">Captures screenshots at regular time intervals. Lower value creates more images, higher value creates fewer.</p>
                     <div class="slider-row"><h3 class="slider-label" style="font-size: 0.9rem; color: var(--text-primary); font-weight: 500;">Interval</h3>
-                    <div class="slider-wrapper"><input type="range" id="intervalInput" min="1" max="30" value="10" step="1"><span id="intervalValue" class="value-display"></span></div></div>
+                    <div class="slider-wrapper"><input type="range" id="intervalInput" min="1" max="30" value="10" step="1" aria-label="Screenshot interval in seconds"><span id="intervalValue" class="value-display"></span></div></div>
                 </div>
-                <div id="autoSmartMode">
+                <div id="autoSmartMode" role="tabpanel" aria-labelledby="autoSmartModeTab">
                     <p class="mode-description">Identifies scenes and visual changes<br>- <strong>Aims to capture one frame per scene</strong>.<br>- It's not perfect, but provides a good foundation.<br>You can fine-tune a frame with <i class="ri-scissors-line"></i> buttons below it.</p>
                     <h3 class="setting-group-title">Algorithm</h3>
-                    <div class="segmented-controls smart-algo-tabs">
-                        <button class="smart-tab active" data-algo="histogram">Histogram Diff</button>
-                        <button class="smart-tab" data-algo="pixeldiff">Pixel Diff</button>
+                    <div class="segmented-controls smart-algo-tabs" role="group" aria-label="Scene detection algorithm">
+                        <button class="smart-tab active" data-algo="histogram" aria-pressed="true">Histogram Diff</button>
+                        <button class="smart-tab" data-algo="pixeldiff" aria-pressed="false">Pixel Diff</button>
                     </div>
                     <div class="slider-row" id="histThresholdSettings">
                         <h3 class="slider-label">Hist Thresh</h3>
                         <div class="slider-wrapper">
-                            <input type="range" id="histThresholdInput" min="0.20" max="0.80" value="0.50" step="0.05">
+                            <input type="range" id="histThresholdInput" min="0.20" max="0.80" value="0.50" step="0.05" aria-label="Histogram threshold sensitivity">
                             <span id="histThresholdValue" class="value-display"></span>
                         </div>
                     </div>
@@ -1724,19 +1727,19 @@
                     <div class="slider-row" id="pixelThresholdSettings" style="display:none;">
                         <h3 class="slider-label">Pixel Thresh</h3>
                         <div class="slider-wrapper">
-                            <input type="range" id="pixelThresholdInput" min="20" max="80" value="50" step="5">
+                            <input type="range" id="pixelThresholdInput" min="20" max="80" value="50" step="5" aria-label="Pixel difference threshold">
                             <span id="pixelThresholdValue" class="value-display"></span>
-                        </div>
+                    </div>
                     </div>
                     <p class="disclaimer-note" id="pixelDiffDisclaimer" style="display: none;">Measures the percentage of pixel changes between frames. Higher threshold means more sensitivity to changes.<br><strong>Default value: 50%</strong></p>
                 </div>
-                <div id="contactSheetMode">
+                <div id="contactSheetMode" role="tabpanel" aria-labelledby="contactSheetModeTab">
                     <p class="mode-description">Choose a grid size for screenshots. After generating, you can fine-tune the captured frames.</p>
                     <h3 class="setting-group-title">Grid Size</h3>
-                    <div class="segmented-controls grid-size-tabs">
-                        <button class="grid-size-tab active" data-rows="4" data-cols="5">5×4</button>
-                        <button class="grid-size-tab" data-rows="3" data-cols="4">4×3</button>
-                        <button class="grid-size-tab" data-rows="2" data-cols="3">Custom</button>
+                    <div class="segmented-controls grid-size-tabs" role="group" aria-label="Grid size options">
+                        <button class="grid-size-tab active" data-rows="4" data-cols="5" aria-pressed="true">5×4</button>
+                        <button class="grid-size-tab" data-rows="3" data-cols="4" aria-pressed="false">4×3</button>
+                        <button class="grid-size-tab" data-rows="2" data-cols="3" aria-pressed="false">Custom</button>
                     </div>
                     <div id="customGridControls" style="display: none; margin-bottom: 0.5rem;">
                         <div class="time-input-container">
@@ -1768,7 +1771,7 @@
                     </div>
                     
                     <div class="video-container">
-                        <video id="contactSheetVideo" controls></video>
+                        <video id="contactSheetVideo" controls aria-label="Grid mode video player"></video>
                     </div>
                     <p id="largeGridDisclaimer" class="disclaimer-note">Time inputs hidden for grids larger than 6x6.</p>
                     <div class="grid-controls">
@@ -1778,7 +1781,7 @@
                     <div class="slider-row">
                         <h3 class="slider-label">Width</h3>
                         <div class="slider-wrapper">
-                            <input type="range" id="gridOutputWidthSlider" min="1000" max="10000" value="3000" step="500">
+                            <input type="range" id="gridOutputWidthSlider" min="1000" max="10000" value="3000" step="500" aria-label="Grid output width">
                             <input type="text" id="gridOutputWidth" class="value-input time-input-field" value="3000" placeholder="3000" inputmode="numeric" pattern="[0-9]*">
                         </div>
                     </div>
@@ -1794,7 +1797,7 @@
 
         <div class="sticky-button-container">         
             <div class="button-group" id="intervalModeButtons">
-                <button id="processButton" class="action-button">Extract Screenshots <i class="ri-scissors-line"></i></button>
+                <button id="processButton" class="action-button" aria-label="Extract screenshots from video">Extract Screenshots <i class="ri-scissors-line"></i></button>
                 <div class="action-button-row">
                     <button id="downloadAllButton" class="action-button secondary-button" disabled>Download All <i class="ri-download-2-line"></i></button>
                     <button id="namingSettingsButton" class="action-icon-button" title="Filename Settings" disabled><i class="ri-settings-3-line"></i></button>
@@ -1845,7 +1848,7 @@
       </div>
     </div>
 
-    <div class="output-column" id="outputColumn">
+    <div class="output-column" id="outputColumn" role="main" aria-label="Screenshot Output">
       <div id="screenshots">
       </div>
       <div id="contactSheetPreview">
@@ -1859,10 +1862,10 @@
   <canvas id="frameCanvas" style="display:none;"></canvas>
   <canvas id="contactSheetCanvas" style="display:none;"></canvas>
 
-  <div class="modal-overlay" id="toolInfoModal">
+  <div class="modal-overlay" id="toolInfoModal" role="dialog" aria-labelledby="toolInfoTitle">
     <div class="info-box-content">
-      <button class="modal-close" id="modalClose"><i class="ri-close-line"></i></button>
-      <h2 class="modal-title">Pilko Studio</h2>
+      <button class="modal-close" id="modalClose" aria-label="Close"><i class="ri-close-line"></i></button>
+      <h2 class="modal-title" id="toolInfoTitle">Pilko Studio</h2>
       <div class="modal-body">
         <p>Pilko Studio is a frame capture web tool that lets you extract screenshots from your videos in many different ways locally within your browser.</p>
 
@@ -1889,40 +1892,40 @@
         </ul>
 
         <h3>Processing & Privacy</h3>
-        <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can also self-host it for full peace of mind. View the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
+        <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can download the .html file and run it locally offline with the same functionality for full peace of mind. View the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
 
       </div>
     </div>
   </div>
 
-  <div class="modal-overlay" id="screenshotLightbox">
+  <div class="modal-overlay" id="screenshotLightbox" role="dialog" aria-label="Screenshot viewer">
     <div class="info-box-content screenshot-lightbox-content">
-      <button class="modal-close" id="lightboxClose"><i class="ri-close-line"></i></button>
+      <button class="modal-close" id="lightboxClose" aria-label="Close"><i class="ri-close-line"></i></button>
       <div class="screenshot-lightbox-container">
         <img id="lightboxImage" src="" alt="Screenshot fullscreen view">
       </div>
       <div class="screenshot-lightbox-info">
         <div class="lightbox-controls-left">
-           <button class="action-icon-button action-icon-button--delete lightbox-delete-btn" id="lightboxDeleteBtn" title="Delete this screenshot (Hotkeys: 🡫, S)">
+           <button class="action-icon-button action-icon-button--delete lightbox-delete-btn" id="lightboxDeleteBtn" title="Delete this screenshot (Hotkeys: 🡫, S)" aria-label="Delete this screenshot">
              <!-- SVG Icon by JS -->
            </button>
            <span id="lightboxFrameNumber"></span> 
         </div>
         <div class="lightbox-nav-controls">
             <div class="lightbox-frame-adjust-controls">
-                <button class="lightbox-adjust-btn" id="lightboxAdjustPrev" title="Cut backward by 1s (Hotkey: Q)">-<i class="ri-scissors-line icon-flipped"></i></button>
+                <button class="lightbox-adjust-btn" id="lightboxAdjustPrev" title="Cut backward by 1s (Hotkey: Q)" aria-label="Cut backward by 1 second">-<i class="ri-scissors-line icon-flipped"></i></button>
             </div>
-            <button class="lightbox-nav-btn prev-btn" id="lightboxPrevBtn" title="Hotkeys: 🡨, A">
+            <button class="lightbox-nav-btn prev-btn" id="lightboxPrevBtn" title="Hotkeys: 🡨, A" aria-label="Previous frame">
               <span class="nav-icon"><i class="ri-arrow-drop-left-line"></i></span>
               <span class="nav-text">Previous Frame</span>
             </button>
             <span id="lightboxTimestamp"></span>
-            <button class="lightbox-nav-btn next-btn" id="lightboxNextBtn" title="Hotkeys: 🡪, D">
+            <button class="lightbox-nav-btn next-btn" id="lightboxNextBtn" title="Hotkeys: 🡪, D" aria-label="Next frame">
               <span class="nav-text">Next Frame</span>
               <span class="nav-icon"><i class="ri-arrow-drop-right-line"></i></span>
             </button>
              <div class="lightbox-frame-adjust-controls">
-                <button class="lightbox-adjust-btn" id="lightboxAdjustNext" title="Cut forward by 1s (Hotkey: E)"><i class="ri-scissors-line"></i>+</button>
+                <button class="lightbox-adjust-btn" id="lightboxAdjustNext" title="Cut forward by 1s (Hotkey: E)" aria-label="Cut forward by 1 second"><i class="ri-scissors-line"></i>+</button>
             </div>
         </div>
         <a id="lightboxDownload" href="#" download="screenshot.png" class="lightbox-action-btn lightbox-download-btn"><span>Download</span> <i class="ri-download-2-line"></i></a>
@@ -1930,10 +1933,10 @@
     </div>
   </div>
 
-  <div class="modal-overlay" id="namingSettingsModal">
+  <div class="modal-overlay" id="namingSettingsModal" role="dialog" aria-labelledby="namingSettingsTitle">
     <div class="info-box-content">
-      <button class="modal-close" id="namingSettingsClose"><i class="ri-close-line"></i></button>
-      <h2 class="modal-title">Filename Settings</h2>
+      <button class="modal-close" id="namingSettingsClose" aria-label="Close"><i class="ri-close-line"></i></button>
+      <h2 class="modal-title" id="namingSettingsTitle">Filename Settings</h2>
       <div class="modal-body">
         <div class="setting-row">
           <div class="setting-control-group">
@@ -2001,19 +2004,39 @@
       '3x2': { data: null, blob: null, completed: false }
     };
 
+    // Constants for better maintainability
+    const DEFAULT_SETTINGS = {
+      INTERVAL: 10,
+      HIST_THRESHOLD: 0.50,
+      PIXEL_THRESHOLD: 50,
+      FRAMERATE: 30,
+      NUMBERING_STYLE: '001',
+      PREFIX: 'screenshot_'
+    };
+
     // Naming Settings State
     let namingSettings = {
-      prefix: 'screenshot_',
-      numberingStyle: '001',
+      prefix: DEFAULT_SETTINGS.PREFIX,
+      numberingStyle: DEFAULT_SETTINGS.NUMBERING_STYLE,
       includeTimestamp: false,
       includeIndex: true,
       includeFrame: false,
-      framerate: 30
+      framerate: DEFAULT_SETTINGS.FRAMERATE
     };
 
-    const toolInfoIcon = document.getElementById('toolInfoButton');
-    const toolInfoModal = document.getElementById('toolInfoModal');
-    const modalClose = document.getElementById('modalClose');
+    // Utility function for safe DOM element access
+    const safeGetElement = (id, fallback = null) => {
+        const element = document.getElementById(id);
+        if (!element) {
+            console.warn(`Element with id '${id}' not found`);
+            return fallback;
+        }
+        return element;
+    };
+
+    const toolInfoIcon = safeGetElement('toolInfoButton');
+    const toolInfoModal = safeGetElement('toolInfoModal');
+    const modalClose = safeGetElement('modalClose');
 
     const screenshotLightbox = document.getElementById('screenshotLightbox');
     const lightboxClose = document.getElementById('lightboxClose');
@@ -2022,9 +2045,29 @@
         if (show) {
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            
+            // Focus management for accessibility
+            const firstFocusableElement = modal.querySelector('button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (firstFocusableElement) {
+                firstFocusableElement.focus();
+            }
+            
+            // Add ARIA attributes
+            modal.setAttribute('aria-hidden', 'false');
+            modal.setAttribute('aria-modal', 'true');
         } else {
             modal.classList.remove('active');
             document.body.style.overflow = '';
+            
+            // Remove ARIA attributes
+            modal.setAttribute('aria-hidden', 'true');
+            modal.removeAttribute('aria-modal');
+            
+            // Return focus to triggering element if possible
+            const lastActiveElement = document.activeElement;
+            if (lastActiveElement && lastActiveElement.classList.contains('modal-trigger')) {
+                lastActiveElement.focus();
+            }
         }
     }
 
@@ -2391,10 +2434,21 @@
             $('loadedFileName').textContent = '';
             selectFileButton.textContent = "Change File";
             selectFileButton.classList.remove('file-selected');
-            if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
-            if(intervalInput) intervalInput.value = '10'; if(intervalValue) intervalValue.textContent = '10s';
-            if(histThresholdInput) histThresholdInput.value = '0.50'; if(histThresholdValue) histThresholdValue.textContent = '50%';
-            if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
+            // Reset UI values using constants
+            const resetValue = (element, value) => element && (element.textContent = value);
+            const resetInput = (input, value) => input && (input.value = value);
+            
+            resetValue(resolutionValue, '-');
+            resetValue(lengthValue, '-');
+            resetValue(aspectRatioValue, '-');
+            resetValue(bitrateValue, '-');
+            
+            resetInput(intervalInput, DEFAULT_SETTINGS.INTERVAL);
+            resetValue(intervalValue, `${DEFAULT_SETTINGS.INTERVAL}s`);
+            resetInput(histThresholdInput, DEFAULT_SETTINGS.HIST_THRESHOLD);
+            resetValue(histThresholdValue, `${Math.round(DEFAULT_SETTINGS.HIST_THRESHOLD * 100)}%`);
+            resetInput(pixelThresholdInput, DEFAULT_SETTINGS.PIXEL_THRESHOLD);
+            resetValue(pixelThresholdValue, `${DEFAULT_SETTINGS.PIXEL_THRESHOLD}%`);
             if(removeBarsToggle) removeBarsToggle.checked = false;
             if(manualTimeInput) manualTimeInput.value = '0:00';
             if(manualFrameInput) manualFrameInput.value = '0';
@@ -3015,18 +3069,42 @@
         };
 
         const resetUIOnNewVideo = () => {
-             $$('.screenshot-container', screenshotsDiv).forEach(container => {
-                 if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl);
-             });
+            // Properly cleanup blob URLs to prevent memory leaks
+            const cleanupBlobUrls = (containers) => {
+                containers.forEach(container => {
+                    if (container.dataset.blobUrl) {
+                        URL.revokeObjectURL(container.dataset.blobUrl);
+                        delete container.dataset.blobUrl;
+                    }
+                });
+            };
+            
+            // Cleanup all screenshot containers
+            const screenshotContainers = $$('.screenshot-container', screenshotsDiv);
+            cleanupBlobUrls(screenshotContainers);
+            
+            // Cleanup contact sheet preview data
+            contactSheetPreviewData.forEach(item => {
+                if (item?.blobUrl) {
+                    URL.revokeObjectURL(item.blobUrl);
+                }
+            });
+            contactSheetPreviewData.fill(null);
+            
             if(screenshotsDiv) screenshotsDiv.innerHTML = '';
-            screenshotBlobs = []; manualScreenshotBlobs = []; contactSheetBlob = null; cropData = null; currentVideoDuration = 0;
+            screenshotBlobs = []; 
+            manualScreenshotBlobs = []; 
+            contactSheetBlob = null; 
+            cropData = null; 
+            currentVideoDuration = 0;
             clearContactSheetPreview(true);
             Object.keys(gridCache).forEach(key => gridCache[key] = { data: null, blob: null, completed: false });
             $$('.grid-size-tab').forEach(tab => tab.classList.remove('completed'));
-            updateImageCount(); resetProcessingUI('all');
+            updateImageCount(); 
+            resetProcessingUI('all');
             if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
             if(intervalInput) intervalInput.value = '10'; if(intervalValue) intervalValue.textContent = '10s';
-            if(histThresholdInput) histThresholdInput.value = '0.60'; if(histThresholdValue) histThresholdValue.textContent = '60%';
+            if(histThresholdInput) histThresholdInput.value = '0.50'; if(histThresholdValue) histThresholdValue.textContent = '50%';
             if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
 
         };
@@ -3038,10 +3116,27 @@
              const collectedData = new Array(sampleTimestamps.length).fill(null);
              let frameRequestHandle = null;
 
-             if (!videoElement?.src || videoElement.readyState < videoElement.HAVE_METADATA || videoElement.duration <= 0 || !sampleTimestamps?.length) {
-                 const error = new Error(!videoElement?.src ? "Video not loaded." : !sampleTimestamps?.length ? "No timestamps provided." : "Video not ready for sampling.");
+             // Validate input parameters with better error messages
+             if (!videoElement?.src) {
+                 const error = new Error("Video not loaded. Please select a video file first.");
                  console.error("sampleVideoFrames error:", error.message);
-                 if (onErrorCallback) onErrorCallback(error); else console.error(error);
+                 if (onErrorCallback) onErrorCallback(error);
+                 if (onCompleteCallback) onCompleteCallback(collectedData);
+                 return { cancel: () => { localCancelRequested = true; } };
+             }
+             
+             if (videoElement.readyState < videoElement.HAVE_METADATA || videoElement.duration <= 0) {
+                 const error = new Error("Video not ready for sampling. Please wait for video to load completely.");
+                 console.error("sampleVideoFrames error:", error.message);
+                 if (onErrorCallback) onErrorCallback(error);
+                 if (onCompleteCallback) onCompleteCallback(collectedData);
+                 return { cancel: () => { localCancelRequested = true; } };
+             }
+             
+             if (!sampleTimestamps?.length) {
+                 const error = new Error("No timestamps provided. Please set at least one timestamp for extraction.");
+                 console.error("sampleVideoFrames error:", error.message);
+                 if (onErrorCallback) onErrorCallback(error);
                  if (onCompleteCallback) onCompleteCallback(collectedData);
                  return { cancel: () => { localCancelRequested = true; } };
              }
@@ -3161,7 +3256,6 @@
                  if (videoElement.currentTime.toFixed(2) !== targetTime.toFixed(2)) {
                     videoElement.currentTime = targetTime;
                  } else {
-                    // Already at the right time, might not trigger 'seeked'
                     cleanupListeners();
                     setTimeout(drawLogic, 60); // Manually trigger draw logic slightly later
                  }
@@ -3828,6 +3922,17 @@
              dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); });
              dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); const file = e.dataTransfer.files[0]; if (file?.type.startsWith('video/')) handleFileLoad(file); else alert("Please drop a valid video file."); });
              dropZone.addEventListener('click', (e) => { if (dropZone.classList.contains('file-loaded')) { if (selectFileButton && !selectFileButton.contains(e.target) && videoInput) videoInput.click(); } else { if (initialSelectFileButton && !initialSelectFileButton.contains(e.target) && !tryExampleButton.contains(e.target) && videoInput) videoInput.click(); } });
+             // Keyboard activation for accessibility
+             dropZone.addEventListener('keydown', (e) => {
+               if (e.key === 'Enter' || e.key === ' ') {
+                 e.preventDefault();
+                 if (dropZone.classList.contains('file-loaded')) {
+                   if (selectFileButton && videoInput) videoInput.click();
+                 } else {
+                   if (videoInput) videoInput.click();
+                 }
+               }
+             });
         }
         if (selectFileButton) selectFileButton.addEventListener('click', (e) => { e.stopPropagation(); if(videoInput) videoInput.click(); });
         if (initialSelectFileButton) initialSelectFileButton.addEventListener('click', (e) => { e.stopPropagation(); if(videoInput) videoInput.click(); });
@@ -3858,7 +3963,9 @@
                    const newMode = tab.getAttribute('data-mode');
                    const previousMode = currentMode;
                    if (!newMode || !modeContentDiv) return; currentMode = newMode;
-                   modeTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active');
+                   modeTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+                   tab.classList.add('active');
+                   tab.setAttribute('aria-selected', 'true');
                    $$('.mode-content > div', modeContentDiv).forEach(contentDiv => { contentDiv.classList.toggle('active', contentDiv.id === `${newMode}Mode`); });
                    outputColumn.classList.toggle('show-grid', newMode === 'contactSheet');
 
@@ -3978,7 +4085,9 @@
                           }
                     }
 
-                    gridSizeTabs.forEach(t => t.classList.remove('active')); tab.classList.add('active');
+                    gridSizeTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-pressed', 'true');
 
                     const cachedGrid = gridCache[newCacheKey];
                     clearContactSheetPreview(true); // Clear first
@@ -4164,17 +4273,20 @@
 
 
         const drawTimestampOverlay = (canvas, timestamp) => {
+            // Only draw if Pro Mode is enabled
             const proModeToggle = document.getElementById('proModeToggle');
             if (!proModeToggle || !proModeToggle.checked) return;
             
             const ctx = canvas.getContext('2d');
             
-            // Get the current framerate from the input field and set it on canvas
+            // Cache DOM queries for better performance
             const framerateInput = document.getElementById('framerateInput');
-            const currentFramerate = framerateInput ? parseFloat(framerateInput.value) || 30 : 30;
+            const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
+            
+            // Get the current framerate from the input field and set it on canvas
+            const currentFramerate = framerateInput ? parseFloat(framerateInput.value) || DEFAULT_SETTINGS.FRAMERATE : DEFAULT_SETTINGS.FRAMERATE;
             canvas.framerate = currentFramerate;
             
-            const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
             if (timecodeFormatSelect && timecodeFormatSelect.value !== 'off' && timestamp && timestamp >= 0) {
 
                 const timestampText = formatTimecode(timestamp, timecodeFormatSelect.value, canvas.framerate);
@@ -4335,7 +4447,9 @@
              smartAlgoTabs.forEach(tab => {
                  tab.addEventListener('click', () => {
                      if (processingActive) return; const algo = tab.getAttribute('data-algo'); if(!algo) return; smartAlgorithm = algo;
-                     $$('.smart-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active');
+                     $$('.smart-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
+                     tab.classList.add('active');
+                     tab.setAttribute('aria-pressed', 'true');
                      updateThresholdSliders(algo);
                  });
              });
@@ -4950,8 +5064,9 @@
           const size = tab.getAttribute('data-size');
           if (!size) return;
           
-          timecodeSizeTabs.forEach(t => t.classList.remove('active'));
+          timecodeSizeTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
           tab.classList.add('active');
+          tab.setAttribute('aria-pressed', 'true');
           window.timecodeSize = size;
         });
       });
@@ -4998,15 +5113,20 @@
     let timecodeFormat = 'off';
 
     function initializeProModeDefaults() {
-      if (framerateInput) framerateInput.value = '30';
+      // Use constants for default values
+      if (framerateInput) framerateInput.value = DEFAULT_SETTINGS.FRAMERATE.toString();
       if (timecodeFormatSelect) timecodeFormatSelect.value = 'off';
       if (proModeToggle) proModeToggle.checked = false;
-      if (addTimestampGroup) addTimestampGroup.style.display = 'none';
-      if (customTextGroup) customTextGroup.style.display = 'none';
-      if (framerateRow) framerateRow.style.display = 'none';
+      
+      // Hide Pro Mode specific UI elements
+      const proModeElements = [addTimestampGroup, customTextGroup, framerateRow];
+      proModeElements.forEach(element => {
+        if (element) element.style.display = 'none';
+      });
+      
       if (customTextInput) customTextInput.value = '';
       
-      // Don't hide timecodeSizeGroup here, let the timecode format logic handle it
+      // Note: timecodeSizeGroup visibility is handled by timecode format logic
     }
     
     if (proModeToggle && addTimestampGroup) {
