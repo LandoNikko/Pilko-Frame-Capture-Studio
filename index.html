@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo+Play:wght@400&family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root {
@@ -1993,7 +1994,7 @@
     let verticalSeparatorElement = null;
     let cropData = null;
     let removeBarsEnabled = false;
-    let addTimestampEnabled = false;
+    
     let gridCache = {
       '5x4': { data: null, blob: null, completed: false },
       '4x3': { data: null, blob: null, completed: false },
@@ -2196,7 +2197,6 @@
         const largeGridDisclaimer = $('largeGridDisclaimer');
         // Other
         const removeBarsToggle = $('removeBarsToggle');
-        const addTimestampToggle = $('addTimestampToggle');
         const screenshotsDiv = $('screenshots');
         const video = $('video');
         const canvas = $('canvas');
@@ -2396,7 +2396,6 @@
             if(histThresholdInput) histThresholdInput.value = '0.50'; if(histThresholdValue) histThresholdValue.textContent = '50%';
             if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
             if(removeBarsToggle) removeBarsToggle.checked = false;
-            if(addTimestampToggle) addTimestampToggle.checked = false;
             if(manualTimeInput) manualTimeInput.value = '0:00';
             if(manualFrameInput) manualFrameInput.value = '0';
             if(captureFormatSelect) captureFormatSelect.value = 'png';
@@ -2783,9 +2782,18 @@
                      frameNumberSpan.textContent = '';
                      return;
                  }
+
                  const newBlobUrl = item.blobUrl;
 
-                 lightboxImage.src = newBlobUrl;
+
+                 if (lightboxImage.src === newBlobUrl) {
+                     lightboxImage.src = '';
+                     setTimeout(() => {
+                         lightboxImage.src = newBlobUrl;
+                     }, 10);
+                 } else {
+                     lightboxImage.src = newBlobUrl;
+                 }
                  lightboxImage.dataset.blobUrl = newBlobUrl;
 
                  lightboxTimestamp.textContent = item.timestamp >= 0 ? formatTime(item.timestamp) : '';
@@ -4154,21 +4162,22 @@
             }
         });
 
-        if (addTimestampToggle) addTimestampToggle.addEventListener('change', (e) => {
-            addTimestampEnabled = e.target.checked;
-        });
 
         const drawTimestampOverlay = (canvas, timestamp) => {
-            // Only draw if Pro Mode is enabled
             const proModeToggle = document.getElementById('proModeToggle');
             if (!proModeToggle || !proModeToggle.checked) return;
             
             const ctx = canvas.getContext('2d');
             
-            // Draw timecode overlay if enabled
+            // Get the current framerate from the input field and set it on canvas
+            const framerateInput = document.getElementById('framerateInput');
+            const currentFramerate = framerateInput ? parseFloat(framerateInput.value) || 30 : 30;
+            canvas.framerate = currentFramerate;
+            
             const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
             if (timecodeFormatSelect && timecodeFormatSelect.value !== 'off' && timestamp && timestamp >= 0) {
-                const timestampText = formatTimecode(timestamp, timecodeFormatSelect.value, canvas.framerate || 30);
+
+                const timestampText = formatTimecode(timestamp, timecodeFormatSelect.value, canvas.framerate);
                 
                 // Calculate font size based on timecode size selection
                 let fontSize = 16; // Default M size
@@ -4184,8 +4193,8 @@
                 ctx.textBaseline = 'bottom';
                 const textMetrics = ctx.measureText(timestampText);
                 const textWidth = textMetrics.width;
-                const textHeight = fontSize + 4; // Adjust height based on font size
-                const padding = Math.max(10, fontSize / 4); // Scale padding with font size
+                const textHeight = fontSize + 4;
+                const padding = Math.max(10, fontSize / 4);
                 const x = canvas.width - padding;
                 const y = canvas.height - padding;
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
@@ -4194,12 +4203,10 @@
                 ctx.fillText(timestampText, x, y);
             }
             
-            // Draw custom text overlay if provided
             const customTextInput = document.getElementById('customTextInput');
             if (customTextInput && customTextInput.value.trim()) {
                 const customText = customTextInput.value.trim();
                 
-                // Use same font size as timecode for consistency
                 let fontSize = 16; // Default M size
                 switch (window.timecodeSize || 'M') {
                     case 'S': fontSize = 16; break;
@@ -4247,7 +4254,6 @@
                 ctx.textAlign = textAlign;
                 ctx.textBaseline = textBaseline;
                 
-                // Calculate background rectangle position
                 let bgX, bgY;
                 if (textAlign === 'left') {
                     bgX = x - padding;
@@ -4268,7 +4274,7 @@
             }
         };
 
-        // Helper to format timecode
+
         function formatTimecode(seconds, format, framerate) {
             if (isNaN(seconds)) seconds = 0;
             framerate = framerate || 30;
@@ -4950,7 +4956,6 @@
         });
       });
       
-      // Custom text corner position toggle
       window.customTextPosition = 'bottom-left'; // bottom-left, top-right, top-left
       const cornerPositionBtn = document.getElementById('cornerPositionBtn');
       if (cornerPositionBtn) {
@@ -5035,10 +5040,8 @@
     if (timecodeFormatSelect) {
       timecodeFormatSelect.addEventListener('change', (e) => {
         timecodeFormat = e.target.value;
-        addTimestampEnabled = timecodeFormat !== 'off';
       });
       timecodeFormat = timecodeFormatSelect.value;
-      addTimestampEnabled = timecodeFormat !== 'off';
     }
 
 
