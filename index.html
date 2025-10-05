@@ -1913,7 +1913,7 @@
         </div>
         <div class="lightbox-nav-controls">
             <div class="lightbox-frame-adjust-controls">
-                <button class="lightbox-adjust-btn" id="lightboxAdjustPrev" title="Cut backward by 1s (Hotkey: Q)" aria-label="Cut backward by 1 second">-<i class="ri-scissors-line icon-flipped"></i></button>
+                <button class="lightbox-adjust-btn" id="lightboxAdjustPrev" title="Cut backward by 0.2s (Hotkey: Q)" aria-label="Cut backward by 0.2 seconds">-<i class="ri-scissors-line icon-flipped"></i></button>
             </div>
             <button class="lightbox-nav-btn prev-btn" id="lightboxPrevBtn" title="Hotkeys: 🡨, A" aria-label="Previous frame">
               <span class="nav-icon"><i class="ri-arrow-drop-left-line"></i></span>
@@ -1925,7 +1925,7 @@
               <span class="nav-icon"><i class="ri-arrow-drop-right-line"></i></span>
             </button>
              <div class="lightbox-frame-adjust-controls">
-                <button class="lightbox-adjust-btn" id="lightboxAdjustNext" title="Cut forward by 1s (Hotkey: E)" aria-label="Cut forward by 1 second"><i class="ri-scissors-line"></i>+</button>
+                <button class="lightbox-adjust-btn" id="lightboxAdjustNext" title="Cut forward by 0.2s (Hotkey: E)" aria-label="Cut forward by 0.2 seconds"><i class="ri-scissors-line"></i>+</button>
             </div>
         </div>
         <a id="lightboxDownload" href="#" download="screenshot.png" class="lightbox-action-btn lightbox-download-btn"><span>Download</span> <i class="ri-download-2-line"></i></a>
@@ -2004,7 +2004,6 @@
       '3x2': { data: null, blob: null, completed: false }
     };
 
-    // Constants for better maintainability
     const DEFAULT_SETTINGS = {
       INTERVAL: 10,
       HIST_THRESHOLD: 0.50,
@@ -2014,7 +2013,6 @@
       PREFIX: 'screenshot_'
     };
 
-    // Naming Settings State
     let namingSettings = {
       prefix: DEFAULT_SETTINGS.PREFIX,
       numberingStyle: DEFAULT_SETTINGS.NUMBERING_STYLE,
@@ -2024,7 +2022,6 @@
       framerate: DEFAULT_SETTINGS.FRAMERATE
     };
 
-    // Utility function for safe DOM element access
     const safeGetElement = (id, fallback = null) => {
         const element = document.getElementById(id);
         if (!element) {
@@ -2046,24 +2043,20 @@
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
             
-            // Focus management for accessibility
             const firstFocusableElement = modal.querySelector('button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
             if (firstFocusableElement) {
                 firstFocusableElement.focus();
             }
             
-            // Add ARIA attributes
             modal.setAttribute('aria-hidden', 'false');
             modal.setAttribute('aria-modal', 'true');
         } else {
             modal.classList.remove('active');
             document.body.style.overflow = '';
             
-            // Remove ARIA attributes
             modal.setAttribute('aria-hidden', 'true');
             modal.removeAttribute('aria-modal');
             
-            // Return focus to triggering element if possible
             const lastActiveElement = document.activeElement;
             if (lastActiveElement && lastActiveElement.classList.contains('modal-trigger')) {
                 lastActiveElement.focus();
@@ -2464,7 +2457,6 @@
                  btn.disabled = !video?.src;
                  btn.innerHTML = '';
                  
-                 // All buttons now have icon after text
                  btn.appendChild(document.createTextNode(text));
                  if (iconClass) {
                      const icon = document.createElement('i');
@@ -2709,8 +2701,8 @@
                     return btn;
                 };
                 
-                btnContainer.appendChild(createAdjustBtn('-', -1, 'Cut forward by 1s'));
-                btnContainer.appendChild(createAdjustBtn('+', 1, 'Cut backward by 1s'));
+                btnContainer.appendChild(createAdjustBtn('-', -0.2, 'Cut forward by 0.2s'));
+                btnContainer.appendChild(createAdjustBtn('+', 0.2, 'Cut backward by 0.2s'));
                 container.appendChild(btnContainer);
             }
 
@@ -2804,8 +2796,8 @@
                  }
              };
 
-             lightboxAdjustPrev.onclick = () => adjustFrameTimeFromLightbox(-1);
-             lightboxAdjustNext.onclick = () => adjustFrameTimeFromLightbox(1);
+             lightboxAdjustPrev.onclick = () => adjustFrameTimeFromLightbox(-0.2);
+             lightboxAdjustNext.onclick = () => adjustFrameTimeFromLightbox(0.2);
 
              updateNavButtonVisibility(currentIndex, blobArrayRef.length);
          };
@@ -2903,11 +2895,9 @@
              const { type } = getCurrentFormatSettings();
              const extension = getFileExtensionFromType(type);
              
-             // Use the current prefix from the input field, or fall back to namingSettings.prefix
              const currentPrefix = filenamePrefix?.value ?? namingSettings.prefix;
              let filename = currentPrefix;
              
-             // Add index if enabled
              if (namingSettings.includeIndex) {
                  const paddedIndex = (index + 1).toString().padStart(namingSettings.numberingStyle.length, '0');
                  filename += paddedIndex;
@@ -2918,7 +2908,6 @@
                  const timestampStr = formatTime(item.timestamp).replace(/:/g, '-');
                  filename += filename.length > namingSettings.prefix.length ? '_' + timestampStr : timestampStr;
              }
-             // Add frame if enabled
              if (namingSettings.includeFrame && item.timestamp !== undefined && item.timestamp >= 0) {
                  const framerate = namingSettings.framerate || 30;
                  const frameNum = Math.round(item.timestamp * framerate);
@@ -2975,7 +2964,6 @@
                     updateDropZoneThumbnail();
                     resetProcessingUI('all');
                     calculateGridOutputHeight();
-                    // Initial setup for grid inputs based on new duration
                      if (currentMode === 'contactSheet') {
                         const activeGridSizeTab = $$('.grid-size-tab.active')[0];
                         const rows = parseInt(activeGridSizeTab?.getAttribute('data-rows') || 4);
@@ -2984,7 +2972,6 @@
                             generateTimeInputs(rows, cols);
                          }
                      }
-                     // Setup manual fine-tune controls
                      setupManualFineTuneControls();
                 };
 
@@ -3069,7 +3056,7 @@
         };
 
         const resetUIOnNewVideo = () => {
-            // Properly cleanup blob URLs to prevent memory leaks
+            // Cleanup blob URLs to prevent memory leaks
             const cleanupBlobUrls = (containers) => {
                 containers.forEach(container => {
                     if (container.dataset.blobUrl) {
@@ -3079,11 +3066,9 @@
                 });
             };
             
-            // Cleanup all screenshot containers
             const screenshotContainers = $$('.screenshot-container', screenshotsDiv);
             cleanupBlobUrls(screenshotContainers);
             
-            // Cleanup contact sheet preview data
             contactSheetPreviewData.forEach(item => {
                 if (item?.blobUrl) {
                     URL.revokeObjectURL(item.blobUrl);
@@ -3116,7 +3101,6 @@
              const collectedData = new Array(sampleTimestamps.length).fill(null);
              let frameRequestHandle = null;
 
-             // Validate input parameters with better error messages
              if (!videoElement?.src) {
                  const error = new Error("Video not loaded. Please select a video file first.");
                  console.error("sampleVideoFrames error:", error.message);
@@ -3329,14 +3313,14 @@
                 errorHandler = (e) => {
                     console.error("Seek error during crop detection sample:", e);
                     cleanupSampleListeners();
-                    sampleResults.push({ topCrop: 0, bottomCrop: video.videoHeight - 1, leftCrop: 0, rightCrop: video.videoWidth - 1 }); // Assume no crop on error
+                    sampleResults.push({ topCrop: 0, bottomCrop: video.videoHeight - 1, leftCrop: 0, rightCrop: video.videoWidth - 1 });
                     currentSample++;
                     processNextSample();
                 };
 
                 video.addEventListener("seeked", seekedHandler, { once: true });
                 video.addEventListener("error", errorHandler, { once: true });
-                try { if (Math.abs(video.currentTime - sampleTime) > 0.1) video.currentTime = sampleTime; else { cleanupSampleListeners(); seekedHandler(); } } // Trigger manually if close
+                try { if (Math.abs(video.currentTime - sampleTime) > 0.1) video.currentTime = sampleTime; else { cleanupSampleListeners(); seekedHandler(); } }
                 catch (err) { errorHandler(err); }
             }
             processNextSample();
@@ -3351,7 +3335,7 @@
             let color = 'var(--accent-interval)';
              // Determine slider color
              if (slider.id === 'jpegQualityGlobal' || slider.id === 'webpQualityGlobal') {
-                 color = 'var(--text-secondary)'; // Use a neutral or primary accent for global settings
+                 color = 'var(--text-secondary)';
              }
              else if (slider.closest('#autoSmartMode')) { color = 'var(--accent-secondary)'; }
              else if (slider.closest('#manualMode')) { color = 'var(--accent-primary)'; }
@@ -3362,15 +3346,12 @@
         const setupSlider = (slider, displaySpan, suffix) => {
             if (!slider || !displaySpan) return;
             const updateUI = () => { 
-                // Special handling for histogram threshold (convert to percentage)
                 if (slider.id === 'histThresholdInput') {
                     displaySpan.textContent = Math.round(slider.value * 100) + '%';
                 }
-                // Special handling for pixel threshold (add % sign)
                 else if (slider.id === 'pixelThresholdInput') {
                     displaySpan.textContent = slider.value + '%';
                 }
-                // Default handling for other sliders
                 else {
                     displaySpan.textContent = slider.value + suffix;
                 }
@@ -3391,7 +3372,7 @@
              captureFormatSelect.addEventListener('change', updateVisibility);
              setupSlider(jpegQualityGlobal, jpegQualityGlobalValue, '%');
              setupSlider(webpQualityGlobal, webpQualityGlobalValue, '%');
-             updateVisibility(); // Initial call
+             updateVisibility();
         };
 
         const updateDropZoneThumbnail = () => {
@@ -3465,8 +3446,8 @@
                     btn.title = title;
                     btn.addEventListener('click', (e) => { e.stopPropagation(); adjustFrameTime(i, offset); }); return btn;
                 };
-                btnContainer.appendChild(createAdjustBtn('-', -1, 'Cut forward by 1s'));
-                btnContainer.appendChild(createAdjustBtn('+', 1, 'Cut backward by 1s'));
+                btnContainer.appendChild(createAdjustBtn('-', -0.2, 'Cut forward by 0.2s'));
+                btnContainer.appendChild(createAdjustBtn('+', 0.2, 'Cut backward by 0.2s'));
                 cell.appendChild(btnContainer);
 
                 cell.addEventListener('mouseenter', () => {
@@ -3537,22 +3518,20 @@
             if (triggerFrameUpdate) handleFineTuneChange(index, clampedTime);
         };
 
-        // This function now ONLY updates the preview cell and marks the sheet as needing regeneration
         const handleFineTuneChange = debounce((index, newTime) => {
             if (isNaN(newTime) || newTime < 0 || !video?.src || video.readyState < 1) return;
              captureFrameAtTime(newTime, (blob) => {
                  if (blob) {
-                     updatePreviewCell(index, blob, newTime); // Update visual cell and data array
+                     updatePreviewCell(index, blob, newTime);
 
-                     // Mark sheet as needing regeneration
-                     contactSheetBlob = null; // Invalidate the final blob
+                     contactSheetBlob = null;
                      const activeTab = $$('.grid-size-tab.active')[0];
                      if (activeTab) activeTab.classList.remove('completed');
                      const { rows, cols } = activeTab ? activeTab.dataset : { rows: 4, cols: 5 };
                      const cacheKey = `${cols}x${rows}`;
                      if (gridCache[cacheKey]) {
                          gridCache[cacheKey].completed = false;
-                         gridCache[cacheKey].blob = null; // Also clear blob from cache
+                         gridCache[cacheKey].blob = null;
                      }
 
                      if (processContactSheetButton) {
@@ -3723,8 +3702,6 @@
              const numSamples = rows * cols;
              const isLargeGrid = rows > 6 || cols > 6;
 
-             // --- Read timestamps from current input fields ---
-             // This ensures manual changes are captured when Update is clicked
              const sampleTimestamps = [];
              console.log("Reading current input values for sheet generation.");
              for (let i = 0; i < numSamples; i++) {
@@ -3739,7 +3716,6 @@
                      const percent = startPercent + (i * step);
                      const time = Math.max(0.01, Math.min(percent * currentVideoDuration, currentVideoDuration ? currentVideoDuration - 0.01 : 0.01));
                      sampleTimestamps.push(time);
-                     // Update visual input only if it exists and we calculated default
                      if (!isLargeGrid && input && isNaN(existingValue)) {
                          const timeFormatted = $(`timeFormatted_${i}`);
                          input.value = time.toFixed(2);
@@ -3747,11 +3723,9 @@
                          console.warn(`Calculated default for invalid input at index ${i}.`);
                      }
                  } else {
-                    // Use the valid value from the input
                     sampleTimestamps.push(Math.max(0.01, Math.min(existingValue, currentVideoDuration ? currentVideoDuration - 0.01 : 0.01)));
                  }
              }
-             // --- End Timestamp Reading ---
 
              if (sampleTimestamps.length === 0 || sampleTimestamps.length !== numSamples) {
                  alert("Error: Could not calculate timestamps for grid.");
@@ -3768,7 +3742,7 @@
              });
              contactSheetPreviewData.forEach(data => { if (data?.blobUrl) URL.revokeObjectURL(data.blobUrl); });
              contactSheetPreviewData = new Array(numSamples).fill(null);
-             contactSheetBlob = null; // Always clear the old final blob before regeneration
+             contactSheetBlob = null;
 
 
              try {
@@ -3792,9 +3766,8 @@
                  currentSamplingProcess = sampleVideoFrames({
                      videoElement: video, sampleTimestamps, outputType: 'blob', useCrop: removeBarsEnabled,
                      processFrameCallback: (blob, timestamp, index) => {
-                         // Index corresponds to the position in sampleTimestamps
                          if (index >= 0 && index < contactSheetPreviewData.length) {
-                             updatePreviewCell(index, blob, timestamp); // Updates preview AND data array
+                             updatePreviewCell(index, blob, timestamp);
                          } else { console.warn(`Invalid index ${index} received in processFrameCallback`); }
                      },
                      onProgressCallback: (progress) => { if (progressBarFillContactSheet) progressBarFillContactSheet.style.width = `${progress}%`; },
@@ -3811,7 +3784,6 @@
                             return;
                          }
 
-                         // --- Start Final Image Compositing ---
                          const renderCols = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-cols') || 5);
                          const renderRows = parseInt($$('.grid-size-tab.active')[0]?.getAttribute('data-rows') || 4);
                          const targetWidth = parseInt(gridOutputWidth?.value || 2000);
@@ -3819,7 +3791,6 @@
 
                          const imageLoadPromises = validPreviewData.map(({ blob, timestamp, blobUrl }, index) => new Promise((resolve) => {
                              const img = new Image();
-                             // Find the original index in the full previewData array based on the blobUrl
                              const originalIndex = contactSheetPreviewData.findIndex(d => d?.blobUrl === blobUrl);
                              img.onload = () => resolve({img, tempUrl: blobUrl, aspectRatio: img.width / img.height, originalIndex });
                              img.onerror = (err) => { console.warn(`Failed to load image for grid cell (ts: ${timestamp})`); resolve(null); };
@@ -3877,7 +3848,6 @@
                              catch (drawError) { console.error(`Error drawing image for cell ${originalIndex}:`, drawError); }
                              // No need to revoke tempUrl here
                          });
-                         // --- End Final Image Compositing ---
 
                         if (imagesDrawn > 0) {
                             contactSheetCanvas.toBlob((finalBlob) => {
@@ -3885,7 +3855,6 @@
                                     contactSheetBlob = finalBlob;
                                     const activeTab = $$('.grid-size-tab.active')[0];
                                     if (activeTab) { activeTab.classList.add('completed'); const { rows, cols } = activeTab.dataset; const cacheKey = `${cols}x${rows}`; gridCache[cacheKey] = { data: [...contactSheetPreviewData], blob: finalBlob, completed: true }; }
-                                     // Re-enable buttons and remove update indicators
                                     if (downloadContactSheetButton) { downloadContactSheetButton.disabled = false; downloadContactSheetButton.classList.remove('needs-update'); downloadContactSheetButton.title = ''; }
                                     if (previewContactSheetButton) { previewContactSheetButton.disabled = false; previewContactSheetButton.classList.remove('needs-update'); previewContactSheetButton.title = '';}
                                 } else {
@@ -3922,7 +3891,6 @@
              dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); });
              dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('hover'); const file = e.dataTransfer.files[0]; if (file?.type.startsWith('video/')) handleFileLoad(file); else alert("Please drop a valid video file."); });
              dropZone.addEventListener('click', (e) => { if (dropZone.classList.contains('file-loaded')) { if (selectFileButton && !selectFileButton.contains(e.target) && videoInput) videoInput.click(); } else { if (initialSelectFileButton && !initialSelectFileButton.contains(e.target) && !tryExampleButton.contains(e.target) && videoInput) videoInput.click(); } });
-             // Keyboard activation for accessibility
              dropZone.addEventListener('keydown', (e) => {
                if (e.key === 'Enter' || e.key === ' ') {
                  e.preventDefault();
@@ -3938,7 +3906,6 @@
         if (initialSelectFileButton) initialSelectFileButton.addEventListener('click', (e) => { e.stopPropagation(); if(videoInput) videoInput.click(); });
         if (tryExampleButton) tryExampleButton.addEventListener('click', (e) => { e.stopPropagation(); handleExampleVideoLoad(); });
 
-        // Add hover effects for buttons to trigger dropzone hover
         if (initialSelectFileButton) {
             initialSelectFileButton.addEventListener('mouseenter', () => {
                 if (!dropZone.classList.contains('file-loaded')) dropZone.classList.add('hover');
@@ -4005,12 +3972,12 @@
                             if (cachedGrid?.data) {
                                 contactSheetPreviewData = cachedGrid.data;
                                 contactSheetBlob = cachedGrid.blob;
-                                generateTimeInputs(rows, cols); // Generate inputs *after* potentially restoring data
+                                generateTimeInputs(rows, cols);
 
                                 contactSheetPreviewData.forEach((data, index) => {
                                     if (data?.blob) {
                                         const blobUrl = URL.createObjectURL(data.blob);
-                                        contactSheetPreviewData[index].blobUrl = blobUrl; // Update blobUrl in restored data
+                                        contactSheetPreviewData[index].blobUrl = blobUrl;
                                         updatePreviewCell(index, data.blob, data.timestamp);
                                         $(`timeInput_${index}`).value = data.timestamp.toFixed(2);
                                         $(`timeFormatted_${index}`).value = formatTime(data.timestamp);
@@ -4022,7 +3989,6 @@
                                 generateTimeInputs(rows, cols);
                             }
                         } else {
-                            // If inputs are hidden, ensure data array is correct size but has no blobs
                             contactSheetPreviewData = new Array(rows * cols).fill(null);
                             contactSheetBlob = null;
                          }
@@ -4050,7 +4016,7 @@
              const isLargeGrid = rows > 6 || cols > 6;
              contactSheetControlsElement.style.display = isLargeGrid ? 'none' : 'grid';
              largeGridDisclaimer.style.display = isLargeGrid ? 'block' : 'none';
-             return !isLargeGrid; // Return true if inputs should be generated
+             return !isLargeGrid;
         };
 
 
@@ -4093,7 +4059,6 @@
                     clearContactSheetPreview(true); // Clear first
                     initContactSheetPreview(rows, cols); // Initialize preview grid
 
-                     // Show/hide controls *before* trying to generate inputs
                      const showInputs = updateContactSheetControlsVisibility(rows, cols);
 
                     if (cachedGrid?.data) {
@@ -4108,7 +4073,6 @@
                                 const blobUrl = URL.createObjectURL(data.blob);
                                 contactSheetPreviewData[index].blobUrl = blobUrl; // Update blobUrl in restored data
                                 updatePreviewCell(index, data.blob, data.timestamp);
-                                // Update inputs only if they exist
                                 const timeInput = $(`timeInput_${index}`);
                                 const timeFormatted = $(`timeFormatted_${index}`);
                                 if (timeInput) timeInput.value = data.timestamp.toFixed(2);
@@ -4122,7 +4086,7 @@
                          contactSheetPreviewData = new Array(rows * cols).fill(null);
                          contactSheetBlob = null;
                          if (showInputs) {
-                            generateTimeInputs(rows, cols); // Generate default inputs only if not too large
+                            generateTimeInputs(rows, cols);
                          }
                          tab.classList.remove('completed');
                          if (processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Sheet';
@@ -4136,7 +4100,6 @@
                         processContactSheetButton.style.background = '';
                      }
                      
-                     // Recalculate output height when grid size changes
                      calculateGridOutputHeight();
                 });
             });
@@ -4242,7 +4205,6 @@
             gridOutputWidth.addEventListener('focus', (e) => e.target.select());
         }
 
-        // Setup global format controls
         initGlobalFormatControls();
         // Setup mode-specific sliders
         setupSlider(intervalInput, intervalValue, 's');
@@ -4279,11 +4241,9 @@
             
             const ctx = canvas.getContext('2d');
             
-            // Cache DOM queries for better performance
             const framerateInput = document.getElementById('framerateInput');
             const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
             
-            // Get the current framerate from the input field and set it on canvas
             const currentFramerate = framerateInput ? parseFloat(framerateInput.value) || DEFAULT_SETTINGS.FRAMERATE : DEFAULT_SETTINGS.FRAMERATE;
             canvas.framerate = currentFramerate;
             
@@ -4291,8 +4251,7 @@
 
                 const timestampText = formatTimecode(timestamp, timecodeFormatSelect.value, canvas.framerate);
                 
-                // Calculate font size based on timecode size selection
-                let fontSize = 16; // Default M size
+                let fontSize = 16;
                 switch (window.timecodeSize || 'M') {
                     case 'S': fontSize = 16; break;
                     case 'L': fontSize = 64; break;
@@ -4731,7 +4690,6 @@
             
             if (!manualTimeInput || !manualFrameInput || !manualVideo) return;
             
-            // Calculate frame rate (assuming 30fps if not available)
             const getFrameRate = () => {
                 const framerateInput = document.getElementById('framerateInput');
                 if (!framerateInput) return 30;
@@ -4780,7 +4738,6 @@
             });
             
             manualFrameInput.addEventListener('input', (e) => {
-                // Only allow numbers
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
             });
             
@@ -4891,11 +4848,7 @@
             
             manualTimeInput.addEventListener('focus', (e) => e.target.select());
             manualFrameInput.addEventListener('focus', (e) => e.target.select());
-            
-            // Listen to video time updates
             manualVideo.addEventListener('timeupdate', updateManualDisplays);
-            
-            // Initial update
             updateManualDisplays();
         };
 
@@ -5094,7 +5047,6 @@
           }
         });
         
-        // Set initial title and rotation
         cornerPositionBtn.title = 'Text position: Bottom Left';
         const svg = cornerPositionBtn.querySelector('svg');
         svg.style.transform = 'rotate(0deg)';
@@ -5113,7 +5065,6 @@
     let timecodeFormat = 'off';
 
     function initializeProModeDefaults() {
-      // Use constants for default values
       if (framerateInput) framerateInput.value = DEFAULT_SETTINGS.FRAMERATE.toString();
       if (timecodeFormatSelect) timecodeFormatSelect.value = 'off';
       if (proModeToggle) proModeToggle.checked = false;
@@ -5151,6 +5102,11 @@
         
         if (!isEnabled) {
           initializeProModeDefaults();
+        } else {
+          if (timecodeFormatSelect) {
+            timecodeFormatSelect.value = 'hh:mm:ss:ff';
+            timecodeFormat = 'hh:mm:ss:ff';
+          }
         }
       });
     }
