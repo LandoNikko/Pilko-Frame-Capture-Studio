@@ -1154,7 +1154,17 @@
         width: 36px;
         height: 36px;
         display: flex;
+        align-items: center;
+        justify-content: center;
         z-index: 10;
+        border: none;
+        padding: 0;
+        font-size: 24px;
+    }
+
+    .screenshot-lightbox-content .modal-close i {
+        vertical-align: baseline;
+        margin: 0;
     }
 
     
@@ -1541,9 +1551,9 @@
                 </div>
             </div>
             <div id="buttonRow">
-                <button id="initialSelectFileButton" type="button" aria-label="Select a video file to process">Select a File</button>
+                <button id="initialSelectFileButton" type="button" aria-label="Upload a video file to process">Upload File</button>
                 <span id="orText">or</span>
-                <button id="tryExampleButton" type="button" aria-label="Try with example video">Try Example Video</button>
+                <button id="tryExampleButton" type="button" aria-label="Try with example video">Try with Example Video</button>
             </div>
             <input type="file" id="videoInput" accept="video/*" aria-label="Select video file">
         </div>
@@ -1630,7 +1640,7 @@
                 <div class="setting-control-group" id="customTextGroup" style="display:none;">
                     <label class="slider-label">
                         Add Text Overlay
-                        <i class="ri-question-line info-icon-inline" title="Add custom text overlay to generated frames and rotate its position with the button on the right." id="customTextInfoIcon"></i>
+                        <i class="ri-question-line info-icon-inline" title="Add custom text overlay" id="customTextInfoIcon"></i>
                     </label>
                     <div class="format-controls">
                         <input type="text" id="customTextInput" class="value-input" placeholder="Enter custom text..." style="width: 170px;">
@@ -1645,7 +1655,7 @@
                 <div class="setting-control-group" id="customImageGroup" style="display:none;">
                     <label class="slider-label">
                         Add Image Overlay
-                        <i class="ri-question-line info-icon-inline" title="Intended to add a logo or watermark." id="customImageInfoIcon"></i>
+                        <i class="ri-question-line info-icon-inline" title="Intended to add a logo or watermark" id="customImageInfoIcon"></i>
                     </label>
                     <div class="format-controls">
                         <input type="file" id="customImageInput" accept="image/*" style="display:none;">
@@ -1668,7 +1678,7 @@
                 <div class="setting-control-group" id="timecodeSizeGroup" style="display:none;">
                     <label class="slider-label">
                         Overlay Size
-                        <i class="ri-question-line info-icon-inline" title="Set the size for timecode, custom text, and image overlays." id="overlaySizeInfoIcon"></i>
+                        <i class="ri-question-line info-icon-inline" title="Set the size for timecode, custom text and image overlays" id="overlaySizeInfoIcon"></i>
                     </label>
                                     <div class="segmented-controls timecode-size-tabs" style="max-width: 200px; margin-bottom: 0;" role="group" aria-label="Overlay size options">
                     <button class="timecode-size-tab" data-size="S" aria-pressed="false">S</button>
