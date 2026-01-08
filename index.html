@@ -351,11 +351,12 @@
     .grid-size-tabs button.active.completed::after {
         color: var(--bg-primary);
     }
-    .smart-algo-tabs, .grid-size-tabs, .timecode-size-tabs { margin-bottom: 0.8rem; }
-    .smart-algo-tabs button, .grid-size-tabs button, .timecode-size-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
+    .smart-algo-tabs, .grid-size-tabs, .timecode-size-tabs, .interval-mode-tabs { margin-bottom: 1rem; }
+    .smart-algo-tabs button, .grid-size-tabs button, .timecode-size-tabs button, .interval-mode-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
+    .interval-mode-tabs button.active { background: var(--gradient-interval); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
     .timecode-size-tabs button.active { background: var(--text-secondary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
 
-    .settings-panel { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+    .settings-panel { flex-grow: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 2rem; }
     .mode-content > div { display: none; }
     .mode-content > div.active { display: block; }
 
@@ -519,7 +520,7 @@
       vertical-align: middle;
     }
 
-    #manualVideo {
+    #manualVideo, #intervalVideo {
         width: 100%;
         border-radius: var(--border-radius-lg);
         background-color: var(--black);
@@ -1026,6 +1027,18 @@
         font-size: 1.1rem;
     }
 
+    @media (min-width: 1024px) {
+        .info-modal-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        #toolInfoModal .info-box-content {
+            width: 900px;
+        }
+    }
+
     .modal-body ul {
         padding-left: 1.5rem;
         margin-bottom: 1rem;
@@ -1395,7 +1408,8 @@
     }
 
     .time-input-field {
-        width: 100px;
+        width: 85px;
+        text-align: right;
     }
 
     #lightboxTimestamp {
@@ -1609,7 +1623,7 @@
                 <div class="setting-control-group" id="framerateRow" style="display:none;">
                     <label class="slider-label">
                         Set Framerate
-                        <i class="ri-question-line info-icon-inline" title="Set your input video's framerate. This ensures accurate timecode data for the generated frames and manual fine-tuning." id="framerateInfoIcon"></i>
+                        <i class="ri-question-line info-icon-inline" title="Set your input video's framerate. This ensures accurate timecode data for the extracted frames and manual fine-tuning." id="framerateInfoIcon"></i>
                     </label>
                     <div class="time-input-controls" style="margin-left:auto; max-width: 180px;">
                         <button class="manual-time-btn" id="frameratePrevBtn" title="Decrease framerate" tabindex="-1" style="min-width:32px;">-</button>
@@ -1621,7 +1635,7 @@
                 <div class="setting-control-group" id="addTimestampGroup" >
                     <label class="slider-label">
                         Add TC Overlay
-                        <i class="ri-question-line info-icon-inline" title="Burn-in SMPTE timecode overlay to bottom right corner of generated frames" id="timestampInfoIcon"></i>
+                        <i class="ri-question-line info-icon-inline" title="Burn-in SMPTE timecode overlay to bottom right corner of extracted frames" id="timestampInfoIcon"></i>
                     </label>
                     <div class="format-controls">
                         <select id="timecodeFormatSelect" class="value-input">
@@ -1716,7 +1730,7 @@
                             </div>
                         </div>
                         <div class="time-input-row">
-                            <h3 class="slider-label">Frame <i class="ri-error-warning-line info-icon-inline" title='You need to enable "Pro Mode" -option and use "Set Framerate" -option to set the framerate of your input video for accurate frame display.' id="frameWarningIcon"></i></h3>
+                            <h3 class="slider-label">Frame <i class="ri-error-warning-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Default is set to 30 fps.' id="frameWarningIcon"></i></h3>
                             <div class="time-input-controls">
                                 <button class="manual-time-btn" id="manualFramePrevBtn" title="Go back 1 frame">
                                     <i class="ri-arrow-drop-left-line"></i>
@@ -1739,8 +1753,58 @@
                 </div>
                 <div id="autoMode" role="tabpanel" aria-labelledby="autoModeTab">
                     <p class="mode-description">Captures screenshots at regular time intervals. Lower value creates more images, higher value creates fewer.</p>
-                    <div class="slider-row"><h3 class="slider-label" style="font-size: 0.9rem; color: var(--text-primary); font-weight: 500;">Interval</h3>
-                    <div class="slider-wrapper"><input type="range" id="intervalInput" min="1" max="30" value="10" step="1" aria-label="Screenshot interval in seconds"><span id="intervalValue" class="value-display"></span></div></div>
+                    <h3 class="setting-group-title">Mode Type</h3>
+                    <div class="segmented-controls interval-mode-tabs" role="group" aria-label="Mode type">
+                        <button class="interval-tab active" data-interval-mode="second" aria-pressed="true">By Second</button>
+                        <button class="interval-tab" data-interval-mode="frame" aria-pressed="false">By Frame</button>
+                    </div>
+                    
+                    <div id="intervalSecondSettings">
+                        <div class="slider-row">
+                            <h3 class="slider-label">Seconds</h3>
+                            <div class="slider-wrapper">
+                                <input type="range" id="intervalSecondsSlider" min="1" max="30" value="10" step="1" aria-label="Screenshot interval in seconds">
+                                <input type="text" id="intervalSecondsInput" class="value-input time-input-field" value="10" placeholder="10" inputmode="decimal">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="intervalFrameSettings" style="display:none;">
+                        <div class="slider-row">
+                            <h3 class="slider-label">Frames <i class="ri-error-warning-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Max value is set to the framerate, or 1 second in this setting.' id="intervalFrameWarningIcon"></i></h3>
+                            <div class="slider-wrapper">
+                                <input type="range" id="intervalFramesSlider" min="1" max="30" value="10" step="1" aria-label="Screenshot interval in frames">
+                                <input type="text" id="intervalFramesInput" class="value-input time-input-field" value="10" placeholder="10" inputmode="numeric">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-control-group" style="margin-top: 1rem;">
+                        <h3 class="setting-group-title">Trim Area</h3>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="intervalTrimToggle" class="toggle-input">
+                            <label for="intervalTrimToggle" class="toggle-label-switch"></label>
+                        </div>
+                    </div>
+                    
+                    <div id="intervalTrimControls" style="display:none;">
+                        <video id="intervalVideo" controls aria-label="Interval mode video player"></video>
+                        <div class="time-input-container" style="margin-top: 0.5rem;">
+                            <div class="time-input-row">
+                                <h3 class="slider-label">Start</h3>
+                                <div class="time-input-controls">
+                                    <input type="text" id="intervalStartInput" class="value-input time-input-field" value="0:00" placeholder="0:00">
+                                    <button class="manual-time-btn" id="intervalSetStartBtn" title="Set to current time" style="padding: 0.5rem 1.5rem;">Set</button>
+                                </div>
+                            </div>
+                            <div class="time-input-row">
+                                <h3 class="slider-label">End</h3>
+                                <div class="time-input-controls">
+                                    <input type="text" id="intervalEndInput" class="value-input time-input-field" value="" placeholder="End">
+                                    <button class="manual-time-btn" id="intervalSetEndBtn" title="Set to current time" style="padding: 0.5rem 1.5rem;">Set</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="autoSmartMode" role="tabpanel" aria-labelledby="autoSmartModeTab">
                     <p class="mode-description">Identifies scenes and visual changes<br>- <strong>Aims to capture one frame per scene</strong>.<br>- It's not perfect, but provides a good foundation.<br>You can fine-tune a frame with <i class="ri-scissors-line"></i> buttons below it.</p>
@@ -1873,7 +1937,7 @@
                     <svg class="delete-icon-svg" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 1024 1024"><path fill="currentColor" d="M360 184h-8c4.4 0 8-3.6 8-8zm304 0v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32M731.3 840H292.7l-24.2-512h487z"/></svg>
                     Clear Output
                 </button>
-                <div id="imageCountDisplay">Generated Images:<span id="imageCountValue">0</span></div>
+                <div id="imageCountDisplay">Extracted Images:<span id="imageCountValue">0</span></div>
                 <button id="toolInfoButton" type="button" title="About this tool"><i class="ri-information-line"></i></button>
             </div>
         </div>
@@ -1902,30 +1966,36 @@
       <div class="modal-body">
         <p>Pilko Studio is a frame capture web tool that lets you extract screenshots from your videos in many different ways locally within your browser.</p>
 
-        <h3>Extraction Modes</h3>
-          <ul>
-            <li><strong style="color: var(--accent-primary)">Manual</strong><br><span>Manually select and capture specific frames from the video player.</span></li>
-            <li><strong style="color: var(--accent-interval)">Interval</strong><br><span>Extract frames at regular time intervals (seconds).</span></li>
-            <li><strong style="color: var(--accent-secondary)">Smart Auto</strong><br><span>Use different frame comparison algorithms to capture only significant frame changes.</span></li>
-              <ul>
-                <li><strong style="color: var(--accent-secondary)">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
-                <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
-              </ul>
-            </li>
-            <li><strong style="color: var(--accent-tertiary)">Grid</strong><br><span>Generate a grid of screenshots to a single image.</span></li>
-          </ul>
+        <div class="info-modal-columns">
+          <div class="info-modal-column">
+            <h3>Extraction Modes</h3>
+            <ul>
+              <li><strong style="color: var(--accent-primary)">Manual</strong><br><span>Manually select and capture specific frames from the video player.</span></li>
+              <li><strong style="color: var(--accent-interval)">Interval</strong><br><span>Extract frames at regular intervals (frames or seconds).</span></li>
+              <li><strong style="color: var(--accent-secondary)">Smart Auto</strong><br><span>Use different frame comparison algorithms to capture only significant frame changes.</span></li>
+                <ul>
+                  <li><strong style="color: var(--accent-secondary)">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
+                  <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
+                </ul>
+              </li>
+              <li><strong style="color: var(--accent-tertiary)">Grid</strong><br><span>Generate a grid of screenshots to a single image.</span></li>
+            </ul>
+          </div>
 
-        <h3>Features</h3>
-        <ul>
-          <li>See basic video metadata.</li>
-          <li>Automatically detect and remove black bars.</li>
-          <li>Different capture formats (PNG, JPEG, WEBP) and quality sliders (1-100%).</li>
-          <li>Preview and fine-tune captured frames with buttons or hotkeys.</li>
-          <li>Download individually or as a .zip -file.</li>
-        </ul>
+          <div class="info-modal-column">
+            <h3>Features</h3>
+            <ul>
+              <li>See basic video metadata.</li>
+              <li>Automatically detect and remove black bars.</li>
+              <li>Different capture formats (PNG, JPEG, WEBP) and quality sliders (1-100%).</li>
+              <li>Preview and fine-tune captured frames with buttons or hotkeys.</li>
+              <li>Download individually or as a .zip -file.</li>
+            </ul>
 
-        <h3>Processing & Privacy</h3>
-        <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can download the .html file and run it locally offline with the same functionality for full peace of mind. View the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
+            <h3>Processing & Privacy</h3>
+            <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can download the .html file and run it locally offline with the same functionality for full peace of mind; download or view the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
+          </div>
+        </div>
 
       </div>
     </div>
@@ -2220,8 +2290,13 @@
         const imageCountValue = $('imageCountValue');
         const modeTabs = $$('.mode-tab');
         const modeContentDiv = $$('.mode-content')[0];
-        const intervalInput = $('intervalInput');
-        const intervalValue = $('intervalValue');
+        const intervalModeTabs = $$('.interval-tab');
+        const intervalSecondSettings = $('intervalSecondSettings');
+        const intervalFrameSettings = $('intervalFrameSettings');
+        const intervalSecondsSlider = $('intervalSecondsSlider');
+        const intervalSecondsInput = $('intervalSecondsInput');
+        const intervalFramesSlider = $('intervalFramesSlider');
+        const intervalFramesInput = $('intervalFramesInput');
         // Global Format/Quality Controls
         const captureFormatSelect = $('captureFormatSelect');
         const jpegQualityGlobalRow = $('jpegQualityGlobalRow');
@@ -2293,13 +2368,14 @@
 
         verticalSeparatorElement = $$('.vertical-separator')[0];
 
-        [dropZone, videoInput, selectFileButton, video, manualVideo, canvas, frameCanvas, contactSheetCanvas, modeContentDiv, screenshotsDiv, clearScreenshotsButton, processContactSheetButton, downloadContactSheetButton, previewContactSheetButton, progressBarContactSheet, $('loadedFileInfo'), $('loadedFileName'), imageCountDisplay, imageCountValue, contactSheetVideo, contactSheetControlsElement, contactSheetPreviewElement, largeGridDisclaimer, outputColumn, histThresholdInput, histThresholdValue, histThresholdSettings, pixelThresholdInput, pixelThresholdValue, pixelThresholdSettings, captureFormatSelect, jpegQualityGlobalRow, jpegQualityGlobal, jpegQualityGlobalValue, webpQualityGlobalRow, webpQualityGlobal, webpQualityGlobalValue, pixelDiffDisclaimer].forEach(el => {
+        [dropZone, videoInput, selectFileButton, video, manualVideo, intervalVideo, canvas, frameCanvas, contactSheetCanvas, modeContentDiv, screenshotsDiv, clearScreenshotsButton, processContactSheetButton, downloadContactSheetButton, previewContactSheetButton, progressBarContactSheet, $('loadedFileInfo'), $('loadedFileName'), imageCountDisplay, imageCountValue, contactSheetVideo, contactSheetControlsElement, contactSheetPreviewElement, largeGridDisclaimer, outputColumn, intervalSecondSettings, intervalFrameSettings, intervalSecondsSlider, intervalSecondsInput, intervalFramesSlider, intervalFramesInput, intervalTrimToggle, intervalTrimControls, intervalStartInput, intervalEndInput, intervalSetStartBtn, intervalSetEndBtn, histThresholdInput, histThresholdValue, histThresholdSettings, pixelThresholdInput, pixelThresholdValue, pixelThresholdSettings, captureFormatSelect, jpegQualityGlobalRow, jpegQualityGlobal, jpegQualityGlobalValue, webpQualityGlobalRow, webpQualityGlobal, webpQualityGlobalValue, pixelDiffDisclaimer].forEach(el => {
             if (!el) throw new Error(`Missing critical HTML element: ${el?.id || 'unknown'}`);
         });
         if (!progressBarFillContactSheet) throw new Error("Missing critical HTML element: progressBarFillContactSheet");
 
         let currentMode = 'manual';
         let smartAlgorithm = 'histogram';
+        let intervalMode = 'second'; // 'second' or 'frame'
         let uploadedFile = null;
         let currentVideoDuration = 0;
         let processingActive = false;
@@ -2469,8 +2545,10 @@
             resetValue(aspectRatioValue, '-');
             resetValue(bitrateValue, '-');
             
-            resetInput(intervalInput, DEFAULT_SETTINGS.INTERVAL);
-            resetValue(intervalValue, `${DEFAULT_SETTINGS.INTERVAL}s`);
+            resetInput(intervalSecondsSlider, DEFAULT_SETTINGS.INTERVAL);
+            resetInput(intervalSecondsInput, DEFAULT_SETTINGS.INTERVAL);
+            resetInput(intervalFramesSlider, 10);
+            resetInput(intervalFramesInput, 10);
             resetInput(histThresholdInput, DEFAULT_SETTINGS.HIST_THRESHOLD);
             resetValue(histThresholdValue, `${Math.round(DEFAULT_SETTINGS.HIST_THRESHOLD * 100)}%`);
             resetInput(pixelThresholdInput, DEFAULT_SETTINGS.PIXEL_THRESHOLD);
@@ -2987,6 +3065,7 @@
 
             video.src = fileURL;
             manualVideo.src = fileURL;
+            intervalVideo.src = fileURL;
             contactSheetVideo.src = fileURL;
             updateDropZoneUI(true, file.name);
             resetUIOnNewVideo();
@@ -3127,7 +3206,14 @@
             updateImageCount(); 
             resetProcessingUI('all');
             if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
-            if(intervalInput) intervalInput.value = '10'; if(intervalValue) intervalValue.textContent = '10s';
+            if(intervalSecondsSlider) intervalSecondsSlider.value = '10';
+            if(intervalSecondsInput) intervalSecondsInput.value = '10';
+            if(intervalFramesSlider) intervalFramesSlider.value = '10';
+            if(intervalFramesInput) intervalFramesInput.value = '10';
+            if(intervalTrimToggle) intervalTrimToggle.checked = false;
+            if(intervalTrimControls) intervalTrimControls.style.display = 'none';
+            if(intervalStartInput) intervalStartInput.value = '0:00';
+            if(intervalEndInput) intervalEndInput.value = '';
             if(histThresholdInput) histThresholdInput.value = '0.50'; if(histThresholdValue) histThresholdValue.textContent = '50%';
             if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
 
@@ -4244,13 +4330,84 @@
             gridOutputWidth.addEventListener('focus', (e) => e.target.select());
         }
 
+        // Interval Seconds: slider + text input sync (like gridOutputWidth)
+        if (intervalSecondsInput && intervalSecondsSlider) {
+            intervalSecondsInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9.]/g, '');
+            });
+            
+            intervalSecondsInput.addEventListener('change', () => {
+                const value = parseFloat(intervalSecondsInput.value) || 10;
+                const clamped = Math.max(0.5, Math.min(value, 9999));
+                intervalSecondsInput.value = clamped;
+                intervalSecondsSlider.value = Math.min(clamped, 30);
+                updateSliderBackground(intervalSecondsSlider);
+            });
+            
+            intervalSecondsSlider.addEventListener('input', () => {
+                const value = parseFloat(intervalSecondsSlider.value) || 10;
+                intervalSecondsInput.value = value;
+                updateSliderBackground(intervalSecondsSlider);
+            });
+            
+            intervalSecondsInput.addEventListener('focus', (e) => e.target.select());
+        }
+
+        if (intervalFramesInput && intervalFramesSlider) {
+            intervalFramesInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+            });
+            
+            intervalFramesInput.addEventListener('change', () => {
+                const value = parseInt(intervalFramesInput.value) || 10;
+                const clamped = Math.max(1, value);
+                intervalFramesInput.value = clamped;
+                const framerate = parseInt(framerateInput?.value || 30);
+                intervalFramesSlider.value = Math.min(clamped, framerate);
+                updateSliderBackground(intervalFramesSlider);
+            });
+            
+            intervalFramesSlider.addEventListener('input', () => {
+                const value = parseInt(intervalFramesSlider.value) || 10;
+                intervalFramesInput.value = value;
+                updateSliderBackground(intervalFramesSlider);
+            });
+            
+            intervalFramesInput.addEventListener('focus', (e) => e.target.select());
+        }
+
+        window.updateIntervalFramesMax = () => {
+            const framerate = parseInt(framerateInput?.value) || 30;
+            if (intervalFramesSlider) {
+                intervalFramesSlider.max = framerate;
+                const currentValue = parseInt(intervalFramesSlider.value);
+                if (currentValue > framerate) {
+                    intervalFramesSlider.value = framerate;
+                    if (intervalFramesInput) intervalFramesInput.value = framerate.toString();
+                }
+                updateSliderBackground(intervalFramesSlider);
+            }
+        };
+
         initGlobalFormatControls();
-        // Setup mode-specific sliders
-        setupSlider(intervalInput, intervalValue, 's');
         setupSlider(histThresholdInput, histThresholdValue, '');
         setupSlider(pixelThresholdInput, pixelThresholdValue, '');
         
-        // Initialize grid output width slider background
+        if (intervalSecondsSlider) {
+            intervalSecondsSlider.value = DEFAULT_SETTINGS.INTERVAL;
+            updateSliderBackground(intervalSecondsSlider);
+        }
+        if (intervalSecondsInput) intervalSecondsInput.value = DEFAULT_SETTINGS.INTERVAL;
+        if (intervalFramesSlider) {
+            intervalFramesSlider.value = 10;
+            updateSliderBackground(intervalFramesSlider);
+        }
+        if (intervalFramesInput) intervalFramesInput.value = '10';
+        if (intervalTrimToggle) intervalTrimToggle.checked = false;
+        if (intervalTrimControls) intervalTrimControls.style.display = 'none';
+        if (intervalStartInput) intervalStartInput.value = '0';
+        if (intervalEndInput) intervalEndInput.value = '';
+        
         if (gridOutputWidthSlider) {
             updateSliderBackground(gridOutputWidthSlider);
         }
@@ -4271,6 +4428,36 @@
                 cropData = null; updateDropZoneThumbnail(); updateFileInfoDisplay();
             }
         });
+
+        if (intervalTrimToggle) intervalTrimToggle.addEventListener('change', (e) => {
+            if (intervalTrimControls) intervalTrimControls.style.display = e.target.checked ? 'block' : 'none';
+            if (intervalStartInput) intervalStartInput.value = '0:00';
+            if (intervalEndInput) intervalEndInput.value = '';
+        });
+
+        if (intervalSetStartBtn && intervalVideo && intervalStartInput) {
+            intervalSetStartBtn.addEventListener('click', () => {
+                intervalStartInput.value = formatTime(intervalVideo.currentTime);
+            });
+        }
+
+        if (intervalSetEndBtn && intervalVideo && intervalEndInput) {
+            intervalSetEndBtn.addEventListener('click', () => {
+                intervalEndInput.value = formatTime(intervalVideo.currentTime);
+            });
+        }
+
+        if (intervalStartInput) {
+            intervalStartInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9:]/g, '');
+            });
+        }
+
+        if (intervalEndInput) {
+            intervalEndInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9:]/g, '');
+            });
+        }
 
 
         const drawTimestampOverlay = (canvas, timestamp) => {
@@ -4440,23 +4627,53 @@
         // Mobile-friendly tooltip handler
         const createMobileTooltip = (element, message) => {
             if (element) {
+                const msg = message || element.title;
                 element.addEventListener('click', (e) => {
                     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
                         e.preventDefault();
-                        alert(message);
+                        alert(msg);
                     }
                 });
             }
         };
 
         // Setup mobile tooltips
-        createMobileTooltip($('removeBarsInfoIcon'), 'Automatically detect and crop black bars from letterboxed videos');
-        createMobileTooltip($('timestampInfoIcon'), 'Burn-in SMPTE timecode overlay to bottom right corner of generated frames');
-        createMobileTooltip($('frameWarningIcon'), 'You need to enable "Pro Mode" -option and use "Set Framerate" -option to set the framerate of your input video for accurate frame display.');
-        createMobileTooltip($('framerateInfoIcon'), 'Set your input video\'s framerate. This ensures accurate timecode data for the generated frames and manual fine-tuning.');
-        createMobileTooltip($('customTextInfoIcon'), 'Add custom text overlay.');
-        createMobileTooltip($('customImageInfoIcon'), 'Intended to add a logo or watermark.');
-        createMobileTooltip($('overlaySizeInfoIcon'), 'Set the size for timecode, custom text and image overlays.');
+        createMobileTooltip($('frameWarningIcon'));
+        createMobileTooltip($('intervalFrameWarningIcon'));
+        createMobileTooltip($('removeBarsInfoIcon'));
+        createMobileTooltip($('timestampInfoIcon'));
+        createMobileTooltip($('framerateInfoIcon'));
+        createMobileTooltip($('customTextInfoIcon'));
+        createMobileTooltip($('customImageInfoIcon'));
+        createMobileTooltip($('overlaySizeInfoIcon'));
+
+        if (intervalModeTabs.length > 0) {
+            const updateIntervalSettings = (mode) => {
+                if(intervalSecondSettings) intervalSecondSettings.style.display = (mode === 'second') ? 'block' : 'none';
+                if(intervalFrameSettings) intervalFrameSettings.style.display = (mode === 'frame') ? 'block' : 'none';
+
+                requestAnimationFrame(() => {
+                    if(intervalSecondsSlider && mode === 'second') updateSliderBackground(intervalSecondsSlider);
+                    if(intervalFramesSlider && mode === 'frame') updateSliderBackground(intervalFramesSlider);
+                });
+            };
+            let initialIntervalMode = 'second';
+            $$('.interval-tab').forEach(tab => { if (tab.classList.contains('active')) initialIntervalMode = tab.getAttribute('data-interval-mode') || 'second'; });
+            intervalModeTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    if (processingActive) return;
+                    const mode = tab.getAttribute('data-interval-mode');
+                    if(!mode) return;
+                    intervalMode = mode;
+                    $$('.interval-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
+                    tab.classList.add('active');
+                    tab.setAttribute('aria-pressed', 'true');
+                    updateIntervalSettings(mode);
+                });
+            });
+            intervalMode = initialIntervalMode;
+            updateIntervalSettings(initialIntervalMode);
+        }
 
         if (smartAlgoTabs.length > 0) {
             const updateThresholdSliders = (algo) => {
@@ -4488,7 +4705,7 @@
 
 
         const startAutoExtraction = () => {
-             if (!video?.src || processingActive || !intervalInput || video.readyState < video.HAVE_METADATA) {
+             if (!video?.src || processingActive || video.readyState < video.HAVE_METADATA) {
                  alert("Please load a video file first or wait for it to be ready.");
                  return;
              }
@@ -4498,10 +4715,23 @@
              updateImageCount();
              contactSheetBlob = null;
 
-             const interval = parseFloat(intervalInput.value); if (isNaN(interval) || interval <= 0) { resetProcessingUI('auto'); return; }
+             let interval;
+             if (intervalMode === 'second') {
+                 interval = parseFloat(intervalSecondsInput?.value || 10);
+                 if (isNaN(interval) || interval <= 0) { resetProcessingUI('auto'); return; }
+             } else {
+                 const frameInterval = parseInt(intervalFramesInput?.value || 10);
+                 const framerate = parseInt(framerateInput?.value || 30);
+                 interval = frameInterval / framerate;
+                 if (isNaN(interval) || interval <= 0) { resetProcessingUI('auto'); return; }
+             }
+
+             const trimEnabled = intervalTrimToggle?.checked || false;
+             const startTime = trimEnabled ? Math.max(0, parseTimeString(intervalStartInput?.value || '0')) : 0;
+             const endTime = trimEnabled && intervalEndInput?.value ? Math.min(parseTimeString(intervalEndInput.value), currentVideoDuration) : currentVideoDuration;
 
              const startExtraction = () => {
-                 let currentTime = 0.1; const totalDuration = currentVideoDuration; let frameTimeoutId = null; let isCancelled = false;
+                 let currentTime = startTime + 0.1; const totalDuration = endTime; let frameTimeoutId = null; let isCancelled = false;
                  currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('auto'); } }; // Reset UI on cancel
 
                  function processNextFrame() {
@@ -4693,7 +4923,7 @@
         if (clearScreenshotsButton) clearScreenshotsButton.addEventListener('click', () => {
              if (processingActive) return;
              const hasAnyOutput = (screenshotBlobs.length + manualScreenshotBlobs.length > 0) || contactSheetPreviewData.some(d => d !== null) || contactSheetBlob;
-             if (hasAnyOutput && confirm("Are you sure you want to clear all generated output (screenshots and grid preview)?")) {
+             if (hasAnyOutput && confirm("Are you sure you want to clear all extracted images (screenshots and grid preview)?")) {
                  screenshotBlobs.concat(manualScreenshotBlobs).forEach(item => { if(item?.blobUrl) URL.revokeObjectURL(item.blobUrl); });
                  if(screenshotsDiv) screenshotsDiv.innerHTML = '';
                  screenshotBlobs = []; manualScreenshotBlobs = [];
@@ -5028,6 +5258,7 @@
         
         framerateInput.value = val;
         updateNamingSettingsExample();
+        updateIntervalFramesMax();
         const manualFrameInput = document.getElementById('manualFrameInput');
         const manualVideo = document.getElementById('manualVideo');
         const fr = num;
@@ -5046,6 +5277,7 @@
           num = num - 1;
           framerateInput.value = Math.round(num);
           framerateInput.dispatchEvent(new Event('input'));
+          updateIntervalFramesMax();
         });
       }
       if (framerateNextBtn) {
@@ -5056,6 +5288,7 @@
           num = num + 1;
           framerateInput.value = Math.round(num);
           framerateInput.dispatchEvent(new Event('input'));
+          updateIntervalFramesMax();
         });
       }
     }
@@ -5197,6 +5430,8 @@
     const framerateRow = document.getElementById('framerateRow');
     const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
     let timecodeFormat = 'off';
+    const intervalFramesSlider = document.getElementById('intervalFramesSlider');
+    const intervalFramesInput = document.getElementById('intervalFramesInput');
 
     function initializeProModeDefaults() {
       if (framerateInput) framerateInput.value = DEFAULT_SETTINGS.FRAMERATE.toString();
