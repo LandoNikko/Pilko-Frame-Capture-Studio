@@ -269,7 +269,7 @@
         display: inline-flex; 
         align-items: center; 
     }
-    .info-icon-inline { font-size: 1.1em; color: var(--text-tertiary); cursor: help; }
+    .info-icon-inline { font-size: 1.1em; color: var(--border-dashed); cursor: help; }
 
     .toggle-row { display: flex; align-items: center; justify-content: space-between; }
     .toggle-label { display: flex; align-items: center; gap: 0.5rem; }
@@ -277,7 +277,7 @@
     .toggle-input { opacity: 0; width: 0; height: 0; }
     .toggle-label-switch { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--bg-primary); transition: .3s; border-radius: 24px; border: 1px solid var(--border-color); }
     .toggle-label-switch:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: var(--text-tertiary); transition: .3s; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
-    .toggle-input:checked + .toggle-label-switch { background: var(--text-tertiary); border-color: transparent; }
+    .toggle-input:checked + .toggle-label-switch { background: var(--border-color); border-color: var(--border-dashed); }
     .toggle-input:checked + .toggle-label-switch:before { transform: translateX(24px); background-color: var(--white); }
 
     #format-options-row { display: flex; }
@@ -322,6 +322,9 @@
         font-weight: 500;
         margin-bottom: 0.5rem;
         flex-basis: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .segmented-controls { display: flex; border-radius: var(--border-radius-md); overflow: hidden; background-color: var(--bg-tertiary); margin-bottom: 1rem; border: 1px solid var(--border-color); flex-shrink: 0; width: 100%; }
@@ -389,7 +392,7 @@
 
     .button-group { display: flex; flex-direction: column; gap: 0.5rem; }
     .action-button { width: 100%; padding: 0.75rem 1.5rem; font-size: 0.95rem; border: none; border-radius: var(--border-radius-md); color: var(--bg-primary); cursor: pointer; transition: background 0.3s ease, opacity 0.2s, color 0.2s, box-shadow 0.2s ease; text-align: center; font-weight: 600; background-size: 200% auto; box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); display: inline-flex; align-items: center; justify-content: center;}
-    .action-button:hover:enabled { box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); background-position: right center; }
+    .action-button:hover:enabled { box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15); background-position: right center; filter: brightness(1.1); }
     .action-button:active:enabled { transform: scale(0.98); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
     .action-button:disabled {
       opacity: 0.5;
@@ -548,6 +551,7 @@
     #addManualButton:hover {
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
       background-position: right center;
+      filter: brightness(1.1);
     }
     #addManualButton:active {
       transform: scale(0.98);
@@ -839,9 +843,8 @@
         text-align: center;
         color: var(--text-tertiary);
         font-style: italic;
-        margin: 1rem 0 0.5rem;
+        padding: 0.5rem 0rem;
         font-size: 0.85rem;
-        padding: 0.3rem 0.6rem;
         background-color: rgba(36, 44, 68, 0.5);
         border-radius: var(--border-radius-sm);
     }
@@ -1042,6 +1045,10 @@
     .modal-body ul {
         padding-left: 1.5rem;
         margin-bottom: 1rem;
+    }
+
+    .modal-body ul ul {
+        margin-bottom: 0;
     }
 
      .modal-body a {
@@ -1359,10 +1366,23 @@
         color: var(--text-primary);
     }
 
-    #manualDragControl {
+    .time-adjust-btn {
+        background-color: var(--bg-secondary);
+        border-color: var(--border-color);
+        color: var(--text-tertiary);
+    }
+
+    .time-adjust-btn:hover {
+        background-color: var(--bg-tertiary);
+        border-color: var(--text-tertiary);
+        color: var(--text-primary);
+    }
+
+    .drag-control {
         cursor: ew-resize;
         border-radius: var(--border-radius-full);
         width: 100%;
+        margin-top: 1rem;
         justify-content: center;
         background-image: repeating-linear-gradient(
             -45deg,
@@ -1373,7 +1393,7 @@
         );
     }
     
-    #manualDragControl:hover {
+    .drag-control:hover {
         background-color: var(--bg-tertiary);
         border-color: var(--border-color);
         color: var(--text-primary);
@@ -1408,7 +1428,7 @@
     }
 
     .time-input-field {
-        width: 85px;
+        width: 95px;
         text-align: right;
     }
 
@@ -1434,14 +1454,6 @@
         min-height: 36px;
     }
 
-    .mode-description {
-        color: var(--text-tertiary);
-        font-size: 0.9rem;
-        margin-bottom: 1rem;
-        background-color: rgba(36, 44, 68, 0.5);
-        border-radius: var(--border-radius-sm);
-        padding: 0.5rem 0.8rem;
-    }
 
 
 
@@ -1459,7 +1471,6 @@
         font-style: italic;
         margin: 0.75rem 0 0.5rem;
         font-size: 0.85rem;
-        padding: 0.3rem 0.6rem;
         background-color: rgba(36, 44, 68, 0.5);
         border-radius: var(--border-radius-sm);
     }
@@ -1561,7 +1572,7 @@
                     <div class="info-row"><div class="info-label">Resolution</div><div class="info-value" id="resolutionValue">-</div></div>
                     <div class="info-row"><div class="info-label">Duration</div><div class="info-value" id="lengthValue">-</div></div>
                     <div class="info-row"><div class="info-label">Aspect Ratio</div><div class="info-value" id="aspectRatioValue">-</div></div>
-                    <div class="info-row"><div class="info-label">Bitrate</div><div class="info-value" id="bitrateValue">-</div></div>
+                    <div class="info-row"><div class="info-label">Bitrate (est.)</div><div class="info-value" id="bitrateValue">-</div></div>
                 </div>
             </div>
             <div id="buttonRow">
@@ -1712,38 +1723,37 @@
 
             <div class="mode-content">
                 <div id="manualMode" class="active" role="tabpanel" aria-labelledby="manualModeTab">
-                    <p class="mode-description">Use the video player to navigate and press Cut Frame to extract screenshots.</p>
                     <video id="manualVideo" controls aria-label="Manual mode video player"></video>
                     
-                    <h3 class="setting-group-title">Fine-tune current frame</h3>
-                    <div class="time-input-container" style="margin-bottom: 1rem;">
+                    <h3 class="setting-group-title"><span>Fine-tune current frame</span> <i class="ri-question-line info-icon-inline" id="manualModeInfoIcon" title="Use the video player to navigate and press Cut Frame to extract screenshots."></i></h3>
+                    <div class="time-input-container" >
                         <div class="time-input-row">
                             <h3 class="slider-label">Time</h3>
                             <div class="time-input-controls">
-                                <button class="manual-time-btn" id="manualTimePrevBtn" title="Go back 1 second">
+                                <button class="manual-time-btn time-adjust-btn" id="manualTimePrevBtn" title="Go back 1 second">
                                     <i class="ri-arrow-drop-left-line"></i>
                                 </button>
                                 <input type="text" id="manualTimeInput" class="value-input time-input-field" value="0:00" placeholder="0:00">
-                                <button class="manual-time-btn" id="manualTimeNextBtn" title="Go forward 1 second">
+                                <button class="manual-time-btn time-adjust-btn" id="manualTimeNextBtn" title="Go forward 1 second">
                                     <i class="ri-arrow-drop-right-line"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="time-input-row">
-                            <h3 class="slider-label">Frame <i class="ri-error-warning-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Default is set to 30 fps.' id="frameWarningIcon"></i></h3>
+                            <h3 class="slider-label">Frame <i class="ri-question-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Default is set to 30 fps.' id="frameWarningIcon"></i></h3>
                             <div class="time-input-controls">
-                                <button class="manual-time-btn" id="manualFramePrevBtn" title="Go back 1 frame">
+                                <button class="manual-time-btn time-adjust-btn" id="manualFramePrevBtn" title="Go back 1 frame">
                                     <i class="ri-arrow-drop-left-line"></i>
                                 </button>
                                 <input type="text" id="manualFrameInput" class="value-input time-input-field" value="0" placeholder="0" inputmode="numeric" pattern="[0-9]*">
-                                <button class="manual-time-btn" id="manualFrameNextBtn" title="Go forward 1 frame">
+                                <button class="manual-time-btn time-adjust-btn" id="manualFrameNextBtn" title="Go forward 1 frame">
                                     <i class="ri-arrow-drop-right-line"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div class="drag-control-container">
-                        <button class="manual-time-btn" id="manualDragControl">
+                        <button class="manual-time-btn drag-control" data-video="manualVideo">
                             <i class="ri-expand-horizontal-s-line"></i>
                         </button>
                         <div class="drag-helper-text">
@@ -1752,8 +1762,7 @@
                     </div>
                 </div>
                 <div id="autoMode" role="tabpanel" aria-labelledby="autoModeTab">
-                    <p class="mode-description">Captures screenshots at regular time intervals. Lower value creates more images, higher value creates fewer.</p>
-                    <h3 class="setting-group-title">Mode Type</h3>
+                    <h3 class="setting-group-title"><span>Mode Type</span> <i class="ri-question-line info-icon-inline" id="intervalModeInfoIcon" title="Captures screenshots at regular time intervals. Lower value creates more images, higher value creates fewer."></i></h3>
                     <div class="segmented-controls interval-mode-tabs" role="group" aria-label="Mode type">
                         <button class="interval-tab active" data-interval-mode="second" aria-pressed="true">By Second</button>
                         <button class="interval-tab" data-interval-mode="frame" aria-pressed="false">By Frame</button>
@@ -1770,7 +1779,7 @@
                     </div>
                     <div id="intervalFrameSettings" style="display:none;">
                         <div class="slider-row">
-                            <h3 class="slider-label">Frames <i class="ri-error-warning-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Max value is set to the framerate, or 1 second in this setting.' id="intervalFrameWarningIcon"></i></h3>
+                            <h3 class="slider-label">Frames <i class="ri-question-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Max value is set to the framerate, or 1 second in this setting.' id="intervalFrameWarningIcon"></i></h3>
                             <div class="slider-wrapper">
                                 <input type="range" id="intervalFramesSlider" min="1" max="30" value="10" step="1" aria-label="Screenshot interval in frames">
                                 <input type="text" id="intervalFramesInput" class="value-input time-input-field" value="10" placeholder="10" inputmode="numeric">
@@ -1788,27 +1797,46 @@
                     
                     <div id="intervalTrimControls" style="display:none;">
                         <video id="intervalVideo" controls aria-label="Interval mode video player"></video>
-                        <div class="time-input-container" style="margin-top: 0.5rem;">
+                        <div class="time-input-container" style="margin-top: 1.5rem;">
                             <div class="time-input-row">
                                 <h3 class="slider-label">Start</h3>
                                 <div class="time-input-controls">
+                                    <button class="manual-time-btn time-adjust-btn" data-target="intervalStartInput" data-delta="-1" title="Go back 1 second">
+                                        <i class="ri-arrow-drop-left-line"></i>
+                                    </button>
                                     <input type="text" id="intervalStartInput" class="value-input time-input-field" value="0:00" placeholder="0:00">
+                                    <button class="manual-time-btn time-adjust-btn" data-target="intervalStartInput" data-delta="1" title="Go forward 1 second">
+                                        <i class="ri-arrow-drop-right-line"></i>
+                                    </button>
                                     <button class="manual-time-btn" id="intervalSetStartBtn" title="Set to current time" style="padding: 0.5rem 1.5rem;">Set</button>
                                 </div>
                             </div>
                             <div class="time-input-row">
                                 <h3 class="slider-label">End</h3>
                                 <div class="time-input-controls">
+                                    <button class="manual-time-btn time-adjust-btn" data-target="intervalEndInput" data-delta="-1" title="Go back 1 second">
+                                        <i class="ri-arrow-drop-left-line"></i>
+                                    </button>
                                     <input type="text" id="intervalEndInput" class="value-input time-input-field" value="" placeholder="End">
+                                    <button class="manual-time-btn time-adjust-btn" data-target="intervalEndInput" data-delta="1" title="Go forward 1 second">
+                                        <i class="ri-arrow-drop-right-line"></i>
+                                    </button>
                                     <button class="manual-time-btn" id="intervalSetEndBtn" title="Set to current time" style="padding: 0.5rem 1.5rem;">Set</button>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="drag-control-container">
+                            <button class="manual-time-btn drag-control" data-video="intervalVideo">
+                                <i class="ri-expand-horizontal-s-line"></i>
+                            </button>
+                            <div class="drag-helper-text">
+                                Drag the bar horizontally to adjust video position
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="autoSmartMode" role="tabpanel" aria-labelledby="autoSmartModeTab">
-                    <p class="mode-description">Identifies scenes and visual changes<br>- <strong>Aims to capture one frame per scene</strong>.<br>- It's not perfect, but provides a good foundation.<br>You can fine-tune a frame with <i class="ri-scissors-line"></i> buttons below it.</p>
-                    <h3 class="setting-group-title">Algorithm</h3>
+                    <h3 class="setting-group-title"><span>Algorithm</span> <i class="ri-question-line info-icon-inline" id="smartModeInfoIcon" title="Identifies scenes and visual changes. Aims to capture one frame per scene. It's not perfect, but provides a good foundation. You can fine-tune a frame with the scissors buttons below it."></i></h3>
                     <div class="segmented-controls smart-algo-tabs" role="group" aria-label="Scene detection algorithm">
                         <button class="smart-tab active" data-algo="histogram" aria-pressed="true">Histogram Diff</button>
                         <button class="smart-tab" data-algo="pixeldiff" aria-pressed="false">Pixel Diff</button>
@@ -1820,7 +1848,7 @@
                             <span id="histThresholdValue" class="value-display"></span>
                         </div>
                     </div>
-                    <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold means more sensitivity to changes.<br><strong>Default value: 50%</strong></p>
+                    <p class="disclaimer-note">Compares color and brightness distribution between frames. Higher threshold = more sensitivity to changes.<br><strong>Default value: 50%</strong></p>
                     <div class="slider-row" id="pixelThresholdSettings" style="display:none;">
                         <h3 class="slider-label">Pixel Thresh</h3>
                         <div class="slider-wrapper">
@@ -1828,11 +1856,10 @@
                             <span id="pixelThresholdValue" class="value-display"></span>
                     </div>
                     </div>
-                    <p class="disclaimer-note" id="pixelDiffDisclaimer" style="display: none;">Measures the percentage of pixel changes between frames. Higher threshold means more sensitivity to changes.<br><strong>Default value: 50%</strong></p>
+                    <p class="disclaimer-note" id="pixelDiffDisclaimer" style="display: none;">Measures the percentage of pixel changes between frames. Higher threshold = more sensitivity to changes.<br><strong>Default value: 50%</strong></p>
                 </div>
                 <div id="contactSheetMode" role="tabpanel" aria-labelledby="contactSheetModeTab">
-                    <p class="mode-description">Choose a grid size for screenshots. After generating, you can fine-tune the captured frames.</p>
-                    <h3 class="setting-group-title">Grid Size</h3>
+                    <h3 class="setting-group-title"><span>Grid Size</span> <i class="ri-question-line info-icon-inline" id="contactSheetModeInfoIcon" title="Choose a grid size for screenshots. After generating, you can fine-tune the captured frames."></i></h3>
                     <div class="segmented-controls grid-size-tabs" role="group" aria-label="Grid size options">
                         <button class="grid-size-tab active" data-rows="4" data-cols="5" aria-pressed="true">5×4</button>
                         <button class="grid-size-tab" data-rows="3" data-cols="4" aria-pressed="false">4×3</button>
@@ -1964,7 +1991,7 @@
       <button class="modal-close" id="modalClose" aria-label="Close"><i class="ri-close-line"></i></button>
       <h2 class="modal-title" id="toolInfoTitle">Pilko Studio</h2>
       <div class="modal-body">
-        <p>Pilko Studio is a frame capture web tool that lets you extract screenshots from your videos in many different ways locally within your browser.</p>
+        <p>Pilko Studio is a frame capture web tool that lets you extract screenshots from your videos in many different ways, manual or automate, locally within your browser.</p>
 
         <div class="info-modal-columns">
           <div class="info-modal-column">
@@ -1972,7 +1999,7 @@
             <ul>
               <li><strong style="color: var(--accent-primary)">Manual</strong><br><span>Manually select and capture specific frames from the video player.</span></li>
               <li><strong style="color: var(--accent-interval)">Interval</strong><br><span>Extract frames at regular intervals (frames or seconds).</span></li>
-              <li><strong style="color: var(--accent-secondary)">Smart Auto</strong><br><span>Use different frame comparison algorithms to capture only significant frame changes.</span></li>
+              <li><strong style="color: var(--accent-secondary)">Smart Auto</strong><br><span>Automatically detects scene changes and aims to capture only one frame per scene.</span>
                 <ul>
                   <li><strong style="color: var(--accent-secondary)">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
                   <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
@@ -1985,17 +2012,20 @@
           <div class="info-modal-column">
             <h3>Features</h3>
             <ul>
-              <li>See basic video metadata.</li>
+              <li>100% mobile compatible.</li>
+              <li>Supports professional workflows.</li>
               <li>Automatically detect and remove black bars.</li>
               <li>Different capture formats (PNG, JPEG, WEBP) and quality sliders (1-100%).</li>
               <li>Preview and fine-tune captured frames with buttons or hotkeys.</li>
-              <li>Download individually or as a .zip -file.</li>
+              <li>Download individually or in bulk as .zip.</li>
             </ul>
 
             <h3>Processing & Privacy</h3>
-            <p>All video processing and screenshot extraction happen locally within the browser, with no cloud or server-side dependencies, ensuring your privacy.<br>This website already performs all processing locally, but you can download the .html file and run it locally offline with the same functionality for full peace of mind; download or view the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
+            <p>All video processing and screenshot extraction happen locally within the browser:<br><strong>NO</strong> cloud processing, <strong>NO</strong> server-side dependencies, ensuring your privacy.</strong><br>This website already works locally and from a single .html -file (crazy, right?), but you can download the .html -file and run it locally even offline with the same functionality for full peace of mind;<br>Download or view the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
           </div>
         </div>
+
+        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: January 11, 2026</p>
 
       </div>
     </div>
@@ -3771,7 +3801,6 @@
                   timeFormatted.value = formatTime(initialTimestamp); timeFormatted.dataset.index = i; timeFormatted.placeholder = "0:00"; timeFormatted.setAttribute('draggable', 'false');
 
                   timeFormatted.addEventListener('change', (e) => { updateTimeValue(parseInt(e.target.dataset.index), parseTimeString(e.target.value), true); });
-                  timeFormatted.addEventListener('focus', (e) => e.target.select());
 
                   let isDragging = false; let startY = 0; let startValue = 0; let sensitivity = 0.05;
                   timeFormatted.addEventListener('mousedown', (e) => {
@@ -4257,9 +4286,6 @@
             customGridCols.addEventListener('change', updateCustomGrid);
             customGridRows.addEventListener('change', updateCustomGrid);
             
-            // Handle focus events - select all text
-            customGridCols.addEventListener('focus', (e) => e.target.select());
-            customGridRows.addEventListener('focus', (e) => e.target.select());
             
             // Handle button clicks for columns
             const customGridColsPrevBtn = $('customGridColsPrevBtn');
@@ -4327,7 +4353,6 @@
                 calculateGridOutputHeight();
             });
             
-            gridOutputWidth.addEventListener('focus', (e) => e.target.select());
         }
 
         // Interval Seconds: slider + text input sync (like gridOutputWidth)
@@ -4350,7 +4375,6 @@
                 updateSliderBackground(intervalSecondsSlider);
             });
             
-            intervalSecondsInput.addEventListener('focus', (e) => e.target.select());
         }
 
         if (intervalFramesInput && intervalFramesSlider) {
@@ -4373,7 +4397,6 @@
                 updateSliderBackground(intervalFramesSlider);
             });
             
-            intervalFramesInput.addEventListener('focus', (e) => e.target.select());
         }
 
         window.updateIntervalFramesMax = () => {
@@ -4458,6 +4481,24 @@
                 e.target.value = e.target.value.replace(/[^0-9:]/g, '');
             });
         }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.time-adjust-btn')) return;
+            const btn = e.target.closest('.time-adjust-btn');
+            const targetInput = $(btn.dataset.target);
+            if (!targetInput) return;
+            const currentTime = parseTimeString(targetInput.value || '0:00');
+            const newTime = Math.max(0, currentTime + parseFloat(btn.dataset.delta));
+            targetInput.value = formatTime(newTime);
+        });
+
+        document.addEventListener('focus', (e) => {
+            if (e.target.classList.contains('value-input') || 
+                e.target.classList.contains('time-input-field') || 
+                e.target.classList.contains('time-formatted')) {
+                e.target.select();
+            }
+        }, true);
 
 
         const drawTimestampOverlay = (canvas, timestamp) => {
@@ -4646,6 +4687,10 @@
         createMobileTooltip($('customTextInfoIcon'));
         createMobileTooltip($('customImageInfoIcon'));
         createMobileTooltip($('overlaySizeInfoIcon'));
+        createMobileTooltip($('manualModeInfoIcon'));
+        createMobileTooltip($('intervalModeInfoIcon'));
+        createMobileTooltip($('smartModeInfoIcon'));
+        createMobileTooltip($('contactSheetModeInfoIcon'));
 
         if (intervalModeTabs.length > 0) {
             const updateIntervalSettings = (mode) => {
@@ -5146,71 +5191,71 @@
                 });
             }
             
-            manualTimeInput.addEventListener('focus', (e) => e.target.select());
-            manualFrameInput.addEventListener('focus', (e) => e.target.select());
             manualVideo.addEventListener('timeupdate', updateManualDisplays);
             updateManualDisplays();
         };
 
-        const manualDragControl = $('manualDragControl');
-        
-        let isDraggingManual = false;
-        let startXManual = 0;
-        let startTimeManual = 0;
-        let sensitivityManual = 0.05;
+        let isDragging = false;
+        let startX = 0;
+        let startTime = 0;
+        let targetVideo = null;
+        const sensitivity = 0.05;
 
-        if (manualDragControl) {
-            // Mouse events for desktop
-            manualDragControl.addEventListener('mousedown', (e) => {
-                isDraggingManual = true;
-                startXManual = e.clientX;
-                startTimeManual = manualVideo.currentTime;
+        $$('.drag-control').forEach(dragControl => {
+            dragControl.addEventListener('mousedown', (e) => {
+                const videoId = dragControl.dataset.video;
+                targetVideo = $(videoId);
+                if (!targetVideo) return;
+                isDragging = true;
+                startX = e.clientX;
+                startTime = targetVideo.currentTime;
                 document.body.style.cursor = 'ew-resize';
-                document.addEventListener('mousemove', handleManualDragMove);
-                document.addEventListener('mouseup', handleManualDragUp);
                 e.preventDefault();
             });
 
-            // Touch events for mobile
-            manualDragControl.addEventListener('touchstart', (e) => {
-                isDraggingManual = true;
-                startXManual = e.touches[0].clientX;
-                startTimeManual = manualVideo.currentTime;
-                document.addEventListener('touchmove', handleManualDragMoveTouch, { passive: false });
-                document.addEventListener('touchend', handleManualDragUpTouch);
+            dragControl.addEventListener('touchstart', (e) => {
+                const videoId = dragControl.dataset.video;
+                targetVideo = $(videoId);
+                if (!targetVideo) return;
+                isDragging = true;
+                startX = e.touches[0].clientX;
+                startTime = targetVideo.currentTime;
                 e.preventDefault();
             });
-        }
+        });
 
-        const handleManualDragMove = (e) => {
-            if (!isDraggingManual) return;
-            const deltaX = e.clientX - startXManual;
-            const newTime = Math.max(0, Math.min(startTimeManual + (deltaX * sensitivityManual), manualVideo.duration || 0));
-            manualVideo.currentTime = newTime;
+        const handleDragMove = (e) => {
+            if (!isDragging || !targetVideo) return;
+            const deltaX = e.clientX - startX;
+            const newTime = Math.max(0, Math.min(startTime + (deltaX * sensitivity), targetVideo.duration || 0));
+            targetVideo.currentTime = newTime;
         };
 
-        const handleManualDragUp = () => {
-            if (!isDraggingManual) return;
-            isDraggingManual = false;
+        const handleDragUp = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            targetVideo = null;
             document.body.style.cursor = '';
-            document.removeEventListener('mousemove', handleManualDragMove);
-            document.removeEventListener('mouseup', handleManualDragUp);
         };
 
-        const handleManualDragMoveTouch = (e) => {
-            if (!isDraggingManual) return;
-            const deltaX = e.touches[0].clientX - startXManual;
-            const newTime = Math.max(0, Math.min(startTimeManual + (deltaX * sensitivityManual), manualVideo.duration || 0));
-            manualVideo.currentTime = newTime;
+        const handleDragMoveTouch = (e) => {
+            if (!isDragging || !targetVideo) return;
+            const deltaX = e.touches[0].clientX - startX;
+            const newTime = Math.max(0, Math.min(startTime + (deltaX * sensitivity), targetVideo.duration || 0));
+            targetVideo.currentTime = newTime;
             e.preventDefault();
         };
 
-        const handleManualDragUpTouch = () => {
-            if (!isDraggingManual) return;
-            isDraggingManual = false;
-            document.removeEventListener('touchmove', handleManualDragMoveTouch);
-            document.removeEventListener('touchend', handleManualDragUpTouch);
+        const handleDragUpTouch = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            targetVideo = null;
         };
+
+        document.addEventListener('mousemove', handleDragMove);
+        document.addEventListener('mouseup', handleDragUp);
+        document.addEventListener('touchmove', handleDragMoveTouch, { passive: false });
+        document.addEventListener('touchend', handleDragUpTouch);
 
       } catch (error) { console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.textContent = `Initialization Error: ${error.message}. Please refresh or check console (F12).`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
     });
