@@ -48,7 +48,7 @@ Offline: Download `index.html`
 - No cloud processing or installations.
 - Frames are stored temporarily in your browser.
 - 100% client-side: built into a single `.html` using native HTML, CSS and JavaScript.
-  - Why? For trust and accessibility. Easy to deploy locally, no installatiosn required.
+  - Why? For trust and accessibility. Easy to deploy locally, no installations required.
 
 [processing-shield]: https://img.shields.io/badge/Privacy%20&%20Processing-00c6ff?style=for-the-badge&color=121727
 
