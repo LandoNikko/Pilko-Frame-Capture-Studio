@@ -2025,7 +2025,7 @@
           </div>
         </div>
 
-        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: January 11, 2026</p>
+        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: January 13, 2026</p>
 
       </div>
     </div>
@@ -2515,9 +2515,12 @@
             const screenshotCount = screenshotBlobs.length;
             const manualCount = manualScreenshotBlobs.length;
             let totalCount = 0;
-             if (currentMode === 'manual') totalCount = manualCount;
-             else if (currentMode === 'auto' || currentMode === 'autoSmart') totalCount = screenshotCount;
-             else if (currentMode === 'contactSheet') totalCount = contactSheetPreviewData.filter(d => d?.blob).length;
+             if (currentMode === 'contactSheet') {
+                 totalCount = contactSheetPreviewData.filter(d => d?.blob).length;
+             } else {
+                 // For Manual, Interval, and Smart Auto: count all screenshots combined
+                 totalCount = screenshotCount + manualCount;
+             }
 
             if (imageCountValue) {
                 imageCountValue.textContent = totalCount;
@@ -2529,11 +2532,12 @@
             }
             const hasAutoOrSmartScreenshots = screenshotBlobs.length > 0;
             const hasManualScreenshots = manualScreenshotBlobs.length > 0;
+            const hasAnyScreenshots = hasAutoOrSmartScreenshots || hasManualScreenshots;
             const hasContactSheetPreview = contactSheetPreviewData.some(d => d !== null);
 
-            if(downloadAllButton) downloadAllButton.disabled = !hasAutoOrSmartScreenshots || processingActive;
-            if(downloadAllSmartButton) downloadAllSmartButton.disabled = !hasAutoOrSmartScreenshots || processingActive;
-            if(downloadManualButton) downloadManualButton.disabled = !hasManualScreenshots || processingActive;
+            if(downloadAllButton) downloadAllButton.disabled = !hasAnyScreenshots || processingActive;
+            if(downloadAllSmartButton) downloadAllSmartButton.disabled = !hasAnyScreenshots || processingActive;
+            if(downloadManualButton) downloadManualButton.disabled = !hasAnyScreenshots || processingActive;
             if(namingSettingsButton) namingSettingsButton.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots || processingActive;
             if(namingSettingsButtonSmart) namingSettingsButtonSmart.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots || processingActive;
             if(namingSettingsButtonManual) namingSettingsButtonManual.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots || processingActive;
@@ -2722,23 +2726,25 @@
             const blobUrl = URL.createObjectURL(blob);
 
             const blobData = { blob, timestamp, blobUrl };
+            
+            blobArrayRef.push(blobData);
+            const currentIndex = blobArrayRef.indexOf(blobData);
+            container.dataset.index = currentIndex.toString();
+            container.dataset.blobUrl = blobUrl;
+            container.dataset.arrayType = blobArrayRef === manualScreenshotBlobs ? 'manual' : 'auto';
+            
+            // Determine where to insert in DOM based on timestamp across ALL screenshots
             let insertBeforeNode = null;
-            if (blobArrayRef === manualScreenshotBlobs || blobArrayRef === screenshotBlobs) {
-                for (let i = 0; i < blobArrayRef.length; i++) {
-                    if (blobArrayRef[i].timestamp > timestamp) {
-                        insertBeforeNode = screenshotsDiv.querySelector(`.screenshot-container[data-index="${i}"]`);
-                        blobArrayRef.splice(i, 0, blobData);
+            if (timestamp >= 0) {
+                const allContainers = Array.from(screenshotsDiv.querySelectorAll('.screenshot-container'));
+                for (const existingContainer of allContainers) {
+                    const existingTimestamp = parseFloat(existingContainer.dataset.timestamp);
+                    if (!isNaN(existingTimestamp) && existingTimestamp > timestamp) {
+                        insertBeforeNode = existingContainer;
                         break;
                     }
                 }
             }
-            if (!insertBeforeNode) {
-                blobArrayRef.push(blobData);
-            }
-
-            const currentIndex = blobArrayRef.indexOf(blobData);
-            container.dataset.index = currentIndex.toString();
-            container.dataset.blobUrl = blobUrl;
 
             const img = document.createElement('img');
             img.className = "screenshot-img";
@@ -2850,12 +2856,6 @@
             } else {
                 screenshotsDiv.appendChild(container);
             }
-
-            const allContainers = $$('.screenshot-container', screenshotsDiv);
-            allContainers.forEach((cont, idx) => {
-                cont.dataset.index = idx.toString();
-            });
-
 
             return container;
         };
@@ -4097,19 +4097,8 @@
                    cancelExtractionRequested = false;
                    if (currentSamplingProcess?.cancel) currentSamplingProcess.cancel();
 
-                   // Reset Manual Mode
-                   if (previousMode === 'manual' && newMode !== 'manual') {
-                       manualScreenshotBlobs = [];
-                   }
-                   if (newMode === 'manual' && previousMode !== 'manual') {
-                       $$('.screenshot-container', screenshotsDiv).forEach(container => { 
-                           if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); 
-                       });
-                       if(screenshotsDiv) screenshotsDiv.innerHTML = '';
-                       if(downloadManualButton) downloadManualButton.disabled = true;
-                       if(clearScreenshotsButton) clearScreenshotsButton.disabled = manualScreenshotBlobs.length === 0;
-                   }
-
+                   // Preserve output state across all modes
+                   
                    if (newMode === 'contactSheet') {
                        const activeGridSizeTab = $$('.grid-size-tab.active')[0];
                        const rows = parseInt(activeGridSizeTab?.getAttribute('data-rows') || 4);
@@ -4149,13 +4138,6 @@
                          if (processContactSheetButton) processContactSheetButton.textContent = cachedGrid?.completed ? 'Generate/Update Sheet' : 'Generate/Update Sheet';
                          if (downloadContactSheetButton) downloadContactSheetButton.disabled = !contactSheetBlob;
                          if (previewContactSheetButton) previewContactSheetButton.disabled = !contactSheetBlob;
-
-                   } else {
-                       // Clear general screenshot area if switching away from grid
-                        $$('.screenshot-container', screenshotsDiv).forEach(container => { if (container.dataset.blobUrl) URL.revokeObjectURL(container.dataset.blobUrl); });
-                        if(screenshotsDiv) screenshotsDiv.innerHTML = '';
-                        screenshotBlobs = []; // Clear auto/smart blobs
-                        // Keep manual blobs unless explicitly cleared
                    }
 
                    resetProcessingUI(newMode); // Reset buttons based on video presence
@@ -4754,8 +4736,6 @@
                  return;
              }
              setProcessingUI('auto');
-             screenshotBlobs = [];
-             if(screenshotsDiv) screenshotsDiv.innerHTML = '';
              updateImageCount();
              contactSheetBlob = null;
 
@@ -4808,8 +4788,6 @@
                 return;
             }
             setProcessingUI('autoSmart');
-            screenshotBlobs = [];
-            if(screenshotsDiv) screenshotsDiv.innerHTML = '';
             updateImageCount();
             contactSheetBlob = null;
 
@@ -4946,9 +4924,24 @@
              } catch(error) { console.error("[Manual Add] Error:", error); alert("An error occurred while adding the frame: " + error.message); }
          });
 
-        if(downloadAllButton) downloadAllButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(screenshotBlobs.filter(item => item?.blob), "auto_screenshots"); });
-        if(downloadAllSmartButton) downloadAllSmartButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(screenshotBlobs.filter(item => item?.blob), "smart_screenshots"); });
-        if(downloadManualButton) downloadManualButton.addEventListener('click', () => { if (!processingActive) downloadBlobsAsZip(manualScreenshotBlobs.filter(item => item?.blob), "manual_screenshots"); });
+        if(downloadAllButton) downloadAllButton.addEventListener('click', () => { 
+            if (!processingActive) {
+                const allBlobs = [...screenshotBlobs, ...manualScreenshotBlobs].filter(item => item?.blob);
+                downloadBlobsAsZip(allBlobs, "interval_screenshots");
+            }
+        });
+        if(downloadAllSmartButton) downloadAllSmartButton.addEventListener('click', () => { 
+            if (!processingActive) {
+                const allBlobs = [...screenshotBlobs, ...manualScreenshotBlobs].filter(item => item?.blob);
+                downloadBlobsAsZip(allBlobs, "smart_screenshots");
+            }
+        });
+        if(downloadManualButton) downloadManualButton.addEventListener('click', () => { 
+            if (!processingActive) {
+                const allBlobs = [...screenshotBlobs, ...manualScreenshotBlobs].filter(item => item?.blob);
+                downloadBlobsAsZip(allBlobs, "manual_screenshots");
+            }
+        });
 
         if(previewContactSheetButton) previewContactSheetButton.addEventListener('click', () => {
              if (!processingActive && contactSheetBlob) {
@@ -4967,22 +4960,22 @@
         if (clearScreenshotsButton) clearScreenshotsButton.addEventListener('click', () => {
              if (processingActive) return;
              const hasAnyOutput = (screenshotBlobs.length + manualScreenshotBlobs.length > 0) || contactSheetPreviewData.some(d => d !== null) || contactSheetBlob;
-             if (hasAnyOutput && confirm("Are you sure you want to clear all extracted images (screenshots and grid preview)?")) {
-                 screenshotBlobs.concat(manualScreenshotBlobs).forEach(item => { if(item?.blobUrl) URL.revokeObjectURL(item.blobUrl); });
-                 if(screenshotsDiv) screenshotsDiv.innerHTML = '';
-                 screenshotBlobs = []; manualScreenshotBlobs = [];
+             if (!hasAnyOutput) return;
+             
+             screenshotBlobs.concat(manualScreenshotBlobs).forEach(item => { if(item?.blobUrl) URL.revokeObjectURL(item.blobUrl); });
+             if(screenshotsDiv) screenshotsDiv.innerHTML = '';
+             screenshotBlobs = []; manualScreenshotBlobs = [];
 
-                 clearContactSheetPreview(true);
-                 contactSheetBlob = null;
+             clearContactSheetPreview(true);
+             contactSheetBlob = null;
 
-                 Object.keys(gridCache).forEach(key => { gridCache[key] = { data: null, blob: null, completed: false }; });
-                 $$('.grid-size-tab').forEach(tab => tab.classList.remove('completed'));
+             Object.keys(gridCache).forEach(key => { gridCache[key] = { data: null, blob: null, completed: false }; });
+             $$('.grid-size-tab').forEach(tab => tab.classList.remove('completed'));
 
-                 if(downloadContactSheetButton) downloadContactSheetButton.disabled = true;
-                 if(previewContactSheetButton) previewContactSheetButton.disabled = true;
-                 if(processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Grid';
-                 updateImageCount();
-             }
+             if(downloadContactSheetButton) downloadContactSheetButton.disabled = true;
+             if(previewContactSheetButton) previewContactSheetButton.disabled = true;
+             if(processContactSheetButton) processContactSheetButton.textContent = 'Generate/Update Grid';
+             updateImageCount();
         });
 
         // Initial setup calls
