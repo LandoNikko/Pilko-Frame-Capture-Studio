@@ -1562,7 +1562,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="uploadIconSvg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-miterlimit="10" d="M9.047 9.5v5"/><path stroke-linejoin="round" d="M11.34 11.605L9.373 9.638a.458.458 0 0 0-.651 0l-1.968 1.967"/><path stroke-linejoin="round" d="M12 5.32H6.095A3.595 3.595 0 0 0 2.5 8.923v6.162a3.595 3.595 0 0 0 3.595 3.595H12a3.595 3.595 0 0 0 3.595-3.595V8.924A3.594 3.594 0 0 0 12 5.32m9.5 4.118v5.135c0 .25-.071.496-.205.708a1.355 1.355 0 0 1-.555.493a1.27 1.27 0 0 1-.73.124a1.366 1.366 0 0 1-.677-.278l-3.225-2.588a1.377 1.377 0 0 1-.503-1.047c0-.2.045-.396.133-.575c.092-.168.218-.315.37-.432l3.225-2.567a1.36 1.36 0 0 1 .678-.278c.25-.032.504.011.729.124a1.325 1.325 0 0 1 .76 1.181"/></g></svg>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="spinnerIcon" style="display: none;"><path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"/><path fill="currentColor" d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
             </div>
-            <div id="dropZoneText">Upload a video file</div>
+            <div id="dropZoneText">Upload a video</div>
             <div id="loadedFileInfo">
                 <div class="file-name-row">
                     <div id="loadedFileName">Filename goes here</div>
@@ -1659,6 +1659,11 @@
                             <option value="ss">ss</option>
                             <option value="ff">ff</option>
                         </select>
+                        <button class="corner-position-btn" id="timecodeCornerPositionBtn" title="Toggle timecode position">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m4 8l.01.011M4 4l.01.011M8 4l.01.011M12 4l.01.011M16 4l.01.011M20 4l.01.011M20 8l.01.011M20 12l.01.011M20 16l.01.011M20 20l.01.011M16 20l.01.011M4 12.01v8h8v-8z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <!-- Custom Text Overlay, hidden unless Pro Mode -->
@@ -1688,7 +1693,7 @@
                             <button id="customImageRemoveBtn" class="corner-position-btn" title="Remove image" style="display:none; width: 28px; height: 28px; padding: 4px; flex-shrink: 0;">
                                 <i class="ri-close-line" style="font-size: 18px;"></i>
                             </button>
-                            <button id="customImageUploadBtn" class="value-input" style="width: 140px; text-align: left; padding: 4px 8px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 28px; line-height: 20px;">
+                            <button id="customImageUploadBtn" class="corner-position-btn" style="width: 140px; text-align: left; padding: 4px 8px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; height: 28px; line-height: 20px; background: var(--bg-tertiary);">
                                 Upload Image...
                             </button>
                         </div>
@@ -1711,6 +1716,16 @@
                     <button class="timecode-size-tab" data-size="L" aria-pressed="false">L</button>
                     <button class="timecode-size-tab" data-size="XL" aria-pressed="false">XL</button>
                 </div>
+                </div>
+                <!-- Overlay Opacity, hidden unless Pro Mode -->
+                <div class="setting-control-group" id="overlayOpacityGroup" style="display:none;">
+                    <div class="slider-row">
+                        <h3 class="slider-label">Overlay Opacity</h3>
+                        <div class="slider-wrapper">
+                            <input type="range" id="overlayOpacityInput" min="0" max="100" value="100" step="1" aria-label="Overlay opacity">
+                            <span id="overlayOpacityValue" class="value-display"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -3487,7 +3502,7 @@
             const pct = max > min ? ((val - min) * 100) / (max - min) : 0;
             let color = 'var(--accent-interval)';
              // Determine slider color
-             if (slider.id === 'jpegQualityGlobal' || slider.id === 'webpQualityGlobal') {
+             if (slider.id === 'jpegQualityGlobal' || slider.id === 'webpQualityGlobal' || slider.id === 'overlayOpacityInput') {
                  color = 'var(--text-secondary)';
              }
              else if (slider.closest('#autoSmartMode')) { color = 'var(--accent-secondary)'; }
@@ -3502,7 +3517,7 @@
                 if (slider.id === 'histThresholdInput') {
                     displaySpan.textContent = Math.round(slider.value * 100) + '%';
                 }
-                else if (slider.id === 'pixelThresholdInput') {
+                else if (slider.id === 'pixelThresholdInput' || slider.id === 'overlayOpacityInput') {
                     displaySpan.textContent = slider.value + '%';
                 }
                 else {
@@ -4395,6 +4410,7 @@
         initGlobalFormatControls();
         setupSlider(histThresholdInput, histThresholdValue, '');
         setupSlider(pixelThresholdInput, pixelThresholdValue, '');
+        if (overlayOpacityInput && overlayOpacityValue) setupSlider(overlayOpacityInput, overlayOpacityValue, '%');
         
         if (intervalSecondsSlider) {
             intervalSecondsSlider.value = DEFAULT_SETTINGS.INTERVAL;
@@ -4481,6 +4497,41 @@
             }
         }, true);
 
+        const getTextPosition = (position, canvas, textWidth, textHeight, padding) => {
+            let x, y, textAlign, textBaseline;
+            switch (position) {
+                case 'bottom-right':
+                    x = canvas.width - padding;
+                    y = canvas.height - padding;
+                    textAlign = 'right';
+                    textBaseline = 'bottom';
+                    break;
+                case 'bottom-left':
+                    x = padding;
+                    y = canvas.height - padding;
+                    textAlign = 'left';
+                    textBaseline = 'bottom';
+                    break;
+                case 'top-right':
+                    x = canvas.width - padding;
+                    y = padding;
+                    textAlign = 'right';
+                    textBaseline = 'top';
+                    break;
+                case 'top-left':
+                    x = padding;
+                    y = padding;
+                    textAlign = 'left';
+                    textBaseline = 'top';
+                    break;
+                default:
+                    x = canvas.width - padding;
+                    y = canvas.height - padding;
+                    textAlign = 'right';
+                    textBaseline = 'bottom';
+            }
+            return { x, y, textAlign, textBaseline };
+        };
 
         const drawTimestampOverlay = (canvas, timestamp) => {
             // Only draw if Pro Mode is enabled
@@ -4488,6 +4539,8 @@
             if (!proModeToggle || !proModeToggle.checked) return;
             
             const ctx = canvas.getContext('2d');
+            const overlayOpacityInput = document.getElementById('overlayOpacityInput');
+            const overlayOpacity = overlayOpacityInput ? parseFloat(overlayOpacityInput.value) / 100 : 0.8;
             
             const framerateInput = document.getElementById('framerateInput');
             const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
@@ -4508,18 +4561,34 @@
                 }
                 
                 ctx.font = `bold ${fontSize}px "Courier New", "Lucida Console", monospace`;
-                ctx.textAlign = 'right';
-                ctx.textBaseline = 'bottom';
                 const textMetrics = ctx.measureText(timestampText);
                 const textWidth = textMetrics.width;
                 const textHeight = fontSize + 4;
                 const padding = Math.max(10, fontSize / 4);
-                const x = canvas.width - padding;
-                const y = canvas.height - padding;
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-                ctx.fillRect(x - textWidth - padding, y - textHeight - padding, textWidth + padding * 2, textHeight + padding * 2);
+                
+                const position = window.timecodePosition || 'bottom-right';
+                const pos = getTextPosition(position, canvas, textWidth, textHeight, padding);
+                
+                ctx.textAlign = pos.textAlign;
+                ctx.textBaseline = pos.textBaseline;
+                
+                let bgX, bgY;
+                if (pos.textAlign === 'left') {
+                    bgX = pos.x - padding;
+                } else {
+                    bgX = pos.x - textWidth - padding;
+                }
+                
+                if (pos.textBaseline === 'bottom') {
+                    bgY = pos.y - textHeight - padding;
+                } else {
+                    bgY = pos.y - padding;
+                }
+                
+                ctx.fillStyle = `rgba(0, 0, 0, ${overlayOpacity})`;
+                ctx.fillRect(bgX, bgY, textWidth + padding * 2, textHeight + padding * 2);
                 ctx.fillStyle = 'white';
-                ctx.fillText(timestampText, x, y);
+                ctx.fillText(timestampText, pos.x, pos.y);
             }
             
             const customTextInput = document.getElementById('customTextInput');
@@ -4540,60 +4609,43 @@
                 const textHeight = fontSize + 4;
                 const padding = Math.max(10, fontSize / 4);
                 
-                let x, y, textAlign, textBaseline;
                 const position = window.customTextPosition || 'bottom-left';
+                const pos = getTextPosition(position, canvas, textWidth, textHeight, padding);
                 
-                switch (position) {
-                    case 'bottom-left':
-                        x = padding;
-                        y = canvas.height - padding;
-                        textAlign = 'left';
-                        textBaseline = 'bottom';
-                        break;
-                    case 'top-right':
-                        x = canvas.width - padding;
-                        y = padding;
-                        textAlign = 'right';
-                        textBaseline = 'top';
-                        break;
-                    case 'top-left':
-                        x = padding;
-                        y = padding;
-                        textAlign = 'left';
-                        textBaseline = 'top';
-                        break;
-                    default:
-                        x = padding;
-                        y = canvas.height - padding;
-                        textAlign = 'left';
-                        textBaseline = 'bottom';
-                }
-                
-                ctx.textAlign = textAlign;
-                ctx.textBaseline = textBaseline;
+                ctx.textAlign = pos.textAlign;
+                ctx.textBaseline = pos.textBaseline;
                 
                 let bgX, bgY;
-                if (textAlign === 'left') {
-                    bgX = x - padding;
+                if (pos.textAlign === 'left') {
+                    bgX = pos.x - padding;
                 } else {
-                    bgX = x - textWidth - padding;
+                    bgX = pos.x - textWidth - padding;
                 }
                 
-                if (textBaseline === 'bottom') {
-                    bgY = y - textHeight - padding;
+                if (pos.textBaseline === 'bottom') {
+                    bgY = pos.y - textHeight - padding;
                 } else {
-                    bgY = y - padding;
+                    bgY = pos.y - padding;
                 }
                 
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillStyle = `rgba(0, 0, 0, ${overlayOpacity})`;
                 ctx.fillRect(bgX, bgY, textWidth + padding * 2, textHeight + padding * 2);
                 ctx.fillStyle = 'white';
-                ctx.fillText(customText, x, y);
+                ctx.fillText(customText, pos.x, pos.y);
             }
             
             if (window.customImageOverlay) {
                 const img = window.customImageOverlay;
-                const imgWidth = canvas.width / 10;
+                
+                let baseSize = canvas.width / 10;
+                switch (window.timecodeSize || 'M') {
+                    case 'S': baseSize = canvas.width / 15; break;
+                    case 'L': baseSize = canvas.width / 6; break;
+                    case 'XL': baseSize = canvas.width / 4; break;
+                    default: baseSize = canvas.width / 10; break; // M
+                }
+                
+                const imgWidth = baseSize;
                 const aspectRatio = img.width / img.height;
                 const imgHeight = imgWidth / aspectRatio;
                 
@@ -4614,12 +4666,19 @@
                         x = padding;
                         y = canvas.height - imgHeight - padding;
                         break;
+                    case 'bottom-right':
+                        x = canvas.width - imgWidth - padding;
+                        y = canvas.height - imgHeight - padding;
+                        break;
                     default:
                         x = padding;
                         y = padding;
                 }
                 
+                ctx.save();
+                ctx.globalAlpha = overlayOpacity;
                 ctx.drawImage(img, x, y, imgWidth, imgHeight);
+                ctx.restore();
             }
         };
 
@@ -5364,39 +5423,49 @@
         });
       });
       
-      window.customTextPosition = 'bottom-left';
-      const cornerPositionBtn = document.getElementById('cornerPositionBtn');
-      if (cornerPositionBtn) {
-        cornerPositionBtn.addEventListener('click', () => {
-          const positions = ['bottom-left', 'top-left', 'top-right'];
-          const currentIndex = positions.indexOf(window.customTextPosition);
-          const nextIndex = (currentIndex + 1) % positions.length;
-          window.customTextPosition = positions[nextIndex];
-          
-          const svg = cornerPositionBtn.querySelector('svg');
-          if (window.customTextPosition === 'bottom-left') {
-            cornerPositionBtn.title = 'Text position: Bottom Left';
-            svg.style.transform = 'rotate(0deg)';
-          } else if (window.customTextPosition === 'top-right') {
-            cornerPositionBtn.title = 'Text position: Top Right';
-            svg.style.transform = 'rotate(180deg)';
-          } else if (window.customTextPosition === 'top-left') {
-            cornerPositionBtn.title = 'Text position: Top Left';
-            svg.style.transform = 'rotate(90deg)';
-          }
+      const positionRotations = { 'bottom-left': 0, 'top-left': 90, 'top-right': 180, 'bottom-right': 270 };
+      const formatPositionLabel = (pos) => pos.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+      
+      const initPositionButton = (buttonId, windowProp, defaultPos, positions, labelPrefix) => {
+        const btn = document.getElementById(buttonId);
+        if (!btn) return;
+        
+        const svg = btn.querySelector('svg');
+        window[windowProp] = defaultPos;
+        let currentRotation = positionRotations[defaultPos] || 0;
+        const positionMap = new Map(positions.map((pos, idx) => [pos, idx]));
+        
+        const updateButton = () => {
+          btn.title = labelPrefix + formatPositionLabel(window[windowProp]);
+          svg.style.transform = `rotate(${currentRotation}deg)`;
+        };
+        
+        btn.addEventListener('click', () => {
+          const currentIndex = positionMap.get(window[windowProp]) ?? 0;
+          window[windowProp] = positions[(currentIndex + 1) % positions.length];
+          currentRotation += 90;
+          updateButton();
         });
         
-        cornerPositionBtn.title = 'Text position: Bottom Left';
-        const svg = cornerPositionBtn.querySelector('svg');
-        svg.style.transform = 'rotate(0deg)';
-      }
+        updateButton();
+      };
+      
+      initPositionButton('cornerPositionBtn', 'customTextPosition', 'bottom-left', 
+        ['bottom-left', 'top-left', 'top-right', 'bottom-right'], 
+        'Text position: ');
+      
+      initPositionButton('imageCornerPositionBtn', 'customImagePosition', 'top-left',
+        ['top-left', 'top-right', 'bottom-right', 'bottom-left'],
+        'Image position: ');
+      
+      initPositionButton('timecodeCornerPositionBtn', 'timecodePosition', 'bottom-right',
+        ['bottom-right', 'bottom-left', 'top-left', 'top-right'],
+        'Timecode position: ');
       
       window.customImageOverlay = null;
-      window.customImagePosition = 'top-left';
       const customImageInput = document.getElementById('customImageInput');
       const customImageUploadBtn = document.getElementById('customImageUploadBtn');
       const customImageRemoveBtn = document.getElementById('customImageRemoveBtn');
-      const imageCornerPositionBtn = document.getElementById('imageCornerPositionBtn');
       
       if (customImageUploadBtn && customImageInput) {
         customImageUploadBtn.addEventListener('click', () => {
@@ -5429,37 +5498,15 @@
           customImageInput.value = '';
         });
       }
-      
-      if (imageCornerPositionBtn) {
-        imageCornerPositionBtn.addEventListener('click', () => {
-          const positions = ['top-left', 'top-right', 'bottom-left'];
-          const currentIndex = positions.indexOf(window.customImagePosition);
-          const nextIndex = (currentIndex + 1) % positions.length;
-          window.customImagePosition = positions[nextIndex];
-          
-          const svg = imageCornerPositionBtn.querySelector('svg');
-          if (window.customImagePosition === 'top-left') {
-            imageCornerPositionBtn.title = 'Image position: Top Left';
-            svg.style.transform = 'rotate(90deg)';
-          } else if (window.customImagePosition === 'top-right') {
-            imageCornerPositionBtn.title = 'Image position: Top Right';
-            svg.style.transform = 'rotate(180deg)';
-          } else if (window.customImagePosition === 'bottom-left') {
-            imageCornerPositionBtn.title = 'Image position: Bottom Left';
-            svg.style.transform = 'rotate(0deg)';
-          }
-        });
-        
-        imageCornerPositionBtn.title = 'Image position: Top Left';
-        const svg = imageCornerPositionBtn.querySelector('svg');
-        svg.style.transform = 'rotate(90deg)';
-      }
     });
 
     // Pro Mode
     const proModeToggle = document.getElementById('proModeToggle');
     const addTimestampGroup = document.getElementById('addTimestampGroup');
     const timecodeSizeGroup = document.getElementById('timecodeSizeGroup');
+    const overlayOpacityGroup = document.getElementById('overlayOpacityGroup');
+    const overlayOpacityInput = document.getElementById('overlayOpacityInput');
+    const overlayOpacityValue = document.getElementById('overlayOpacityValue');
     const customTextGroup = document.getElementById('customTextGroup');
     const customImageGroup = document.getElementById('customImageGroup');
     const customTextInput = document.getElementById('customTextInput');
@@ -5475,7 +5522,7 @@
       if (timecodeFormatSelect) timecodeFormatSelect.value = 'off';
       if (proModeToggle) proModeToggle.checked = false;
       
-      const proModeElements = [addTimestampGroup, customTextGroup, customImageGroup, framerateRow];
+      const proModeElements = [addTimestampGroup, customTextGroup, customImageGroup, framerateRow, timecodeSizeGroup, overlayOpacityGroup];
       proModeElements.forEach(element => {
         if (element) element.style.display = 'none';
       });
@@ -5505,6 +5552,7 @@
         customTextGroup.style.display = isEnabled ? 'flex' : 'none';
         customImageGroup.style.display = isEnabled ? 'flex' : 'none';
         timecodeSizeGroup.style.display = isEnabled ? 'flex' : 'none';
+        overlayOpacityGroup.style.display = isEnabled ? 'flex' : 'none';
         framerateRow.style.display = isEnabled ? 'flex' : 'none';
         
         if (!isEnabled) {
