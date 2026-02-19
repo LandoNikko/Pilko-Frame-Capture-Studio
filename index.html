@@ -2061,7 +2061,7 @@
         </div>
         <div class="lightbox-nav-controls">
             <div class="lightbox-frame-adjust-controls">
-                <button class="lightbox-adjust-btn" id="lightboxAdjustPrev" title="Cut backward by 0.2s (Hotkey: Q)" aria-label="Cut backward by 0.2 seconds">-<i class="ri-scissors-line icon-flipped"></i></button>
+                <button class="lightbox-adjust-btn" id="lightboxAdjustPrev" title="Cut backward by 0.1s (Hotkey: Q)" aria-label="Cut backward by 0.1 seconds">-<i class="ri-scissors-line icon-flipped"></i></button>
             </div>
             <button class="lightbox-nav-btn prev-btn" id="lightboxPrevBtn" title="Hotkeys: 🡨, A" aria-label="Previous frame">
               <span class="nav-icon"><i class="ri-arrow-drop-left-line"></i></span>
@@ -2073,7 +2073,7 @@
               <span class="nav-icon"><i class="ri-arrow-drop-right-line"></i></span>
             </button>
              <div class="lightbox-frame-adjust-controls">
-                <button class="lightbox-adjust-btn" id="lightboxAdjustNext" title="Cut forward by 0.2s (Hotkey: E)" aria-label="Cut forward by 0.2 seconds"><i class="ri-scissors-line"></i>+</button>
+                <button class="lightbox-adjust-btn" id="lightboxAdjustNext" title="Cut forward by 0.1s (Hotkey: E)" aria-label="Cut forward by 0.1 seconds"><i class="ri-scissors-line"></i>+</button>
             </div>
         </div>
         <a id="lightboxDownload" href="#" download="screenshot.png" class="lightbox-action-btn lightbox-download-btn"><span>Download</span> <i class="ri-download-2-line"></i></a>
@@ -2861,8 +2861,8 @@
                     return btn;
                 };
                 
-                btnContainer.appendChild(createAdjustBtn('-', -0.2, 'Cut forward by 0.2s'));
-                btnContainer.appendChild(createAdjustBtn('+', 0.2, 'Cut backward by 0.2s'));
+                btnContainer.appendChild(createAdjustBtn('-', -0.1, 'Cut forward by 0.1s'));
+                btnContainer.appendChild(createAdjustBtn('+', 0.1, 'Cut backward by 0.1s'));
                 container.appendChild(btnContainer);
             }
 
@@ -2950,8 +2950,8 @@
                  }
              };
 
-             lightboxAdjustPrev.onclick = () => adjustFrameTimeFromLightbox(-0.2);
-             lightboxAdjustNext.onclick = () => adjustFrameTimeFromLightbox(0.2);
+             lightboxAdjustPrev.onclick = () => adjustFrameTimeFromLightbox(-0.1);
+             lightboxAdjustNext.onclick = () => adjustFrameTimeFromLightbox(0.1);
 
              updateNavButtonVisibility(currentIndex, blobArrayRef.length);
          };
@@ -3614,8 +3614,8 @@
                     btn.title = title;
                     btn.addEventListener('click', (e) => { e.stopPropagation(); adjustFrameTime(i, offset); }); return btn;
                 };
-                btnContainer.appendChild(createAdjustBtn('-', -0.2, 'Cut forward by 0.2s'));
-                btnContainer.appendChild(createAdjustBtn('+', 0.2, 'Cut backward by 0.2s'));
+                btnContainer.appendChild(createAdjustBtn('-', -0.1, 'Cut forward by 0.1s'));
+                btnContainer.appendChild(createAdjustBtn('+', 0.1, 'Cut backward by 0.1s'));
                 cell.appendChild(btnContainer);
 
                 cell.addEventListener('mouseenter', () => {
