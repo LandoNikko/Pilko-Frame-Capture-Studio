@@ -69,6 +69,8 @@ Offline: Download `index.html`
 
 The tool finds timestamps (or you pick them). Your browser's built-in capabilities (`<video>`, `<canvas>`) capture the frame at that time, optionally cropping based on black bar detection, encode it to the selected image format, and provide the image data for display/download.
 
+PySceneDetect exists for better scene detection, but requires Python and setup for local deployment. Pilko Studio's solution is Histogram and Pixel Difference algorithms in Smart Auto, which get the same job done, are lightweight (basic JS) and work inside a single .html -file. The project's goal is accessibility in deployment for the average users.
+
 The tool doesn't do video extraction from links, such as Youtube, TikTok, Instagram, etc.<br>
 I recommend using [Media Download](https://github.com/mhogomchungu/media-downloader) or [Hitomi Downloader](https://github.com/KurtBestor/Hitomi-Downloader)
 
@@ -77,8 +79,12 @@ I recommend using [Media Download](https://github.com/mhogomchungu/media-downloa
 [demo-shield]: https://img.shields.io/badge/Try_it-00c6ff?style=for-the-badge&color=080c19
 [demo-url]: [URL](https://pilko.studio)
 
+<video src="https://i.imgur.com/sD1RuDA.mp4"></video>
+
 ## ![Feedback Shield][feedback-shield]
 
 [![Email][gmail-shield]][gmail-url] ![Discord: landomrandom Status][discord-shield-static]
 
 [feedback-shield]: https://img.shields.io/badge/Feedback-242c44?style=for-the-badge&color=121727&logo=github&logoColor=00c6ff
+
+![Progress](https://i.imgur.com/F2pb5gW.gif)
