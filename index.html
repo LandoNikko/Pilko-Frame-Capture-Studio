@@ -2040,7 +2040,7 @@
           </div>
         </div>
 
-        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: February 19, 2026</p>
+        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: February 27, 2026</p>
 
       </div>
     </div>
@@ -2098,6 +2098,7 @@
               <option value="001" selected>001</option>
               <option value="01">01</option>
               <option value="1">1</option>
+              <option value="none" style="font-style: italic;">None</option>
             </select>
           </div>
           <div class="setting-control-group">
@@ -2119,10 +2120,9 @@
               </div>
             </div>
           </div>
-          <!-- Framerate input, hidden unless Frame is enabled -->
-          <div class="setting-control-group" id="framerateRow" style="display:none; align-items:center;">
+          <div class="setting-control-group" id="namingFramerateRow" style="display:none; align-items:center;">
             <label class="slider-label" style="margin-bottom:0;">Set Framerate</label>
-            <input type="number" id="framerateInput" class="value-input" value="30" min="1" max="240" step="1" style="width:70px; margin-left:auto;">
+            <input type="number" id="namingFramerateInput" class="value-input" value="30" min="1" max="240" step="1" style="width:70px; margin-left:auto;">
           </div>
         </div>
         <div class="disclaimer-note" id="namingSettingsExample" style="background-color: var(--bg-primary); text-align: right; padding: 0.75rem; border-radius: var(--border-radius-md); font-family: monospace; margin: 1rem 0;">
@@ -2253,15 +2253,16 @@
     const namingSettingsExample = document.getElementById('namingSettingsExample');
     const namingSettingsExampleText = document.getElementById('namingSettingsExampleText');
     const includeFrame = document.getElementById('includeFrame');
-    const framerateInput = document.getElementById('framerateInput');
+    const namingFramerateInput = document.getElementById('namingFramerateInput');
+    const namingFramerateRow = document.getElementById('namingFramerateRow');
 
     const openNamingSettingsModal = () => {
         if (filenamePrefix) filenamePrefix.value = namingSettings.prefix;
         if (includeTimestamp) includeTimestamp.checked = namingSettings.includeTimestamp;
         if (numberingStyleSelect) numberingStyleSelect.value = namingSettings.numberingStyle;
         if (includeFrame) includeFrame.checked = namingSettings.includeFrame;
-        if (framerateInput) framerateInput.value = namingSettings.framerate;
-        if (framerateRow) framerateRow.style.display = namingSettings.includeFrame ? 'flex' : 'none';
+        if (namingFramerateInput) namingFramerateInput.value = namingSettings.framerate;
+        if (namingFramerateRow) namingFramerateRow.style.display = 'none';
         updateNamingSettingsExample();
         toggleModal(namingSettingsModal, true);
     };
@@ -2288,6 +2289,10 @@
     if (numberingStyleSelect) {
         numberingStyleSelect.addEventListener('change', () => {
             namingSettings.numberingStyle = numberingStyleSelect.value;
+            if (namingSettings.numberingStyle === 'none' && includeFrame) {
+                includeFrame.checked = true;
+                namingSettings.includeFrame = true;
+            }
             updateNamingSettingsExample();
         });
     }
@@ -2297,8 +2302,15 @@
             if (filenamePrefix) namingSettings.prefix = filenamePrefix.value || 'screenshot_';
             if (includeTimestamp) namingSettings.includeTimestamp = includeTimestamp.checked;
             if (numberingStyleSelect) namingSettings.numberingStyle = numberingStyleSelect.value;
+            if (namingSettings.numberingStyle === 'none' && includeFrame) {
+                includeFrame.checked = true;
+            }
             if (includeFrame) namingSettings.includeFrame = includeFrame.checked;
-            if (framerateInput) namingSettings.framerate = parseInt(framerateInput.value) || 30;
+            if (namingSettings.numberingStyle === 'none' && !namingSettings.includeFrame) {
+                namingSettings.numberingStyle = '1';
+                if (numberingStyleSelect) numberingStyleSelect.value = '1';
+            }
+            if (namingFramerateInput) namingSettings.framerate = parseInt(namingFramerateInput.value) || 30;
             toggleModal(namingSettingsModal, false);
         });
     }
@@ -3052,7 +3064,7 @@
              const currentPrefix = filenamePrefix?.value ?? namingSettings.prefix;
              let filename = currentPrefix;
              
-             if (namingSettings.includeIndex) {
+             if (namingSettings.includeIndex && namingSettings.numberingStyle !== 'none') {
                  const paddedIndex = (index + 1).toString().padStart(namingSettings.numberingStyle.length, '0');
                  filename += paddedIndex;
              }
@@ -3065,7 +3077,7 @@
              if (namingSettings.includeFrame && item.timestamp !== undefined && item.timestamp >= 0) {
                  const framerate = namingSettings.framerate || 30;
                  const frameNum = Math.round(item.timestamp * framerate);
-                 filename += `_${frameNum}`;
+                 filename += filename.length > currentPrefix.length ? `_${frameNum}` : `${frameNum}`;
              }
              
              return `${filename}.${extension}`;
@@ -5319,23 +5331,33 @@
       const prefix = filenamePrefix?.value ?? namingSettings.prefix;
       const numberingStyle = numberingStyleSelect?.value || namingSettings.numberingStyle;
       const includeTs = includeTimestamp?.checked ?? namingSettings.includeTimestamp;
-      const includeFr = includeFrame?.checked ?? namingSettings.includeFrame;
-      const framerate = parseInt(framerateInput?.value || namingSettings.framerate);
+      const includeFr = (includeFrame?.checked ?? namingSettings.includeFrame) || numberingStyle === 'none';
+      const framerate = parseInt(namingFramerateInput?.value || namingSettings.framerate);
       const exampleIndex = 0;
       const exampleTimestamp = 10;
       let filename = prefix;
-      filename += (exampleIndex + 1).toString().padStart(numberingStyle.length, '0');
+      if (numberingStyle !== 'none') {
+        filename += (exampleIndex + 1).toString().padStart(numberingStyle.length, '0');
+      }
       if (includeTs) filename += '_0-10';
       if (includeFr) {
         const frameNum = Math.round(exampleTimestamp * framerate);
-        filename += `_${frameNum}`;
+        filename += filename.length > prefix.length ? `_${frameNum}` : `${frameNum}`;
       }
       filename += '.png';
       namingSettingsExampleText.textContent = filename;
+
+      if (numberingStyle === 'none' && includeFrame) {
+        includeFrame.checked = true;
+      }
     }
 
     if (includeFrame) {
       includeFrame.addEventListener('change', () => {
+        if (!includeFrame.checked && numberingStyleSelect?.value === 'none') {
+          numberingStyleSelect.value = '1';
+          namingSettings.numberingStyle = '1';
+        }
         updateNamingSettingsExample();
       });
     }
