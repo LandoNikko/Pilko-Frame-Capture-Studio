@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo+Play:wght@400&family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Pilko Studio","applicationCategory":"MultimediaApplication","operatingSystem":"Web","url":"https://pilko.studio/","description":"Extract screenshots from video locally in your browser. Supports interval, manual and automatic scene-change for frame capture.","browserRequirements":"Requires JavaScript. Works in all modern browsers.","featureList":"Video screenshot extraction, interval capture, scene detection, Pro Mode timestamps, black bar removal, contact sheet generation","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Pilko Studio","url":"https://pilko.studio/","description":"Professional video editing tools and utilities","sameAs":["https://github.com/pilkostudio"]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Pilko Studio","applicationCategory":"MultimediaApplication","operatingSystem":"Web","url":"https://pilko.studio/","description":"Extract screenshots from video locally in your browser. Supports interval, manual and automatic scene-change for frame capture.","browserRequirements":"Requires JavaScript. Works in all modern browsers.","featureList":"Video screenshot extraction, interval capture, scene detection, overlay timestamps, black bar removal, contact sheet generation","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"Pilko Studio","url":"https://pilko.studio/","description":"Professional video editing tools and utilities","sameAs":["https://github.com/pilkostudio"]}}</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root {
@@ -242,21 +242,17 @@
         flex-wrap: wrap; 
         margin-bottom: 1rem; 
         background-color: var(--bg-tertiary); 
-        padding: 0.8rem 1rem; 
+        padding: 0.5rem 1rem; 
         border-radius: var(--border-radius-md); 
         border: 1px solid var(--border-color); 
-        flex-shrink: 0; 
-        gap: 0.5rem;
+        flex-shrink: 0;
     }
     .setting-control-group {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    .setting-control-group:last-child {
-        margin-bottom: 0;
+        margin:0.5rem 0;
     }
     .setting-label { 
         flex: 1; 
@@ -282,6 +278,34 @@
 
     #format-options-row { display: flex; }
     .format-controls { display: flex; align-items: center; }
+
+    .capture-config-toggle-wrapper { margin-left: auto; display: flex; align-items: center; flex-shrink: 0; }
+    .capture-config-toggle-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--text-tertiary);
+        font-size: 0.85rem;
+        cursor: pointer;
+    }
+    .capture-config-toggle-label:hover { color: var(--text-secondary); }
+    .capture-config-chevron { font-size: 1.1rem; color: inherit; }
+    .collapsible-content { display: none; }
+    .collapsible-content.is-open { display: block; }
+
+    .crop-area-panel[hidden] { display: none !important; }
+    .crop-area-panel { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .crop-area-preview-wrap { position: relative; display: inline-block; max-width: 100%; background: var(--bg-tertiary); border-radius: var(--border-radius-sm); overflow: hidden; }
+    #cropAreaCanvas { display: block; max-width: 100%; height: auto; cursor: crosshair; }
+    .crop-area-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+    .crop-area-res { font-size: 0.85rem; color: var(--text-tertiary); margin-left: 1em; }
+    .crop-area-btns { display: flex; gap: 0.5rem; padding: 0.25rem 0; }
+    .crop-area-btns .corner-position-btn { padding: 0.35rem 0.6rem; }
+    .crop-area-panel .helper-text { display: none; }
+    .crop-area-panel.crop-area-no-video .helper-text { display: block; }
+    .crop-area-panel.crop-area-no-video .crop-area-preview-wrap { display: none; }
+    .crop-area-remove-bars-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: 0.25rem; }
+    .crop-area-remove-bars-row .corner-position-btn { padding: 0.35rem 0.6rem; }
     
     .corner-position-btn {
         background-color: var(--bg-tertiary);
@@ -415,10 +439,7 @@
          margin-right: 0;
          margin-left: 0.5em;
      }
-      #addManualButton, #extractManualButton {
-        padding-left: 1.2rem;
-      }
-
+     
     #previewContactSheetButton i { color: var(--accent-tertiary); }
     #previewContactSheetButton:hover:enabled i { color: var(--accent-tertiary-dark); }
     #downloadContactSheetButton i { color: var(--accent-tertiary); }
@@ -652,7 +673,6 @@
         height: 2rem;
     }
     
-    /* Manual mode time input wrapper - specific width for manual controls */
     #manualMode .time-input-container .time-input-wrapper {
         width: 120px;
     }
@@ -1112,8 +1132,8 @@
         background: transparent;
         border: 1px solid var(--accent-tertiary);
         color: var(--accent-tertiary);
-        padding: calc(0.75rem - 1px) calc(1.5rem - 1px);
         box-shadow: none;
+        padding: 0;
     }
     .secondary-button:hover:enabled {
         background-color: rgba(255, 106, 193, 0.1);
@@ -1406,10 +1426,10 @@
         );
     }
 
-    .drag-helper-text {
+    .helper-text {
         text-align: center;
         margin-top: 0.3rem;
-        margin-bottom: 2rem;
+        margin-bottom: 0.5rem;
         font-style: italic;
         color: var(--text-tertiary);
         font-size: 0.85rem;
@@ -1585,8 +1605,20 @@
 
         <div class="settings-panel" role="region" aria-label="Capture Settings">
             <div class="setting-row">
+                <!-- Capture Configuration -->
                 <div class="setting-control-group">
-                    <label class="setting-label format-label">Capture Format</label>
+                    <label class="setting-label toggle-label">Capture Configuration</label>
+                    <div class="capture-config-toggle-wrapper">
+                        <input type="checkbox" id="captureConfigToggle" class="toggle-input" aria-controls="captureConfigContent" aria-expanded="false">
+                        <label for="captureConfigToggle" class="capture-config-toggle-label">
+                            <span class="capture-config-toggle-text">Show</span>
+                            <i class="ri-arrow-down-s-line capture-config-chevron" aria-hidden="true"></i>
+                        </label>
+                    </div>
+                </div>
+                <div class="collapsible-content" id="captureConfigContent">
+                <div class="setting-control-group">
+                    <label class="slider-label">Capture Format</label>
                     <div class="format-controls">
                         <select id="captureFormatSelect" class="value-input" style="width:90px;">
                             <option value="png" selected>PNG</option>
@@ -1595,7 +1627,6 @@
                         </select>
                     </div>
                 </div>
-                <!-- Quality sliders (hidden by default, shown based on format selection) -->
                 <div class="slider-row" id="jpegQualityGlobalRow">
                     <h3 class="slider-label">JPEG Quality</h3>
                     <div class="slider-wrapper">
@@ -1610,31 +1641,10 @@
                         <span id="webpQualityGlobalValue" class="value-display">90%</span>
                     </div>
                 </div>
-                <div class="setting-control-group">
-                    <label class="setting-label toggle-label">
-                        Remove Black Bars
-                        <i class="ri-question-line info-icon-inline" title="Automatically detect and crop black bars from letterboxed videos" id="removeBarsInfoIcon"></i>
-                    </label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="removeBarsToggle" class="toggle-input">
-                        <label for="removeBarsToggle" class="toggle-label-switch"></label>
-                    </div>
-                </div>
-                <!-- Pro Mode toggle -->
-                <div class="setting-control-group">
-                    <label class="setting-label toggle-label">
-                        Pro Mode
-                    </label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="proModeToggle" class="toggle-input">
-                        <label for="proModeToggle" class="toggle-label-switch"></label>
-                    </div>
-                </div>
-                <!-- Framerate input, hidden unless Pro Mode -->
-                <div class="setting-control-group" id="framerateRow" style="display:none;">
+                <div class="setting-control-group" id="framerateRow">
                     <label class="slider-label">
                         Set Framerate
-                        <i class="ri-question-line info-icon-inline" title="Set your input video's framerate. This ensures accurate timecode data for the extracted frames and manual fine-tuning." id="framerateInfoIcon"></i>
+                        <i class="ri-question-line info-icon-inline" title="Set your input video's framerate. This ensures accurate timecode data for the extracted frames and manual fine-tuning. (Default: 30)" id="framerateInfoIcon"></i>
                     </label>
                     <div class="time-input-controls" style="margin-left:auto; max-width: 180px;">
                         <button class="manual-time-btn" id="frameratePrevBtn" title="Decrease framerate" tabindex="-1" style="min-width:32px;">-</button>
@@ -1642,10 +1652,48 @@
                         <button class="manual-time-btn" id="framerateNextBtn" title="Increase framerate" tabindex="-1" style="min-width:32px;">+</button>
                     </div>
                 </div>
-                <!-- Add Timecode, hidden unless Pro Mode -->
-                <div class="setting-control-group" id="addTimestampGroup" >
+                <div class="setting-control-group">
+                    <label class="slider-label">Crop Area</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="cropAreaToggle" class="toggle-input" aria-controls="cropAreaPanel">
+                        <label for="cropAreaToggle" class="toggle-label-switch"></label>
+                    </div>
+                </div>
+                <div class="crop-area-panel" id="cropAreaPanel" role="region" aria-label="Crop area selection" hidden>
+                    <div class="helper-text">Load a video to set crop area</div>
+                    <div class="crop-area-preview-wrap">
+                        <canvas id="cropAreaCanvas" width="400" height="225"></canvas>
+                    </div>
+                    <div class="crop-area-footer">
+                        <span id="cropAreaRes" class="crop-area-res" aria-live="polite">—</span>
+                        <div class="crop-area-btns">
+                            <button type="button" id="cropAreaPreset1x1" class="corner-position-btn">1×1</button>
+                            <button type="button" id="cropAreaPreset169" class="corner-position-btn">16:9</button>
+                            <button type="button" id="cropAreaPreset12" class="corner-position-btn">9:20</button>
+                            <button type="button" id="cropAreaResetBtn" class="corner-position-btn">Reset</button>
+                        </div>
+                    </div>
+                    <div class="crop-area-remove-bars-row">
+                        <label class="slider-label" for="cropAreaRemoveBarsBtn">
+                            Remove Black Bars
+                            <i class="ri-question-line info-icon-inline" title="Automatically detect and crop black bars from letterboxed videos" id="removeBarsInfoIcon"></i>
+                        </label>
+                        <button type="button" id="cropAreaRemoveBarsBtn" class="corner-position-btn">Apply</button>
+                    </div>
+                </div>
+                </div>
+                <!-- Add Overlay -->
+                <div class="setting-control-group">
+                    <label class="setting-label toggle-label">Add Overlay</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="proModeToggle" class="toggle-input">
+                        <label for="proModeToggle" class="toggle-label-switch"></label>
+                    </div>
+                </div>
+                <div class="collapsible-content" id="overlayConfigContent">
+                <div class="setting-control-group" id="addTimestampGroup">
                     <label class="slider-label">
-                        Add TC Overlay
+                        Timecode
                         <i class="ri-question-line info-icon-inline" title="Burn-in SMPTE timecode overlay to bottom right corner of extracted frames" id="timestampInfoIcon"></i>
                     </label>
                     <div class="format-controls">
@@ -1666,10 +1714,9 @@
                         </button>
                     </div>
                 </div>
-                <!-- Custom Text Overlay, hidden unless Pro Mode -->
-                <div class="setting-control-group" id="customTextGroup" style="display:none;">
+                <div class="setting-control-group" id="customTextGroup">
                     <label class="slider-label">
-                        Add Text Overlay
+                        Text
                         <i class="ri-question-line info-icon-inline" title="Add custom text overlay" id="customTextInfoIcon"></i>
                     </label>
                     <div class="format-controls">
@@ -1681,10 +1728,9 @@
                         </button>
                     </div>
                 </div>
-                <!-- Custom Image Overlay, hidden unless Pro Mode -->
-                <div class="setting-control-group" id="customImageGroup" style="display:none;">
+                <div class="setting-control-group" id="customImageGroup">
                     <label class="slider-label">
-                        Add Image Overlay
+                        Image
                         <i class="ri-question-line info-icon-inline" title="Intended to add a logo or watermark" id="customImageInfoIcon"></i>
                     </label>
                     <div class="format-controls">
@@ -1704,28 +1750,25 @@
                         </button>
                     </div>
                 </div>
-                <!-- Overlay Size, hidden unless Pro Mode -->
-                <div class="setting-control-group" id="timecodeSizeGroup" style="display:none;">
+                <div class="setting-control-group" id="timecodeSizeGroup">
                     <label class="slider-label">
                         Overlay Size
                         <i class="ri-question-line info-icon-inline" title="Set the size for timecode, custom text and image overlays" id="overlaySizeInfoIcon"></i>
                     </label>
-                                    <div class="segmented-controls timecode-size-tabs" style="max-width: 200px; margin-bottom: 0;" role="group" aria-label="Overlay size options">
+                    <div class="segmented-controls timecode-size-tabs" style="max-width: 200px; margin-bottom: 0;" role="group" aria-label="Overlay size options">
                     <button class="timecode-size-tab" data-size="S" aria-pressed="false">S</button>
                     <button class="timecode-size-tab active" data-size="M" aria-pressed="true">M</button>
                     <button class="timecode-size-tab" data-size="L" aria-pressed="false">L</button>
                     <button class="timecode-size-tab" data-size="XL" aria-pressed="false">XL</button>
                 </div>
                 </div>
-                <!-- Overlay Opacity, hidden unless Pro Mode -->
-                <div class="setting-control-group" id="overlayOpacityGroup" style="display:none;">
-                    <div class="slider-row">
-                        <h3 class="slider-label">Overlay Opacity</h3>
-                        <div class="slider-wrapper">
-                            <input type="range" id="overlayOpacityInput" min="0" max="100" value="100" step="1" aria-label="Overlay opacity">
-                            <span id="overlayOpacityValue" class="value-display"></span>
-                        </div>
+                <div class="setting-control-group" id="overlayOpacityGroup">
+                    <label class="slider-label">Overlay Opacity</label>
+                    <div class="slider-wrapper" style="margin-left: auto; flex: 0 1 auto; width: 200px;">
+                        <input type="range" id="overlayOpacityInput" min="0" max="100" value="100" step="1" aria-label="Overlay opacity">
+                        <span id="overlayOpacityValue" class="value-display"></span>
                     </div>
+                </div>
                 </div>
             </div>
 
@@ -1755,7 +1798,7 @@
                             </div>
                         </div>
                         <div class="time-input-row">
-                            <h3 class="slider-label">Frame <i class="ri-question-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Default is set to 30 fps.' id="frameWarningIcon"></i></h3>
+                            <h3 class="slider-label">Frame <i class="ri-question-line info-icon-inline" title='Configure "Set Framerate" in Capture Configuration to capture accurate frames. Default is set to 30 fps.' id="frameWarningIcon"></i></h3>
                             <div class="time-input-controls">
                                 <button class="manual-time-btn time-adjust-btn" id="manualFramePrevBtn" title="Go back 1 frame">
                                     <i class="ri-arrow-drop-left-line"></i>
@@ -1771,7 +1814,7 @@
                         <button class="manual-time-btn drag-control" data-video="manualVideo">
                             <i class="ri-expand-horizontal-s-line"></i>
                         </button>
-                        <div class="drag-helper-text">
+                        <div class="helper-text">
                             Drag the bar above horizontally to adjust video position
                         </div>
                     </div>
@@ -1794,7 +1837,7 @@
                     </div>
                     <div id="intervalFrameSettings" style="display:none;">
                         <div class="slider-row">
-                            <h3 class="slider-label">Frames <i class="ri-question-line info-icon-inline" title='Enable "Pro Mode" and configure "Set Framerate" to capture accurate frames. Max value is set to the framerate, or 1 second in this setting.' id="intervalFrameWarningIcon"></i></h3>
+                            <h3 class="slider-label">Frames <i class="ri-question-line info-icon-inline" title='Configure "Set Framerate" in Capture Configuration to capture accurate frames. Max value is set to the framerate, or 1 second in this setting.' id="intervalFrameWarningIcon"></i></h3>
                             <div class="slider-wrapper">
                                 <input type="range" id="intervalFramesSlider" min="1" max="30" value="10" step="1" aria-label="Screenshot interval in frames">
                                 <input type="text" id="intervalFramesInput" class="value-input time-input-field" value="10" placeholder="10" inputmode="numeric">
@@ -1844,7 +1887,7 @@
                             <button class="manual-time-btn drag-control" data-video="intervalVideo">
                                 <i class="ri-expand-horizontal-s-line"></i>
                             </button>
-                            <div class="drag-helper-text">
+                            <div class="helper-text">
                                 Drag the bar horizontally to adjust video position
                             </div>
                         </div>
@@ -2028,8 +2071,8 @@
             <h3>Features</h3>
             <ul>
               <li>100% mobile compatible.</li>
-              <li>Supports professional workflows.</li>
-              <li>Automatically detect and remove black bars.</li>
+              <li>Supports professional workflows (TC, SMPTE, text and image overlays).</li>
+              <li>Crop video area for capture.</li>
               <li>Different capture formats (PNG, JPEG, WEBP) and quality sliders (1-100%).</li>
               <li>Preview and fine-tune captured frames with buttons or hotkeys.</li>
               <li>Download individually or in bulk as .zip.</li>
@@ -2040,7 +2083,7 @@
           </div>
         </div>
 
-        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: February 27, 2026</p>
+        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: February 28, 2026</p>
 
       </div>
     </div>
@@ -2142,7 +2185,7 @@
 
     let verticalSeparatorElement = null;
     let cropData = null;
-    let removeBarsEnabled = false;
+    let cropAreaData = null;
     
     let gridCache = {
       '5x4': { data: null, blob: null, completed: false },
@@ -2395,7 +2438,6 @@
         const contactSheetPreviewElement = $('contactSheetPreview');
         const largeGridDisclaimer = $('largeGridDisclaimer');
         // Other
-        const removeBarsToggle = $('removeBarsToggle');
         const screenshotsDiv = $('screenshots');
         const video = $('video');
         const canvas = $('canvas');
@@ -2505,8 +2547,8 @@
                 return;
             }
             currentVideoDuration = video.duration;
-            let width = video.videoWidth, height = video.videoHeight;
-            if (removeBarsEnabled && cropData && cropData.cropWidth > 0 && cropData.cropHeight > 0) { width = cropData.cropWidth; height = cropData.cropHeight; }
+            const width = video.videoWidth;
+            const height = video.videoHeight;
             lengthValue.textContent = formatTime(currentVideoDuration);
             resolutionValue.textContent = getStandardizedResolution(width, height);
             aspectRatioValue.textContent = getCommonAspectRatio(width, height);
@@ -2612,7 +2654,6 @@
             resetValue(histThresholdValue, `${Math.round(DEFAULT_SETTINGS.HIST_THRESHOLD * 100)}%`);
             resetInput(pixelThresholdInput, DEFAULT_SETTINGS.PIXEL_THRESHOLD);
             resetValue(pixelThresholdValue, `${DEFAULT_SETTINGS.PIXEL_THRESHOLD}%`);
-            if(removeBarsToggle) removeBarsToggle.checked = false;
             if(manualTimeInput) manualTimeInput.value = '0:00';
             if(manualFrameInput) manualFrameInput.value = '0';
             if(captureFormatSelect) captureFormatSelect.value = 'png';
@@ -3122,6 +3163,8 @@
             manualVideo.src = fileURL;
             intervalVideo.src = fileURL;
             contactSheetVideo.src = fileURL;
+            cropAreaData = null;
+            document.dispatchEvent(new CustomEvent('video-loaded'));
             updateDropZoneUI(true, file.name);
             resetUIOnNewVideo();
 
@@ -3156,17 +3199,7 @@
                  resetUIOnNewVideo();
             });
 
-            if (removeBarsToggle?.checked) {
-                video.addEventListener('canplay', () => {
-                     setTimeout(() => {
-                         detectCropBoundariesMulti(() => {
-                             updateDropZoneThumbnail();
-                             updateFileInfoDisplay();
-                         });
-                     }, 200);
-                }, { once: true });
-            }
-        };
+            };
 
         const loadVideoFromURL = async (url, filename) => {
             try {
@@ -3357,8 +3390,15 @@
              }};
          };
 
+         const getEffectiveCropData = (videoEl, forThumbnail = false) => {
+            if (!videoEl || !videoEl.videoWidth) return { cropX: 0, cropY: 0, cropWidth: 1, cropHeight: 1 };
+            const full = { cropX: 0, cropY: 0, cropWidth: videoEl.videoWidth, cropHeight: videoEl.videoHeight };
+            if (!forThumbnail && cropAreaData && cropAreaData.cropWidth > 0 && cropAreaData.cropHeight > 0) return cropAreaData;
+            return full;
+         };
+
          const captureFrameAtTime = (time, callback, options = {}) => {
-            const { videoElement = video, useCrop = removeBarsEnabled, skipProgress = false } = options;
+            const { videoElement = video, skipProgress = false } = options;
             if (!videoElement || !videoElement.src || videoElement.readyState < 1 || !canvas) { callback(null); return; }
 
             let seekTimeout;
@@ -3374,7 +3414,7 @@
                  try {
                      const ctx = canvas.getContext('2d', { willReadFrequently: true });
                      if (!ctx) throw new Error('Canvas context not available');
-                     const effectiveCropData = useCrop && cropData ? cropData : { cropX: 0, cropY: 0, cropWidth: videoElement.videoWidth, cropHeight: videoElement.videoHeight };
+                     const effectiveCropData = getEffectiveCropData(videoElement, options.forThumbnail);
                      if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error(`Invalid effective crop dimensions: ${effectiveCropData.cropWidth}x${effectiveCropData.cropHeight}`);
 
                      canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
@@ -3566,7 +3606,7 @@
                 dropZone.dataset.bgUrl = blobUrl;
                 document.documentElement.style.setProperty('--dropzone-bg-image', `url(${blobUrl})`);
                 dropZone.classList.add('has-bg-image');
-            }, { videoElement: video });
+            }, { videoElement: video, forThumbnail: true });
         };
 
         const initContactSheetPreview = (rows = 4, cols = 5) => {
@@ -3943,7 +3983,7 @@
                  if (cancelExtractionRequested) { resetProcessingUI('contactSheet'); return; }
 
                  currentSamplingProcess = sampleVideoFrames({
-                     videoElement: video, sampleTimestamps, outputType: 'blob', useCrop: removeBarsEnabled,
+                     videoElement: video, sampleTimestamps, outputType: 'blob',
                      processFrameCallback: (blob, timestamp, index) => {
                          if (index >= 0 && index < contactSheetPreviewData.length) {
                              updatePreviewCell(index, blob, timestamp);
@@ -4451,14 +4491,185 @@
             calculateGridOutputHeight();
         }
 
-        if (removeBarsToggle) removeBarsToggle.addEventListener('change', (e) => {
-            removeBarsEnabled = e.target.checked;
-            if (removeBarsEnabled && video?.src && video.readyState >= 2) {
-                 detectCropBoundariesMulti(() => { updateDropZoneThumbnail(); updateFileInfoDisplay(); });
-            } else if (!removeBarsEnabled) {
-                cropData = null; updateDropZoneThumbnail(); updateFileInfoDisplay();
+        // Crop Area panel initialization
+        (() => {
+            const panel = $('cropAreaPanel'), canvas = $('cropAreaCanvas'), resEl = $('cropAreaRes');
+            const toggle = $('cropAreaToggle'), resetBtn = $('cropAreaResetBtn');
+            let cropAreaSel = null, drag = null, applyTimeout = null, cropPreviewTimeUpdateTimer = null;
+            const MIN = 10, HANDLE_R = 8;
+            const getV = () => (manualVideo?.src && manualVideo.readyState >= 2 ? manualVideo : video?.src && video.readyState >= 2 ? video : null);
+            const scheduleCropPreviewFromTime = () => {
+                if (!panel || panel.hidden) return;
+                if (getV() !== manualVideo) return;
+                if (cropPreviewTimeUpdateTimer) clearTimeout(cropPreviewTimeUpdateTimer);
+                cropPreviewTimeUpdateTimer = setTimeout(() => {
+                    cropPreviewTimeUpdateTimer = null;
+                    draw();
+                }, 100);
+            };
+            const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+            const toCanvas = (e) => {
+                if (!canvas) return { x: 0, y: 0 };
+                const r = canvas.getBoundingClientRect(), sx = canvas.width / r.width, sy = canvas.height / r.height;
+                return { x: clamp((e.clientX - r.left) * sx, 0, canvas.width), y: clamp((e.clientY - r.top) * sy, 0, canvas.height) };
+            };
+            const hitTest = (px, py) => {
+                if (!cropAreaSel || cropAreaSel.w < MIN || cropAreaSel.h < MIN) return 'new';
+                const s = cropAreaSel, cx = s.x + s.w / 2, cy = s.y + s.h / 2;
+                const handles = [[s.x, s.y, 'nw'],[cx, s.y, 'n'],[s.x + s.w, s.y, 'ne'],[s.x, cy, 'w'],[s.x + s.w, cy, 'e'],[s.x, s.y + s.h, 'sw'],[cx, s.y + s.h, 's'],[s.x + s.w, s.y + s.h, 'se']];
+                for (const [hx, hy, id] of handles) { if ((px - hx) ** 2 + (py - hy) ** 2 <= HANDLE_R ** 2) return id; }
+                if (px >= s.x && px <= s.x + s.w && py >= s.y && py <= s.y + s.h) return 'move';
+                return 'new';
+            };
+            const cursors = { nw: 'nwse-resize', n: 'ns-resize', ne: 'nesw-resize', w: 'ew-resize', e: 'ew-resize', sw: 'nesw-resize', s: 'ns-resize', se: 'nwse-resize', move: 'move', new: 'crosshair' };
+
+            const syncRes = () => {
+                const v = getV();
+                if (!resEl || !v?.videoWidth) return;
+                let w = v.videoWidth, h = v.videoHeight;
+                if (cropAreaSel && canvas?.width && cropAreaSel.w >= MIN && cropAreaSel.h >= MIN) {
+                    w = Math.round((cropAreaSel.w / canvas.width) * v.videoWidth);
+                    h = Math.round((cropAreaSel.h / canvas.height) * v.videoHeight);
+                } else if (cropAreaData) { w = cropAreaData.cropWidth; h = cropAreaData.cropHeight; }
+                resEl.textContent = `${w}×${h}`;
+            };
+            const draw = () => {
+                const v = getV();
+                if (!canvas || !v?.videoWidth) return;
+                const vw = v.videoWidth, vh = v.videoHeight, cw = Math.min(400, vw), ch = (cw / vw) * vh;
+                canvas.width = cw; canvas.height = ch;
+                if (!cropAreaSel || cropAreaSel.w < MIN || cropAreaSel.h < MIN) cropAreaSel = { x: 0, y: 0, w: cw, h: ch };
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
+                ctx.drawImage(v, 0, 0, vw, vh, 0, 0, cw, ch);
+                if (cropAreaSel && cropAreaSel.w >= MIN && cropAreaSel.h >= MIN) {
+                    const s = cropAreaSel;
+                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]); ctx.strokeRect(s.x, s.y, s.w, s.h);
+                    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+                    ctx.fillRect(0, 0, cw, s.y); ctx.fillRect(0, s.y, s.x, s.h); ctx.fillRect(s.x + s.w, s.y, cw - s.x - s.w, s.h); ctx.fillRect(0, s.y + s.h, cw, ch - s.y - s.h);
+                    ctx.setLineDash([]); ctx.fillStyle = '#fff'; ctx.strokeStyle = '#333';
+                    [[s.x, s.y],[s.x + s.w/2, s.y],[s.x + s.w, s.y],[s.x, s.y + s.h/2],[s.x + s.w, s.y + s.h/2],[s.x, s.y + s.h],[s.x + s.w/2, s.y + s.h],[s.x + s.w, s.y + s.h]].forEach(([hx, hy]) => { ctx.fillRect(hx - 3, hy - 3, 6, 6); ctx.strokeRect(hx - 3, hy - 3, 6, 6); });
+                }
+                syncRes();
+            };
+            const applyDrag = (p) => {
+                const cw = canvas.width, ch = canvas.height;
+                if (drag.mode === 'new') {
+                    cropAreaSel = { x: Math.min(drag.x0, p.x), y: Math.min(drag.y0, p.y), w: Math.abs(p.x - drag.x0), h: Math.abs(p.y - drag.y0) };
+                } else if (drag.mode === 'move') {
+                    const dx = p.x - drag.x0, dy = p.y - drag.y0;
+                    cropAreaSel = { x: clamp(drag.sel.x + dx, 0, cw - drag.sel.w), y: clamp(drag.sel.y + dy, 0, ch - drag.sel.h), w: drag.sel.w, h: drag.sel.h };
+                } else {
+                    const R = drag.sel, m = drag.mode;
+                    let x = R.x, y = R.y, w = R.w, h = R.h;
+                    if (m.includes('e')) { w = clamp(p.x - R.x, MIN, cw - R.x); }
+                    if (m.includes('w')) { x = clamp(p.x, 0, R.x + R.w - MIN); w = R.x + R.w - x; }
+                    if (m.includes('s')) { h = clamp(p.y - R.y, MIN, ch - R.y); }
+                    if (m.includes('n')) { y = clamp(p.y, 0, R.y + R.h - MIN); h = R.y + R.h - y; }
+                    cropAreaSel = { x, y, w, h };
+                }
+            };
+
+            const refresh = () => {
+                const v = getV();
+                if (!panel || !canvas) return;
+                if (!v?.src) { panel.classList.add('crop-area-no-video'); resEl.textContent = '—'; return; }
+                panel.classList.remove('crop-area-no-video');
+                const dur = v.duration;
+                if (!isFinite(dur) || dur <= 0) { draw(); return; }
+                const onSeeked = () => { v.removeEventListener('seeked', onSeeked); draw(); };
+                v.addEventListener('seeked', onSeeked, { once: true });
+                v.currentTime = dur * 0.5;
+            };
+            const reset = () => {
+                if (applyTimeout) clearTimeout(applyTimeout);
+                applyTimeout = null;
+                cropAreaSel = null; cropAreaData = null; draw();
+                if (typeof updateFileInfoDisplay === 'function') updateFileInfoDisplay();
+            };
+            const commitCrop = () => {
+                const v = getV();
+                if (!v?.videoWidth || !cropAreaSel || cropAreaSel.w < MIN || cropAreaSel.h < MIN) return;
+                const cw = canvas.width, ch = canvas.height, vw = v.videoWidth, vh = v.videoHeight;
+                cropAreaData = { cropX: Math.round((cropAreaSel.x / cw) * vw), cropY: Math.round((cropAreaSel.y / ch) * vh), cropWidth: Math.max(1, Math.round((cropAreaSel.w / cw) * vw)), cropHeight: Math.max(1, Math.round((cropAreaSel.h / ch) * vh)) };
+                syncRes();
+            };
+            const scheduleApply = () => {
+                if (applyTimeout) clearTimeout(applyTimeout);
+                applyTimeout = setTimeout(() => { commitCrop(); applyTimeout = null; }, 200);
+            };
+            const setPreset = (ratioW, ratioH) => {
+                if (!canvas?.width || !getV()?.videoWidth) return;
+                const cw = canvas.width, ch = canvas.height;
+                let w, h;
+                if (cw / ch > ratioW / ratioH) { h = ch; w = ch * ratioW / ratioH; } else { w = cw; h = cw * ratioH / ratioW; }
+                cropAreaSel = { x: (cw - w) / 2, y: (ch - h) / 2, w, h };
+                draw();
+                scheduleApply();
+            };
+
+            document.addEventListener('video-loaded', () => {
+                cropAreaSel = null;
+                if (!panel || panel.hidden) return;
+                const tryRefresh = () => { if (getV()) { panel.classList.remove('crop-area-no-video'); refresh(); return true; } return false; };
+                if (!tryRefresh()) {
+                    const id = setInterval(() => { if (tryRefresh()) clearInterval(id); }, 150);
+                    setTimeout(() => clearInterval(id), 8000);
+                }
+            });
+            if (toggle) toggle.addEventListener('change', (e) => {
+                if (panel) panel.hidden = !e.target.checked;
+                if (e.target.checked) refresh(); else reset();
+            });
+            if (manualVideo) {
+                manualVideo.addEventListener('timeupdate', scheduleCropPreviewFromTime);
+                manualVideo.addEventListener('seeked', scheduleCropPreviewFromTime);
             }
-        });
+            if (canvas) {
+                canvas.addEventListener('mousedown', (e) => {
+                    if (applyTimeout) clearTimeout(applyTimeout);
+                    applyTimeout = null;
+                    const p = toCanvas(e);
+                    const mode = hitTest(p.x, p.y);
+                    drag = mode === 'new' ? { mode: 'new', x0: p.x, y0: p.y } : { mode, x0: p.x, y0: p.y, sel: { ...cropAreaSel } };
+                    const onDocMove = (ev) => { if (drag) { const q = toCanvas(ev); applyDrag(q); draw(); } };
+                    const onDocUp = () => {
+                        document.removeEventListener('mousemove', onDocMove);
+                        document.removeEventListener('mouseup', onDocUp);
+                        drag = null;
+                        scheduleApply();
+                    };
+                    document.addEventListener('mousemove', onDocMove);
+                    document.addEventListener('mouseup', onDocUp);
+                });
+                canvas.addEventListener('mousemove', (e) => {
+                    if (drag) return;
+                    const p = toCanvas(e);
+                    canvas.style.cursor = cursors[hitTest(p.x, p.y)] || 'crosshair';
+                });
+            }
+            if (resetBtn) resetBtn.addEventListener('click', reset);
+            const presetBtns = [
+                [$('cropAreaPreset1x1'), 1, 1],
+                [$('cropAreaPreset169'), 16, 9],
+                [$('cropAreaPreset12'), 9, 20]
+            ];
+            presetBtns.forEach(([btn, rw, rh]) => { if (btn) btn.addEventListener('click', () => setPreset(rw, rh)); });
+            const removeBarsBtn = $('cropAreaRemoveBarsBtn');
+            if (removeBarsBtn) removeBarsBtn.addEventListener('click', () => {
+                if (!video?.src || video.readyState < 2) return;
+                detectCropBoundariesMulti(() => { document.dispatchEvent(new CustomEvent('crop-apply-black-bars')); });
+            });
+            document.addEventListener('crop-apply-black-bars', () => {
+                if (!cropData || !panel || panel.hidden) return;
+                const v = getV();
+                if (!v?.videoWidth) return;
+                const vw = v.videoWidth, vh = v.videoHeight, cw = Math.min(400, vw), ch = (cw / vw) * vh;
+                cropAreaData = { cropX: cropData.cropX, cropY: cropData.cropY, cropWidth: cropData.cropWidth, cropHeight: cropData.cropHeight };
+                cropAreaSel = { x: (cropData.cropX / vw) * cw, y: (cropData.cropY / vh) * ch, w: (cropData.cropWidth / vw) * cw, h: (cropData.cropHeight / vh) * ch };
+                draw();
+            });
+        })();
 
         if (intervalTrimToggle) intervalTrimToggle.addEventListener('change', (e) => {
             if (intervalTrimControls) intervalTrimControls.style.display = e.target.checked ? 'block' : 'none';
@@ -4546,7 +4757,7 @@
         };
 
         const drawTimestampOverlay = (canvas, timestamp) => {
-            // Only draw if Pro Mode is enabled
+            // Only draw if Add Overlay is enabled
             const proModeToggle = document.getElementById('proModeToggle');
             if (!proModeToggle || !proModeToggle.checked) return;
             
@@ -4949,7 +5160,7 @@
              try {
                  const { type, quality } = getCurrentFormatSettings();
                  const ctx = canvas.getContext('2d'); if(!ctx) throw new Error("Canvas context not available");
-                 const effectiveCropData = removeBarsEnabled && cropData ? cropData : { cropX: 0, cropY: 0, cropWidth: manualVideo.videoWidth, cropHeight: manualVideo.videoHeight };
+                 const effectiveCropData = getEffectiveCropData(manualVideo);
                  if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error("Invalid video or crop dimensions for Save Frame.");
 
                  canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
@@ -4978,7 +5189,7 @@
              try {
                  const { type, quality } = getCurrentFormatSettings();
                  const ctx = canvas.getContext('2d'); if(!ctx) throw new Error("Canvas context not available");
-                 const effectiveCropData = removeBarsEnabled && cropData ? cropData : { cropX: 0, cropY: 0, cropWidth: manualVideo.videoWidth, cropHeight: manualVideo.videoHeight };
+                 const effectiveCropData = getEffectiveCropData(manualVideo);
                  if (effectiveCropData.cropWidth <= 0 || effectiveCropData.cropHeight <= 0) throw new Error("Invalid video or crop dimensions for Manual Add.");
 
                  canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
@@ -5522,73 +5733,52 @@
       }
     });
 
-    // Pro Mode
+    // Shared collapsible logic (Capture Configuration + Add Overlay)
+    function bindCollapsible(checkbox, content, onToggle) {
+      if (!checkbox || !content) return;
+      const update = (expanded) => {
+        content.classList.toggle('is-open', expanded);
+        checkbox.setAttribute('aria-expanded', expanded);
+        if (onToggle) onToggle(expanded);
+      };
+      update(checkbox.checked);
+      checkbox.addEventListener('change', () => update(checkbox.checked));
+    }
+
+    const captureConfigToggle = document.getElementById('captureConfigToggle');
+    const captureConfigContent = document.getElementById('captureConfigContent');
+    const captureConfigToggleText = document.querySelector('.capture-config-toggle-text');
+    const captureConfigChevron = document.querySelector('.capture-config-chevron');
+    bindCollapsible(captureConfigToggle, captureConfigContent, (expanded) => {
+      if (captureConfigToggleText) captureConfigToggleText.textContent = expanded ? 'Hide' : 'Show';
+      if (captureConfigChevron) {
+        captureConfigChevron.classList.remove('ri-arrow-down-s-line', 'ri-arrow-up-s-line');
+        captureConfigChevron.classList.add(expanded ? 'ri-arrow-up-s-line' : 'ri-arrow-down-s-line');
+      }
+    });
+
     const proModeToggle = document.getElementById('proModeToggle');
-    const addTimestampGroup = document.getElementById('addTimestampGroup');
-    const timecodeSizeGroup = document.getElementById('timecodeSizeGroup');
-    const overlayOpacityGroup = document.getElementById('overlayOpacityGroup');
-    const overlayOpacityInput = document.getElementById('overlayOpacityInput');
-    const overlayOpacityValue = document.getElementById('overlayOpacityValue');
-    const customTextGroup = document.getElementById('customTextGroup');
-    const customImageGroup = document.getElementById('customImageGroup');
-    const customTextInput = document.getElementById('customTextInput');
-    const customTextInfoIcon = document.getElementById('customTextInfoIcon');
-    const framerateRow = document.getElementById('framerateRow');
+    const overlayConfigContent = document.getElementById('overlayConfigContent');
     const timecodeFormatSelect = document.getElementById('timecodeFormatSelect');
     let timecodeFormat = 'off';
+    const overlayOpacityInput = document.getElementById('overlayOpacityInput');
+    const overlayOpacityValue = document.getElementById('overlayOpacityValue');
+    const customTextInput = document.getElementById('customTextInput');
     const intervalFramesSlider = document.getElementById('intervalFramesSlider');
     const intervalFramesInput = document.getElementById('intervalFramesInput');
 
-    function initializeProModeDefaults() {
-      if (framerateInput) framerateInput.value = DEFAULT_SETTINGS.FRAMERATE.toString();
+    function initializeOverlayDefaults() {
       if (timecodeFormatSelect) timecodeFormatSelect.value = 'off';
-      if (proModeToggle) proModeToggle.checked = false;
-      
-      const proModeElements = [addTimestampGroup, customTextGroup, customImageGroup, framerateRow, timecodeSizeGroup, overlayOpacityGroup];
-      proModeElements.forEach(element => {
-        if (element) element.style.display = 'none';
-      });
-      
       if (customTextInput) customTextInput.value = '';
       window.customImageOverlay = null;
       if (customImageUploadBtn) customImageUploadBtn.textContent = 'Upload Image...';
       if (customImageRemoveBtn) customImageRemoveBtn.style.display = 'none';
     }
-    
-    if (proModeToggle && addTimestampGroup) {
-      proModeToggle.checked = false;
-      addTimestampGroup.style.display = 'none';
-      if (framerateRow) framerateRow.style.display = 'none';
-      
-      if (framerateInput) {
-        framerateInput.value = '30';
-      }
-      
-      if (timecodeFormatSelect) {
-        timecodeFormatSelect.value = 'off';
-      }
-      
-      proModeToggle.addEventListener('change', () => {
-        const isEnabled = proModeToggle.checked;
-        addTimestampGroup.style.display = isEnabled ? '' : 'none';
-        customTextGroup.style.display = isEnabled ? 'flex' : 'none';
-        customImageGroup.style.display = isEnabled ? 'flex' : 'none';
-        timecodeSizeGroup.style.display = isEnabled ? 'flex' : 'none';
-        overlayOpacityGroup.style.display = isEnabled ? 'flex' : 'none';
-        framerateRow.style.display = isEnabled ? 'flex' : 'none';
-        
-        if (!isEnabled) {
-          initializeProModeDefaults();
-        } else {
-          if (timecodeFormatSelect) {
-            timecodeFormatSelect.value = 'off';
-            timecodeFormat = 'off';
-          }
-        }
-      });
-    }
-    
-    initializeProModeDefaults();
+
+    bindCollapsible(proModeToggle, overlayConfigContent, (expanded) => {
+      if (!expanded) initializeOverlayDefaults();
+      else if (timecodeFormatSelect) { timecodeFormatSelect.value = 'off'; timecodeFormat = 'off'; }
+    });
 
     if (timecodeFormatSelect) {
       timecodeFormatSelect.addEventListener('change', (e) => {
