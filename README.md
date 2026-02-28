@@ -31,7 +31,8 @@ Offline: Download `index.html`
 - Capture methods
   - `Manual` - Navigate video player to capture and save specific frames.
   - `Interval` - Extract frames at regular intervals (frames or seconds).
-  - `Smart Auto` - Automatically detects scene changes and aims to capture only one frame per scene.
+  - `Automatic` - Automatically detects scene changes and aims to capture only one frame per scene.
+  - `Transcription` - Captures a frame for each timestamp segment.
   - `Grid` - Generates a grid of screenshots to a single image.
 - Add different overlays
   - SMPTE timecode
@@ -70,7 +71,7 @@ Offline: Download `index.html`
 
 The tool finds timestamps (or you pick them). Your browser's built-in capabilities (`<video>`, `<canvas>`) capture the frame at that time, optionally cropping based on black bar detection, encode it to the selected image format, and provide the image data for display/download.
 
-PySceneDetect exists for better scene detection, but requires Python and setup for local deployment. Pilko Studio's solution is Histogram and Pixel Difference algorithms in Smart Auto, which get the same job done, are lightweight (basic JS) and work inside a single .html -file. The project's goal is accessibility in deployment for the average users.
+PySceneDetect exists for better scene detection, but requires Python and setup for local deployment. Pilko Studio's solution is Histogram and Pixel Difference algorithms in Automatic, which get the same job done, are lightweight (basic JS) and work inside a single .html -file. The project's goal is accessibility in deployment for the average users.
 
 The tool doesn't do video extraction from links, such as Youtube, TikTok, Instagram, etc.<br>
 I recommend using [Media Download](https://github.com/mhogomchungu/media-downloader) or [Hitomi Downloader](https://github.com/KurtBestor/Hitomi-Downloader)
