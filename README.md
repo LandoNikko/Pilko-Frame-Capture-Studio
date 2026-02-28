@@ -24,20 +24,21 @@ Offline: Download `index.html`
 - Example video for first testing.
 - Video metadata display (resolution, duration, aspect ratio, estimated video bitrate).
 - Capture format (PNG, JPEG, WEBP) and quality configuration (1-100%).
-- Automatically remove black bars.
-- Add text and/or timecode overlays.
+- Configure capture crop area.
+  - Aspect ratio presets.
+  - Automatically crop black bars/letterbox.
+- Set framerate for frame-accurate captures.
 - Capture methods
   - `Manual` - Navigate video player to capture and save specific frames.
   - `Interval` - Extract frames at regular intervals (frames or seconds).
   - `Smart Auto` - Automatically detects scene changes and aims to capture only one frame per scene.
   - `Grid` - Generates a grid of screenshots to a single image.
+- Add different overlays
+  - SMPTE timecode
+  - Custom text
+  - Upload image/logo
 - Configure filenames for export.
 - Preview frames in a gallery/lightbox, remove unwanted frames, download individually or as ZIP.
-- Pro Mode - To support professional workflows
-  - Set framerate for frame-accurate captures
-  - SMPTE timecode overlay
-  - Custom text overlay
-  - Upload image/logo overlay
 
 ![Pilko_Panel](https://i.imgur.com/n5oZIt9.jpeg)
 
