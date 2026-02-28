@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -2131,14 +2131,14 @@
             <ul>
               <li><strong style="color: var(--accent-primary)">Manual</strong><br><span>Manually select and capture specific frames from the video player.</span></li>
               <li><strong style="color: var(--accent-interval)">Interval</strong><br><span>Extract frames at regular intervals (frames or seconds).</span></li>
-              <li><strong style="color: var(--accent-secondary)">Automatic</strong><br><span>Detects scene changes or uses a transcription file to capture one frame per segment.</span>
+              <li><strong style="color: var(--accent-secondary)">Automatic</strong><br><span>Detects scene changes or use a transcription file to capture frames.</span>
                 <ul>
                   <li><strong style="color: var(--accent-secondary)">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
                   <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
-                  <li><strong style="color: var(--accent-secondary)">Transcription</strong> uses an uploaded SRT or VTT file with timestamps. Upload a file with one timestamp (and optional text) per line; the tool captures one frame at each timestamp. <strong>You must upload a transcription file before extracting—without it, extraction will not run.</strong></li>
+                  <li><strong style="color: var(--accent-secondary)">Transcription</strong> captures a frame for each timestamp segment. You can fine-tune and remove these segments manually. You need to upload a separate transcription file (SRT or VTT) to use this feature.</li>
                 </ul>
               </li>
-              <li><strong style="color: var(--accent-tertiary)">Grid</strong><br><span>Generate a grid of screenshots to a single image.</span></li>
+              <li><strong style="color: var(--accent-tertiary)">Grid</strong><br><span>Generate a grid of screenshots into a single image.</span></li>
             </ul>
           </div>
 
@@ -2147,8 +2147,8 @@
             <ul>
               <li>100% mobile compatible.</li>
               <li>Supports professional workflows (TC, SMPTE, text and image overlays).</li>
-              <li>Crop video area for capture.</li>
-              <li>Different capture formats (PNG, JPEG, WEBP) and quality sliders (1-100%).</li>
+              <li>Video area cropping.</li>
+              <li>Different capture formats (PNG, JPEG, WEBP) with quality sliders.</li>
               <li>Preview and fine-tune captured frames with buttons or hotkeys.</li>
               <li>Download individually or in bulk as .zip.</li>
             </ul>
