@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -73,7 +73,7 @@
     .app-container { flex: 1; display: flex; position: relative; width: 100%; height: 100%; overflow: hidden; }
     .vertical-separator { position: absolute; top: 0; bottom: 0; left: var(--side-panel-width); width: var(--separator-width); background-image: linear-gradient(to bottom, var(--border-dashed) 60%, transparent 40%); background-size: 100% 8px; background-repeat: repeat-y; z-index: 10; pointer-events: none; transition: background-image 0.3s ease; }
     .vertical-separator.loading { background-image: linear-gradient(to bottom, var(--accent-interval) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 10s linear infinite; }
-    .vertical-separator.loading-smart { background-image: linear-gradient(to bottom, var(--accent-secondary) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 10s linear infinite; }
+    .vertical-separator.loading-automatic { background-image: linear-gradient(to bottom, var(--accent-secondary) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 10s linear infinite; }
     .vertical-separator.loading-grid { background-image: linear-gradient(to bottom, var(--accent-tertiary) 60%, transparent 40%); background-size: 100% 12px; animation: loadingAnimation 8s linear infinite; }
     @keyframes loadingAnimation { 0% { background-position: 0 0; } 100% { background-position: 0 100vh; } }
 
@@ -220,6 +220,9 @@
     }
     #selectFileButton:hover { background-color: var(--text-primary); color: var(--bg-primary); }
 
+    .transcription-upload-btn { padding: 0.6rem 1.5rem; font-size: 0.9rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; font-weight: 500; }
+    .transcription-upload-btn:hover { background-color: rgba(255, 255, 255, 0.1); border-color: var(--text-tertiary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
+
     #dropZone.file-loaded #buttonRow { display: none; }
 
     #videoInput { display: none; }
@@ -231,7 +234,7 @@
         margin-left: 0.5ch;
     }
     #imageCountValue.interval-mode { color: var(--accent-interval); }
-    #imageCountValue.smart-mode { color: var(--accent-secondary); }
+    #imageCountValue.automatic-mode { color: var(--accent-secondary); }
     #imageCountValue.manual-mode { color: var(--accent-primary); }
     #imageCountValue.grid-mode { color: var(--accent-tertiary); }
 
@@ -298,7 +301,7 @@
     .crop-area-preview-wrap { position: relative; display: inline-block; max-width: 100%; background: var(--bg-tertiary); border-radius: var(--border-radius-sm); overflow: hidden; }
     #cropAreaCanvas { display: block; max-width: 100%; height: auto; cursor: crosshair; }
     .crop-area-footer { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
-    .crop-area-res { font-size: 0.85rem; color: var(--text-tertiary); margin-left: 1em; }
+    .crop-area-res { color: var(--text-tertiary); }
     .crop-area-btns { display: flex; gap: 0.5rem; padding: 0.25rem 0; }
     .crop-area-btns .corner-position-btn { padding: 0.35rem 0.6rem; }
     .crop-area-panel .helper-text { display: none; }
@@ -356,11 +359,11 @@
     .segmented-controls button:first-child { border-left: none; }
     .segmented-controls button:hover:not(.active) { background-color: var(--border-color); color: var(--text-primary); }
     .mode-tabs button[data-mode="auto"].active { background: var(--gradient-interval); }
-    .mode-tabs button[data-mode="autoSmart"].active { background: var(--gradient-secondary); }
+    .mode-tabs button[data-mode="automatic"].active { background: var(--gradient-secondary); }
     .mode-tabs button[data-mode="manual"].active { background: var(--gradient-primary); }
     .mode-tabs button[data-mode="contactSheet"].active { background: var(--gradient-tertiary); }
     .mode-tabs button.active { color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); }
-    .smart-algo-tabs button.active { background: var(--gradient-secondary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
+    .detection-algo-tabs button.active { background: var(--gradient-secondary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
     .grid-size-tabs button.active { background: var(--gradient-tertiary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
     .grid-size-tabs button {
         position: relative;
@@ -378,8 +381,8 @@
     .grid-size-tabs button.active.completed::after {
         color: var(--bg-primary);
     }
-    .smart-algo-tabs, .grid-size-tabs, .timecode-size-tabs, .interval-mode-tabs { margin-bottom: 1rem; }
-    .smart-algo-tabs button, .grid-size-tabs button, .timecode-size-tabs button, .interval-mode-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
+    .detection-algo-tabs, .grid-size-tabs, .timecode-size-tabs, .interval-mode-tabs { margin-bottom: 1rem; }
+    .detection-algo-tabs button, .grid-size-tabs button, .timecode-size-tabs button, .interval-mode-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
     .interval-mode-tabs button.active { background: var(--gradient-interval); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
     .timecode-size-tabs button.active { background: var(--text-secondary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
 
@@ -448,32 +451,32 @@
     #downloadManualButton:hover:enabled i { color: var(--accent-primary-dark); }
     #downloadAllButton i { color: var(--accent-interval); }
     #downloadAllButton:hover:enabled i { color: var(--accent-interval-dark); }
-    #downloadAllSmartButton i { color: var(--accent-secondary); }
-    #downloadAllSmartButton:hover:enabled i { color: var(--accent-secondary-dark); }
+    #downloadAllAutomaticButton i { color: var(--accent-secondary); }
+    #downloadAllAutomaticButton:hover:enabled i { color: var(--accent-secondary-dark); }
 
     .secondary-button:disabled i { opacity: 0.6; }
 
 
     #processButton, #intervalModeButtons .action-button:not(.secondary-button) { background: var(--gradient-interval); }
-    #processSmartButton, #smartModeButtons .action-button:not(.secondary-button) { background: var(--gradient-secondary); }
+    #processAutomaticButton, #automaticModeButtons .action-button:not(.secondary-button) { background: var(--gradient-secondary); }
     #processContactSheetButton, #contactSheetModeButtons .action-button:not(.secondary-button) { background: var(--gradient-tertiary); }
     #addManualButton, #manualModeButtons .action-button:not(.secondary-button) { background: var(--gradient-primary); }
 
     .action-button.cancel-active { background: var(--gradient-danger) !important; color: var(--white) !important; }
     .action-button.cancel-active:hover:enabled { background: var(--gradient-danger) !important; filter: brightness(1.1); }
 
-    #downloadAllButton, #downloadAllSmartButton, #downloadManualButton, #downloadContactSheetButton { background: transparent; border: 1px solid var(--accent-tertiary); color: var(--accent-tertiary); padding: calc(0.75rem - 1px) calc(1.5rem - 1px); box-shadow: none; }
+    #downloadAllButton, #downloadAllAutomaticButton, #downloadManualButton, #downloadContactSheetButton { background: transparent; border: 1px solid var(--accent-tertiary); color: var(--accent-tertiary); padding: calc(0.75rem - 1px) calc(1.5rem - 1px); box-shadow: none; }
     #downloadAllButton { border-color: var(--accent-interval); color: var(--accent-interval); }
     #downloadAllButton:hover:enabled { background-color: rgba(154, 110, 255, 0.1); border-color: var(--accent-interval-dark); color: var(--accent-interval-dark); }
-    #downloadAllSmartButton { border-color: var(--accent-secondary); color: var(--accent-secondary); }
-    #downloadAllSmartButton:hover:enabled { background-color: rgba(45, 212, 191, 0.1); border-color: var(--accent-secondary-dark); color: var(--accent-secondary-dark); }
+    #downloadAllAutomaticButton { border-color: var(--accent-secondary); color: var(--accent-secondary); }
+    #downloadAllAutomaticButton:hover:enabled { background-color: rgba(45, 212, 191, 0.1); border-color: var(--accent-secondary-dark); color: var(--accent-secondary-dark); }
     #downloadManualButton { border-color: var(--accent-primary); color: var(--accent-primary); }
     #downloadManualButton:hover:enabled { background-color: rgba(0, 198, 255, 0.1); border-color: var(--accent-primary-dark); color: var(--accent-primary-dark); }
     #downloadContactSheetButton { border-color: var(--accent-tertiary); color: var(--accent-tertiary); }
     #downloadContactSheetButton:hover:enabled { background-color: rgba(255, 106, 193, 0.1); border-color: var(--accent-tertiary-dark); color: var(--accent-tertiary-dark); box-shadow: none; }
 
     #downloadAllButton:disabled { background: transparent; border-color: var(--accent-interval); color: var(--accent-interval); opacity: 0.5; box-shadow: none; }
-    #downloadAllSmartButton:disabled { background: transparent; border-color: var(--accent-secondary); color: var(--accent-secondary); opacity: 0.5; box-shadow: none; }
+    #downloadAllAutomaticButton:disabled { background: transparent; border-color: var(--accent-secondary); color: var(--accent-secondary); opacity: 0.5; box-shadow: none; }
     #downloadManualButton:disabled { background: transparent; border-color: var(--accent-primary); color: var(--accent-primary); opacity: 0.5; box-shadow: none; }
     #downloadContactSheetButton:disabled { background: transparent; border-color: var(--accent-tertiary); color: var(--accent-tertiary); opacity: 0.5; box-shadow: none; }
 
@@ -537,6 +540,48 @@
         margin-right: 0.5em;
     }
 
+    .transcription-segment-remove {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    .transcription-segment-remove .delete-icon-svg {
+        width: 1.1em;
+        height: 1.1em;
+    }
+
+    .transcription-upload-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+    }
+    .transcription-upload-row .transcription-upload-btn {
+        margin-left: auto;
+    }
+    .transcription-file-display {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+    .transcription-clear-file-btn {
+        padding: 0.25rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--danger-color);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .transcription-clear-file-btn:hover {
+        color: var(--text-primary);
+    }
+    .transcription-clear-file-btn .delete-icon-svg {
+        width: 1em;
+        height: 1em;
+    }
+
     .delete-icon-svg {
       width: 1.1em;
       height: 1.1em;
@@ -582,7 +627,7 @@
     .progress-bar-container { width: 100%; height: 2rem ; background-color: var(--bg-tertiary); overflow: hidden; margin-top: 0.8rem; display: none; }
     .progress-bar-fill { height: 100%; width: 0%; border-radius: var(--border-radius-full); transition: width 0.3s ease-out; }
     #progressBarAuto .progress-bar-fill { background: var(--gradient-interval); }
-    #progressBarSmart .progress-bar-fill { background: var(--gradient-secondary); }
+    #progressBarAutomatic .progress-bar-fill { background: var(--gradient-secondary); }
     #progressBarContactSheet .progress-bar-fill { background: var(--gradient-tertiary); }
 
     .screenshot-container {
@@ -666,6 +711,11 @@
     #contactSheetVideo { width: 100%; border-radius: var(--border-radius-lg); background-color: var(--black); margin-bottom: 1rem; aspect-ratio: 16 / 9; border: 1px solid var(--border-color); }
     .fine-tune-message { color: var(--accent-tertiary); font-size: 0.85rem; margin: 0.5rem 0 1rem; text-align: center; display: none; }
     .grid-controls { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.2rem; margin-bottom: 1rem; }
+    .transcription-segments-list { margin-top: 0.5rem; }
+    .transcription-segment { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+    .transcription-segment .time-input-container { margin-bottom: 0; }
+    .transcription-segment .time-input-wrapper { width: 80px; }
+    .transcription-segment .transcription-text { flex: 1; font-size: 0.85rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .time-input-container { display: flex; flex-direction: column; gap: 0.3rem; position: relative; }
     .time-input-wrapper {
         position: relative;
@@ -782,6 +832,17 @@
         border-color: var(--accent-tertiary);
         box-shadow: 0 0 0 2px rgba(255, 140, 220, 0.3);
         background-color: rgba(255, 140, 220, 0.05);
+    }
+    #automaticMode .time-input-container.highlight .time-formatted {
+        border-color: var(--accent-secondary);
+        box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.3);
+        background-color: rgba(94, 234, 212, 0.05);
+    }
+    .screenshot-container.input-hover-highlight {
+        outline: 2px solid var(--accent-secondary);
+        outline-offset: -1px;
+        position: relative;
+        z-index: 1;
     }
     .grid-cell {
         transition: outline 0.2s ease;
@@ -950,7 +1011,7 @@
 
     /* Naming Settings Button Styling */
     #namingSettingsButton,
-    #namingSettingsButtonSmart,
+    #namingSettingsButtonAutomatic,
     #namingSettingsButtonManual {
         min-width: 2.2rem;
         aspect-ratio: 1;
@@ -961,7 +1022,7 @@
     }
 
     #namingSettingsButton:hover:enabled,
-    #namingSettingsButtonSmart:hover:enabled,
+    #namingSettingsButtonAutomatic:hover:enabled,
     #namingSettingsButtonManual:hover:enabled {
         background-color: var(--bg-tertiary);
         border-color: var(--text-tertiary);
@@ -969,7 +1030,7 @@
     }
 
     #namingSettingsButton i,
-    #namingSettingsButtonSmart i,
+    #namingSettingsButtonAutomatic i,
     #namingSettingsButtonManual i {
         font-size: 1.1rem;
     }
@@ -1083,7 +1144,7 @@
 
 
     .sticky-button-container #progressBarAuto,
-    .sticky-button-container #progressBarSmart,
+    .sticky-button-container #progressBarAutomatic,
     .sticky-button-container #progressBarContactSheet {
         margin-top: 0;
     }
@@ -1110,7 +1171,7 @@
         transition: width 0.1s ease;
     }
 
-    #progressBarSmart .progress-bar-fill {
+    #progressBarAutomatic .progress-bar-fill {
         background: var(--gradient-secondary);
     }
 
@@ -1151,11 +1212,11 @@
         border-color: var(--accent-primary-dark);
         color: var(--accent-primary-dark);
     }
-    #smartModeButtons .secondary-button {
+    #automaticModeButtons .secondary-button {
         border-color: var(--accent-secondary);
         color: var(--accent-secondary);
     }
-    #smartModeButtons .secondary-button:hover:enabled {
+    #automaticModeButtons .secondary-button:hover:enabled {
         background-color: rgba(94, 234, 212, 0.1);
         border-color: var(--accent-secondary-dark);
         color: var(--accent-secondary-dark);
@@ -1775,7 +1836,7 @@
             <div class="segmented-controls mode-tabs" role="tablist" aria-label="Capture modes">
                 <button id="manualModeTab" class="mode-tab active" data-mode="manual" role="tab" aria-selected="true" aria-controls="manualMode">Manual</button>
                 <button id="autoModeTab" class="mode-tab" data-mode="auto" role="tab" aria-selected="false" aria-controls="autoMode">Interval</button>
-                <button id="autoSmartModeTab" class="mode-tab" data-mode="autoSmart" role="tab" aria-selected="false" aria-controls="autoSmartMode">Smart Auto</button>
+                <button id="automaticModeTab" class="mode-tab" data-mode="automatic" role="tab" aria-selected="false" aria-controls="automaticMode">Automatic</button>
                 <button id="contactSheetModeTab" class="mode-tab" data-mode="contactSheet" role="tab" aria-selected="false" aria-controls="contactSheetMode">Grid</button>
             </div>
 
@@ -1893,11 +1954,24 @@
                         </div>
                     </div>
                 </div>
-                <div id="autoSmartMode" role="tabpanel" aria-labelledby="autoSmartModeTab">
-                    <h3 class="setting-group-title"><span>Algorithm</span> <i class="ri-question-line info-icon-inline" id="smartModeInfoIcon" title="Identifies scenes and visual changes. Aims to capture one frame per scene. It's not perfect, but provides a good foundation. You can fine-tune a frame with the scissors buttons below it."></i></h3>
-                    <div class="segmented-controls smart-algo-tabs" role="group" aria-label="Scene detection algorithm">
-                        <button class="smart-tab active" data-algo="histogram" aria-pressed="true">Histogram Diff</button>
-                        <button class="smart-tab" data-algo="pixeldiff" aria-pressed="false">Pixel Diff</button>
+                <div id="automaticMode" role="tabpanel" aria-labelledby="automaticModeTab">
+                    <h3 class="setting-group-title"><span>Detection Mode</span> <i class="ri-question-line info-icon-inline" id="automaticModeInfoIcon" title="Diff -modes try to identify scenes and visual changes, aiming to capture one frame per scene."></i></h3>
+                    <div class="segmented-controls detection-algo-tabs" role="group" aria-label="Detection mode options">
+                        <button class="detection-tab active" data-algo="histogram" aria-pressed="true">Histogram Diff</button>
+                        <button class="detection-tab" data-algo="pixeldiff" aria-pressed="false">Pixel Diff</button>
+                        <button class="detection-tab" data-algo="transcription" aria-pressed="false">Transcription</button>
+                    </div>
+                    <div id="transcriptionSettings" style="display:none;">
+                        <input type="file" id="transcriptionFileInput" accept=".txt,.srt,.vtt,text/plain" style="display:none">
+                        <div id="transcriptionUploadRow" class="transcription-upload-row">
+                            <span class="transcription-file-display">
+                                <button type="button" id="transcriptionClearFileBtn" class="transcription-clear-file-btn" title="Clear transcription" aria-label="Clear transcription" style="display:none;"><svg class="delete-icon-svg" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 1024 1024"><path fill="currentColor" d="M360 184h-8c4.4 0 8-3.6 8-8zm304 0v-8c0 4.4 3.6 8 8 8h-8v72h72v-80c0-35.3-28.7-64-64-64H352c-35.3 0-64 28.7-64 64v80h72zm504 72H160c-17.7 0-32 14.3-32 32v32c0 4.4 3.6 8 8 8h60.4l24.7 523c1.6 34.1 29.8 61 63.9 61h454c34.2 0 62.3-26.8 63.9-61l24.7-523H888c4.4 0 8-3.6 8-8v-32c0-17.7-14.3-32-32-32M731.3 840H292.7l-24.2-512h487z"/></svg></button>
+                                <span id="transcriptionFileName" class="crop-area-res" aria-live="polite">—</span>
+                            </span>
+                            <button type="button" class="transcription-upload-btn" id="transcriptionUploadBtn">Upload</button>
+                        </div>
+                        <p id="transcriptionNoFileDisclaimer" class="disclaimer-note" style="display:none;">Upload a transcription file (SRT or VTT) to capture frames by subtitle timestamps.</p>
+                        <div id="transcriptionSegmentsList" class="transcription-segments-list"></div>
                     </div>
                     <div class="slider-row" id="histThresholdSettings">
                         <h3 class="slider-label">Hist Thresh</h3>
@@ -1986,11 +2060,11 @@
                 </div>
             </div>
 
-            <div class="button-group" id="smartModeButtons" style="display:none;">
-                <button id="processSmartButton" class="action-button">Extract Smart Shots <i class="ri-scissors-line"></i></button>
+            <div class="button-group" id="automaticModeButtons" style="display:none;">
+                <button id="processAutomaticButton" class="action-button">Extract Frames <i class="ri-scissors-line"></i></button>
                 <div class="action-button-row">
-                    <button id="downloadAllSmartButton" class="action-button secondary-button" disabled>Download All <i class="ri-download-2-line"></i></button>
-                    <button id="namingSettingsButtonSmart" class="action-icon-button" title="Filename Settings" disabled><i class="ri-settings-3-line"></i></button>
+                    <button id="downloadAllAutomaticButton" class="action-button secondary-button" disabled>Download All <i class="ri-download-2-line"></i></button>
+                    <button id="namingSettingsButtonAutomatic" class="action-icon-button" title="Filename Settings" disabled><i class="ri-settings-3-line"></i></button>
                 </div>
             </div>
 
@@ -2013,7 +2087,7 @@
 
             <div class="progress-bar-wrapper">
                 <div id="progressBarAuto" class="progress-bar-container" style="display:none;"><div id="progressBarFillAuto" class="progress-bar-fill"></div></div>
-                <div id="progressBarSmart" class="progress-bar-container" style="display:none;"><div id="progressBarFillSmart" class="progress-bar-fill"></div></div>
+                <div id="progressBarAutomatic" class="progress-bar-container" style="display:none;"><div id="progressBarFillAutomatic" class="progress-bar-fill"></div></div>
                 <div id="progressBarContactSheet" class="progress-bar-container" style="display:none;"><div id="progressBarFillContactSheet" class="progress-bar-fill"></div></div>
             </div>
 
@@ -2057,10 +2131,11 @@
             <ul>
               <li><strong style="color: var(--accent-primary)">Manual</strong><br><span>Manually select and capture specific frames from the video player.</span></li>
               <li><strong style="color: var(--accent-interval)">Interval</strong><br><span>Extract frames at regular intervals (frames or seconds).</span></li>
-              <li><strong style="color: var(--accent-secondary)">Smart Auto</strong><br><span>Automatically detects scene changes and aims to capture only one frame per scene.</span>
+              <li><strong style="color: var(--accent-secondary)">Automatic</strong><br><span>Detects scene changes or uses a transcription file to capture one frame per segment.</span>
                 <ul>
                   <li><strong style="color: var(--accent-secondary)">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
                   <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
+                  <li><strong style="color: var(--accent-secondary)">Transcription</strong> uses an uploaded SRT or VTT file with timestamps. Upload a file with one timestamp (and optional text) per line; the tool captures one frame at each timestamp. <strong>You must upload a transcription file before extracting—without it, extraction will not run.</strong></li>
                 </ul>
               </li>
               <li><strong style="color: var(--accent-tertiary)">Grid</strong><br><span>Generate a grid of screenshots to a single image.</span></li>
@@ -2287,7 +2362,7 @@
     const namingSettingsModal = document.getElementById('namingSettingsModal');
     const namingSettingsClose = document.getElementById('namingSettingsClose');
     const namingSettingsButton = document.getElementById('namingSettingsButton');
-    const namingSettingsButtonSmart = document.getElementById('namingSettingsButtonSmart');
+    const namingSettingsButtonAutomatic = document.getElementById('namingSettingsButtonAutomatic');
     const namingSettingsButtonManual = document.getElementById('namingSettingsButtonManual');
     const filenamePrefix = document.getElementById('filenamePrefix');
     const includeTimestamp = document.getElementById('includeTimestamp');
@@ -2321,8 +2396,8 @@
         });
     }
 
-    if (namingSettingsButtonSmart) {
-        namingSettingsButtonSmart.addEventListener('click', openNamingSettingsModal);
+    if (namingSettingsButtonAutomatic) {
+        namingSettingsButtonAutomatic.addEventListener('click', openNamingSettingsModal);
     }
 
     if (namingSettingsButtonManual) {
@@ -2403,8 +2478,8 @@
         const webpQualityGlobalRow = $('webpQualityGlobalRow');
         const webpQualityGlobal = $('webpQualityGlobal');
         const webpQualityGlobalValue = $('webpQualityGlobalValue');
-        // Smart Auto Controls
-        const smartAlgoTabs = $$('.smart-tab');
+        // Automatic mode controls
+        const detectionAlgoTabs = $$('.detection-tab');
         const histThresholdSettings = $('histThresholdSettings');
         const pixelThresholdSettings = $('pixelThresholdSettings');
         const histThresholdInput = $('histThresholdInput');
@@ -2412,15 +2487,19 @@
         const pixelThresholdInput = $('pixelThresholdInput');
         const pixelThresholdValue = $('pixelThresholdValue');
         const pixelDiffDisclaimer = $('pixelDiffDisclaimer');
+        const transcriptionSettings = $('transcriptionSettings');
+        const transcriptionFileInput = $('transcriptionFileInput');
+        const transcriptionUploadBtn = $('transcriptionUploadBtn');
+        const transcriptionSegmentsList = $('transcriptionSegmentsList');
         // Buttons & Progress
         const processButton = $('processButton');
         const downloadAllButton = $('downloadAllButton');
         const progressBarAuto = $('progressBarAuto');
         const progressBarFillAuto = $('progressBarFillAuto');
-        const processSmartButton = $('processSmartButton');
-        const downloadAllSmartButton = $('downloadAllSmartButton');
-        const progressBarSmart = $('progressBarSmart');
-        const progressBarFillSmart = $('progressBarFillSmart');
+        const processAutomaticButton = $('processAutomaticButton');
+        const downloadAllAutomaticButton = $('downloadAllAutomaticButton');
+        const progressBarAutomatic = $('progressBarAutomatic');
+        const progressBarFillAutomatic = $('progressBarFillAutomatic');
         // Manual Controls
         const manualVideo = $('manualVideo');
         const extractManualButton = $('extractManualButton');
@@ -2454,7 +2533,7 @@
 
         // Naming Settings
         const namingSettingsButton = $('namingSettingsButton');
-        const namingSettingsButtonSmart = $('namingSettingsButtonSmart');
+        const namingSettingsButtonAutomatic = $('namingSettingsButtonAutomatic');
         const namingSettingsButtonManual = $('namingSettingsButtonManual');
         const namingSettingsModal = $('namingSettingsModal');
         const namingSettingsClose = $('namingSettingsClose');
@@ -2471,7 +2550,7 @@
         if (!progressBarFillContactSheet) throw new Error("Missing critical HTML element: progressBarFillContactSheet");
 
         let currentMode = 'manual';
-        let smartAlgorithm = 'histogram';
+        let detectionAlgorithm = 'histogram';
         let intervalMode = 'second'; // 'second' or 'frame'
         let uploadedFile = null;
         let currentVideoDuration = 0;
@@ -2482,12 +2561,13 @@
         let contactSheetBlob = null; // This holds the *final generated* image blob
         let contactSheetPreviewData = new Array(20).fill(null); // Holds data for *preview* cells {blob, timestamp, blobUrl}
         let currentSamplingProcess = null;
+        let transcriptionSegments = []; // { time: number, text: string }[]
 
         if (imageCountValue) imageCountValue.classList.add('manual-mode');
 
         const buttonGroups = {
             auto: $('intervalModeButtons'),
-            autoSmart: $('smartModeButtons'),
+            automatic: $('automaticModeButtons'),
             contactSheet: $('contactSheetModeButtons'),
             manual: $('manualModeButtons')
         };
@@ -2496,12 +2576,12 @@
 
         const progressBarElements = {
             auto: progressBarAuto,
-            autoSmart: progressBarSmart,
+            automatic: progressBarAutomatic,
             contactSheet: progressBarContactSheet
         };
         const progressBarFillElements = {
              auto: progressBarFillAuto,
-             autoSmart: progressBarFillSmart,
+             automatic: progressBarFillAutomatic,
              contactSheet: progressBarFillContactSheet
         };
 
@@ -2525,6 +2605,32 @@
                 console.warn("Invalid time format:", timeStr);
                 return 0;
             } catch { return 0; }
+        };
+        const attachTimeInputDrag = (timeInput, timeFormatted, maxDuration, onValueChange) => {
+            let isDragging = false, startY = 0, startVal = 0;
+            const sensitivity = 0.05;
+            timeFormatted.setAttribute('draggable', 'false');
+            timeFormatted.addEventListener('mousedown', (e) => {
+                isDragging = true; startY = e.clientY; startVal = parseFloat(timeInput.value);
+                document.body.style.cursor = 'ns-resize';
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+                e.preventDefault();
+            });
+            const onMove = (e) => {
+                if (!isDragging) return;
+                const newVal = Math.max(0, Math.min(startVal + (startY - e.clientY) * sensitivity, maxDuration));
+                timeInput.value = newVal.toFixed(2);
+                timeFormatted.value = formatTime(newVal);
+                onValueChange(newVal);
+            };
+            const onUp = () => {
+                if (!isDragging) return;
+                isDragging = false;
+                document.body.style.cursor = '';
+                document.removeEventListener('mousemove', onMove);
+                document.removeEventListener('mouseup', onUp);
+            };
         };
         const gcd = (a, b) => b ? gcd(b, a % b) : a;
         const getCommonAspectRatio = (width, height) => {
@@ -2587,34 +2693,34 @@
              if (currentMode === 'contactSheet') {
                  totalCount = contactSheetPreviewData.filter(d => d?.blob).length;
              } else {
-                 // For Manual, Interval, and Smart Auto: count all screenshots combined
+                 // For Manual, Interval, and Automatic: count all screenshots combined
                  totalCount = screenshotCount + manualCount;
              }
 
             if (imageCountValue) {
                 imageCountValue.textContent = totalCount;
-                imageCountValue.classList.remove('interval-mode', 'smart-mode', 'manual-mode', 'grid-mode');
+                imageCountValue.classList.remove('interval-mode', 'automatic-mode', 'manual-mode', 'grid-mode');
                 if (currentMode === 'auto') imageCountValue.classList.add('interval-mode');
-                else if (currentMode === 'autoSmart') imageCountValue.classList.add('smart-mode');
+                else if (currentMode === 'automatic') imageCountValue.classList.add('automatic-mode');
                 else if (currentMode === 'manual') imageCountValue.classList.add('manual-mode');
                 else if (currentMode === 'contactSheet') imageCountValue.classList.add('grid-mode');
             }
-            const hasAutoOrSmartScreenshots = screenshotBlobs.length > 0;
+            const hasAutoOrAutomaticScreenshots = screenshotBlobs.length > 0;
             const hasManualScreenshots = manualScreenshotBlobs.length > 0;
-            const hasAnyScreenshots = hasAutoOrSmartScreenshots || hasManualScreenshots;
+            const hasAnyScreenshots = hasAutoOrAutomaticScreenshots || hasManualScreenshots;
             const hasContactSheetPreview = contactSheetPreviewData.some(d => d !== null);
 
             if(downloadAllButton) downloadAllButton.disabled = !hasAnyScreenshots || processingActive;
-            if(downloadAllSmartButton) downloadAllSmartButton.disabled = !hasAnyScreenshots || processingActive;
+            if(downloadAllAutomaticButton) downloadAllAutomaticButton.disabled = !hasAnyScreenshots || processingActive;
             if(downloadManualButton) downloadManualButton.disabled = !hasAnyScreenshots || processingActive;
-            if(namingSettingsButton) namingSettingsButton.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots || processingActive;
-            if(namingSettingsButtonSmart) namingSettingsButtonSmart.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots || processingActive;
-            if(namingSettingsButtonManual) namingSettingsButtonManual.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots || processingActive;
+            if(namingSettingsButton) namingSettingsButton.disabled = !hasAutoOrAutomaticScreenshots && !hasManualScreenshots || processingActive;
+            if(namingSettingsButtonAutomatic) namingSettingsButtonAutomatic.disabled = !hasAutoOrAutomaticScreenshots && !hasManualScreenshots || processingActive;
+            if(namingSettingsButtonManual) namingSettingsButtonManual.disabled = !hasAutoOrAutomaticScreenshots && !hasManualScreenshots || processingActive;
             // Grid buttons depend on whether a blob exists *and* it's not marked as needing update
             const needsUpdate = processContactSheetButton?.classList.contains('needs-update');
             if(downloadContactSheetButton) downloadContactSheetButton.disabled = !contactSheetBlob || processingActive || needsUpdate;
             if(previewContactSheetButton) previewContactSheetButton.disabled = !contactSheetBlob || processingActive || needsUpdate;
-            if(clearScreenshotsButton) clearScreenshotsButton.disabled = !hasAutoOrSmartScreenshots && !hasManualScreenshots && !hasContactSheetPreview && !contactSheetBlob;
+            if(clearScreenshotsButton) clearScreenshotsButton.disabled = !hasAutoOrAutomaticScreenshots && !hasManualScreenshots && !hasContactSheetPreview && !contactSheetBlob;
         };
         const updateDropZoneUI = (isFileLoaded, filename) => {
           if(!dropZone || !selectFileButton || !$('loadedFileName')) return;
@@ -2661,7 +2767,7 @@
         };
         const resetProcessingUI = (mode = 'all') => {
             processingActive = false; cancelExtractionRequested = false; currentSamplingProcess = null;
-            if (verticalSeparatorElement) verticalSeparatorElement.classList.remove('loading', 'loading-smart', 'loading-grid');
+            if (verticalSeparatorElement) verticalSeparatorElement.classList.remove('loading', 'loading-automatic', 'loading-grid');
 
             const resetBtn = (btn, text, startHandler, iconClass = null) => {
                  if (!btn) return;
@@ -2691,7 +2797,7 @@
              };
 
             resetBtn(processButton, 'Extract Screenshots', startAutoExtraction, 'ri-scissors-line');
-            resetBtn(processSmartButton, 'Extract Smart Shots', startSmartExtraction, 'ri-scissors-line');
+            resetBtn(processAutomaticButton, 'Extract Frames', startAutomaticExtraction, 'ri-scissors-line');
             resetBtn(processContactSheetButton, 'Generate/Update Grid', generateContactSheet);
             resetBtn(addManualButton, 'Cut Frame', addManualButton.onclick, 'ri-scissors-line');
             resetBtn(extractManualButton, 'Save Frame', extractManualButton.onclick, 'ri-download-line');
@@ -2718,13 +2824,13 @@
 
         const setProcessingUI = (mode) => {
             processingActive = true; cancelExtractionRequested = false;
-            [processButton, processSmartButton, processContactSheetButton, downloadAllButton, downloadAllSmartButton, downloadManualButton, downloadContactSheetButton, previewContactSheetButton, addManualButton, extractManualButton, clearScreenshotsButton, namingSettingsButton, namingSettingsButtonSmart, namingSettingsButtonManual].forEach(btn => {
+            [processButton, processAutomaticButton, processContactSheetButton, downloadAllButton, downloadAllAutomaticButton, downloadManualButton, downloadContactSheetButton, previewContactSheetButton, addManualButton, extractManualButton, clearScreenshotsButton, namingSettingsButton, namingSettingsButtonAutomatic, namingSettingsButtonManual].forEach(btn => {
                 if (btn) btn.disabled = true;
             });
 
             let processBtn, progressBar, loadingClass, startHandler;
             if (mode === 'auto') { processBtn = processButton; progressBar = progressBarElements.auto; loadingClass = 'loading'; startHandler = startAutoExtraction; }
-            else if (mode === 'autoSmart') { processBtn = processSmartButton; progressBar = progressBarElements.autoSmart; loadingClass = 'loading-smart'; startHandler = startSmartExtraction; }
+            else if (mode === 'automatic') { processBtn = processAutomaticButton; progressBar = progressBarElements.automatic; loadingClass = 'loading-automatic'; startHandler = startAutomaticExtraction; }
             else if (mode === 'contactSheet') { processBtn = processContactSheetButton; progressBar = progressBarElements.contactSheet; loadingClass = 'loading-grid'; startHandler = generateContactSheet;}
             else return;
 
@@ -2880,7 +2986,8 @@
                 e.stopPropagation();
                 const currentItemIndex = blobArrayRef.indexOf(blobData);
                 if (currentItemIndex > -1) {
-                    deleteScreenshot(blobData, blobArrayRef);
+                    const removedIndex = deleteScreenshot(blobData, blobArrayRef);
+                    onTranscriptionScreenshotRemoved(removedIndex, blobArrayRef);
                     if (screenshotLightbox?.classList.contains('active')) {
                         toggleModal(screenshotLightbox, false);
                     }
@@ -2904,7 +3011,7 @@
                     btn.title = title;
                     btn.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        const arrayType = currentMode === 'autoSmart' ? 'autoSmart' : 'auto';
+                        const arrayType = currentMode === 'automatic' ? 'automatic' : 'auto';
                                             const containerEl = btn.closest('.screenshot-container');
                         const idx = containerEl ? parseInt(containerEl.dataset.index) : -1;
                         if (idx >= 0) {
@@ -3220,12 +3327,24 @@
 
         const handleExampleVideoLoad = async () => {
             const localVideoURL = './assets/Arcane - Come Play Series Trailer.mp4';
+            const localTranscriptionURL = './assets/Arcane - Come Play Series Trailer.srt';
             const primaryURL = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4';
             const backupURL = 'https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4';
             
             showSpinner();
             try {
                 await loadVideoFromURL(localVideoURL, 'Arcane - Come Play Series Trailer.mp4');
+                try {
+                    const resp = await fetch(localTranscriptionURL);
+                    if (resp.ok) {
+                        const text = await resp.text();
+                        transcriptionSegments = parseTranscriptionText(text);
+                        renderTranscriptionSegments();
+                        setTranscriptionFileDisplay('Arcane - Come Play Series Trailer.srt');
+                    }
+                } catch (e) {
+                    console.log('Example transcription file not loaded:', e);
+                }
             } catch (error) {
                 console.log('Local video failed, trying primary backup:', error);
                 try {
@@ -3557,7 +3676,7 @@
              if (slider.id === 'jpegQualityGlobal' || slider.id === 'webpQualityGlobal' || slider.id === 'overlayOpacityInput') {
                  color = 'var(--text-secondary)';
              }
-             else if (slider.closest('#autoSmartMode')) { color = 'var(--accent-secondary)'; }
+             else if (slider.closest('#automaticMode')) { color = 'var(--accent-secondary)'; }
              else if (slider.closest('#manualMode')) { color = 'var(--accent-primary)'; }
              else if (slider.closest('#contactSheetMode')) { color = 'var(--accent-tertiary)'; }
             slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, var(--border-color) ${pct}%, var(--border-color) 100%)`;
@@ -3691,8 +3810,8 @@
                 const currentValue = parseFloat(timeInput.value); if (isNaN(currentValue)) return;
                 const newValue = Math.max(0, Math.min(currentValue + offsetSeconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
                 updateTimeValue(index, newValue, true);
-            } else if (arrayType === 'auto' || arrayType === 'autoSmart') {
-                const blobArrayRef = arrayType === 'autoSmart' ? screenshotBlobs : screenshotBlobs;
+            } else if (arrayType === 'auto' || arrayType === 'automatic') {
+                const blobArrayRef = arrayType === 'automatic' ? screenshotBlobs : screenshotBlobs;
                 if (index >= 0 && index < blobArrayRef.length) {
                     const currentItem = blobArrayRef[index];
                     if (currentItem && currentItem.timestamp !== undefined) {
@@ -3866,30 +3985,7 @@
                   timeFormatted.value = formatTime(initialTimestamp); timeFormatted.dataset.index = i; timeFormatted.placeholder = "0:00"; timeFormatted.setAttribute('draggable', 'false');
 
                   timeFormatted.addEventListener('change', (e) => { updateTimeValue(parseInt(e.target.dataset.index), parseTimeString(e.target.value), true); });
-
-                  let isDragging = false; let startY = 0; let startValue = 0; let sensitivity = 0.05;
-                  timeFormatted.addEventListener('mousedown', (e) => {
-                      isDragging = true; startY = e.clientY; startValue = parseFloat(timeInput.value);
-                      document.body.style.cursor = 'ns-resize';
-                      document.addEventListener('mousemove', handleMouseMove);
-                      document.addEventListener('mouseup', handleMouseUp);
-                      e.preventDefault();
-                  });
-                  const handleMouseMove = (e) => {
-                      if (!isDragging) return;
-                      const deltaY = startY - e.clientY;
-                      const newValue = Math.max(0, Math.min(startValue + (deltaY * sensitivity), (currentVideoDuration ? currentVideoDuration - 0.01 : 0)));
-                      timeInput.value = newValue.toFixed(2);
-                      timeFormatted.value = formatTime(newValue);
-                      handleFineTuneChange(parseInt(timeInput.dataset.index), newValue);
-                  };
-                  const handleMouseUp = () => {
-                      if (!isDragging) return;
-                      isDragging = false;
-                      document.body.style.cursor = '';
-                      document.removeEventListener('mousemove', handleMouseMove);
-                      document.removeEventListener('mouseup', handleMouseUp);
-                  };
+                  attachTimeInputDrag(timeInput, timeFormatted, currentVideoDuration ? currentVideoDuration - 0.01 : 0, (v) => handleFineTuneChange(parseInt(timeInput.dataset.index, 10), v));
 
                   container.addEventListener('mouseenter', () => {
                       container.classList.add('highlight');
@@ -4952,7 +5048,7 @@
         createMobileTooltip($('overlaySizeInfoIcon'));
         createMobileTooltip($('manualModeInfoIcon'));
         createMobileTooltip($('intervalModeInfoIcon'));
-        createMobileTooltip($('smartModeInfoIcon'));
+        createMobileTooltip($('automaticModeInfoIcon'));
         createMobileTooltip($('contactSheetModeInfoIcon'));
 
         if (intervalModeTabs.length > 0) {
@@ -4983,34 +5079,166 @@
             updateIntervalSettings(initialIntervalMode);
         }
 
-        if (smartAlgoTabs.length > 0) {
+        if (detectionAlgoTabs.length > 0) {
             const updateThresholdSliders = (algo) => {
                 if(histThresholdSettings) histThresholdSettings.style.display = (algo === 'histogram') ? 'flex' : 'none';
                 if(pixelThresholdSettings) pixelThresholdSettings.style.display = (algo === 'pixeldiff') ? 'flex' : 'none';
+                if(transcriptionSettings) transcriptionSettings.style.display = (algo === 'transcription') ? 'block' : 'none';
                 // Also toggle the disclaimer note visibility
                 pixelDiffDisclaimer.style.display = (algo === 'pixeldiff') ? 'block' : 'none';
-                $$('#autoSmartMode .disclaimer-note:not(#pixelDiffDisclaimer)')[0].style.display = (algo === 'histogram') ? 'block' : 'none';
-
+                const histDisclaimer = $$('#automaticMode .disclaimer-note:not(#pixelDiffDisclaimer):not(#transcriptionNoFileDisclaimer)')[0];
+                if(histDisclaimer) histDisclaimer.style.display = (algo === 'histogram') ? 'block' : 'none';
+                const transcriptionNoFileDisclaimerEl = $('transcriptionNoFileDisclaimer');
+                if(transcriptionNoFileDisclaimerEl) transcriptionNoFileDisclaimerEl.style.display = (algo === 'transcription' && transcriptionSegments.length === 0) ? 'block' : 'none';
 
                 requestAnimationFrame(() => {
                     if(histThresholdInput && algo === 'histogram') updateSliderBackground(histThresholdInput);
                     if(pixelThresholdInput && algo === 'pixeldiff') updateSliderBackground(pixelThresholdInput);
                 });
             };
-            let initialAlgo = 'histogram'; $$('.smart-tab').forEach(tab => { if (tab.classList.contains('active')) initialAlgo = tab.getAttribute('data-algo') || 'histogram'; });
-             smartAlgoTabs.forEach(tab => {
+            let initialAlgo = 'histogram'; $$('.detection-tab').forEach(tab => { if (tab.classList.contains('active')) initialAlgo = tab.getAttribute('data-algo') || 'histogram'; });
+             detectionAlgoTabs.forEach(tab => {
                  tab.addEventListener('click', () => {
-                     if (processingActive) return; const algo = tab.getAttribute('data-algo'); if(!algo) return; smartAlgorithm = algo;
-                     $$('.smart-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
+                     if (processingActive) return; const algo = tab.getAttribute('data-algo'); if(!algo) return; detectionAlgorithm = algo;
+                     $$('.detection-tab').forEach(t => { t.classList.remove('active'); t.setAttribute('aria-pressed', 'false'); });
                      tab.classList.add('active');
                      tab.setAttribute('aria-pressed', 'true');
                      updateThresholdSliders(algo);
                  });
              });
-             smartAlgorithm = initialAlgo;
+             detectionAlgorithm = initialAlgo;
              updateThresholdSliders(initialAlgo);
          }
 
+        const parseTranscriptionText = (text) => {
+            const segments = [];
+            const lines = text.split(/\r?\n/);
+            const timePartRe = new RegExp('^(\\d{1,2}:\\d{2}(?::\\d{2})?(?:[.,]\\d+)?)(?:\\s*-\\s*[\\d:,.]+|\\s*-->\\s*[\\d:,.]+)?\\s*(.*)$');
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const m = line.match(timePartRe);
+                if (m) {
+                    const timeStr = m[1].replace(',', '.');
+                    const time = parseTimeString(timeStr);
+                    let segText = m[2].trim();
+                    if (!segText && lines[i + 1] && !/^\d{1,2}:\d{2}/.test(lines[i + 1])) { segText = lines[i + 1].trim(); i++; }
+                    segments.push({ time, text: segText });
+                } else if (/^\d{2}:\d{2}:\d{2}[,.]\d+/.test(line)) {
+                    const startPart = line.split(/\s*-->\s*/)[0].replace(',', '.').replace(/(\d{2}):(\d{2}):(\d{2})[.,]\d+/, '$1:$2:$3');
+                    const time = parseTimeString(startPart.trim());
+                    const segText = lines[i + 1] ? lines[i + 1].trim() : '';
+                    segments.push({ time, text: segText });
+                    i++;
+                }
+            }
+            return segments;
+        };
+
+        const transcriptionFileNameEl = $('transcriptionFileName');
+        const transcriptionClearFileBtn = $('transcriptionClearFileBtn');
+        const setTranscriptionFileDisplay = (fileName) => {
+            if (transcriptionFileNameEl) transcriptionFileNameEl.textContent = fileName || '—';
+            if (transcriptionClearFileBtn) transcriptionClearFileBtn.style.display = fileName ? 'inline-flex' : 'none';
+            if (transcriptionUploadBtn) transcriptionUploadBtn.style.display = fileName ? 'none' : 'inline-block';
+            const transcriptionNoFileDisclaimerEl = $('transcriptionNoFileDisclaimer');
+            if (transcriptionNoFileDisclaimerEl) transcriptionNoFileDisclaimerEl.style.display = (fileName || detectionAlgorithm !== 'transcription') ? 'none' : 'block';
+            if (!fileName) {
+                transcriptionSegments = [];
+                if (transcriptionFileInput) transcriptionFileInput.value = '';
+                renderTranscriptionSegments();
+            }
+        };
+        const setTranscriptionHoverHighlight = (index, timeInputContainer, add) => {
+            if (timeInputContainer) timeInputContainer.classList[add ? 'add' : 'remove']('highlight');
+            const el = screenshotsDiv?.querySelector(`.screenshot-container[data-index="${index}"]`);
+            if (el) el.classList[add ? 'add' : 'remove']('input-hover-highlight');
+        };
+        const updateTranscriptionSegmentTime = (idx, sec, duration) => {
+            if (!transcriptionSegments[idx]) return;
+            transcriptionSegments[idx].time = Math.max(0, Math.min(sec, duration));
+            const numInput = $(`transcriptionTimeInput_${idx}`);
+            if (numInput) numInput.value = transcriptionSegments[idx].time.toFixed(2);
+        };
+        const removeTranscriptionSegment = (i) => {
+            if (detectionAlgorithm === 'transcription' && screenshotBlobs[i]) deleteScreenshot(screenshotBlobs[i], screenshotBlobs);
+            transcriptionSegments.splice(i, 1);
+            renderTranscriptionSegments();
+        };
+        const onTranscriptionScreenshotRemoved = (removedIndex, blobArrayRef) => {
+            if (removedIndex < 0 || currentMode !== 'automatic' || detectionAlgorithm !== 'transcription' || blobArrayRef !== screenshotBlobs) return;
+            transcriptionSegments.splice(removedIndex, 1);
+            renderTranscriptionSegments();
+        };
+
+        const renderTranscriptionSegments = () => {
+            if (!transcriptionSegmentsList) return;
+            transcriptionSegmentsList.innerHTML = '';
+            const duration = currentVideoDuration || 999;
+            transcriptionSegments.forEach((seg, i) => {
+                const row = document.createElement('div');
+                row.className = 'transcription-segment';
+                const container = document.createElement('div');
+                container.className = 'time-input-container';
+                container.dataset.index = String(i);
+                const wrapper = document.createElement('div');
+                wrapper.className = 'time-input-wrapper';
+                const timeInput = document.createElement('input');
+                timeInput.type = 'number';
+                timeInput.className = 'time-input';
+                timeInput.id = `transcriptionTimeInput_${i}`;
+                timeInput.value = seg.time.toFixed(2);
+                timeInput.min = '0';
+                timeInput.max = duration.toFixed(2);
+                timeInput.step = '0.01';
+                timeInput.dataset.index = String(i);
+                const timeFormatted = document.createElement('input');
+                timeFormatted.type = 'text';
+                timeFormatted.className = 'time-formatted';
+                timeFormatted.value = formatTime(seg.time);
+                timeFormatted.dataset.index = String(i);
+                timeFormatted.placeholder = '0:00';
+                timeFormatted.addEventListener('change', (e) => updateTranscriptionSegmentTime(parseInt(e.target.dataset.index, 10), parseTimeString(e.target.value), duration));
+                attachTimeInputDrag(timeInput, timeFormatted, duration, (newVal) => updateTranscriptionSegmentTime(parseInt(timeInput.dataset.index, 10), newVal, duration));
+                const setHighlight = (on) => setTranscriptionHoverHighlight(i, container, on);
+                container.addEventListener('mouseenter', () => setHighlight(true));
+                container.addEventListener('mouseleave', () => setHighlight(false));
+                wrapper.appendChild(timeInput);
+                wrapper.appendChild(timeFormatted);
+                container.appendChild(wrapper);
+                const textSpan = document.createElement('span');
+                textSpan.className = 'transcription-text';
+                textSpan.textContent = seg.text || '';
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'action-icon-button action-icon-button--delete transcription-segment-remove';
+                removeBtn.title = 'Remove segment';
+                removeBtn.innerHTML = DELETE_ICON_SVG;
+                removeBtn.addEventListener('mouseenter', () => setHighlight(true));
+                removeBtn.addEventListener('mouseleave', () => setHighlight(false));
+                removeBtn.addEventListener('click', () => removeTranscriptionSegment(i));
+                row.appendChild(container);
+                row.appendChild(textSpan);
+                row.appendChild(removeBtn);
+                transcriptionSegmentsList.appendChild(row);
+            });
+        };
+
+        if (transcriptionUploadBtn) transcriptionUploadBtn.addEventListener('click', () => transcriptionFileInput?.click());
+        if (transcriptionFileInput) transcriptionFileInput.addEventListener('change', (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            setTranscriptionFileDisplay(file.name);
+            const reader = new FileReader();
+            reader.onload = () => {
+                transcriptionSegments = parseTranscriptionText(String(reader.result));
+                renderTranscriptionSegments();
+                const noFileDisclaimer = $('transcriptionNoFileDisclaimer');
+                if (noFileDisclaimer) noFileDisclaimer.style.display = 'none';
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        });
+        if (transcriptionClearFileBtn) transcriptionClearFileBtn.addEventListener('click', () => setTranscriptionFileDisplay(null));
 
         const startAutoExtraction = () => {
              if (!video?.src || processingActive || video.readyState < video.HAVE_METADATA) {
@@ -5064,16 +5292,43 @@
              startExtraction();
          };
 
-        const startSmartExtraction = () => {
+        const startAutomaticExtraction = () => {
             if (!video?.src || processingActive || video.readyState < video.HAVE_METADATA) {
                 alert("Please load a video file first or wait for it to be ready.");
                 return;
             }
-            setProcessingUI('autoSmart');
+            if (detectionAlgorithm === 'transcription') {
+                const times = transcriptionSegments.map(s => s.time).filter(t => t >= 0).sort((a, b) => a - b);
+                if (!times.length) {
+                    alert("Upload a transcription file first and ensure it has timestamps.");
+                    return;
+                }
+                setProcessingUI('automatic');
+                updateImageCount();
+                contactSheetBlob = null;
+                let idx = 0;
+                let isCancelled = false;
+                currentSamplingProcess = { cancel: () => { isCancelled = true; resetProcessingUI('automatic'); } };
+                const next = () => {
+                    if (isCancelled || idx >= times.length) { resetProcessingUI('automatic'); return; }
+                    const t = times[idx];
+                    if (progressBarFillAutomatic) progressBarFillAutomatic.style.width = `${((idx + 1) / times.length) * 100}%`;
+                    captureFrameAtTime(t, (blob) => {
+                        if (isCancelled) return;
+                        if (blob) { createScreenshotContainer(blob, t, screenshotBlobs); updateImageCount(); }
+                        idx++;
+                        setTimeout(next, 0);
+                    });
+                };
+                next();
+                return;
+            }
+
+            setProcessingUI('automatic');
             updateImageCount();
             contactSheetBlob = null;
 
-            const smartInterval = 0.5;
+            const frameSampleInterval = 0.5;
             const sampleFactor = 8;
             const histThreshold = histThresholdInput ? parseFloat(histThresholdInput.value) : 0.35;
             const pixelThreshold = pixelThresholdInput ? parseFloat(pixelThresholdInput.value) : 35;
@@ -5081,20 +5336,20 @@
             const startExtraction = () => {
                  let currentTime = 0.1; const totalDuration = currentVideoDuration; let previousImageData = null; let previousHist = null; let previousPixelData = null;
                  let frameTimeoutId = null; let isCancelled = false;
-                 currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('autoSmart'); } }; // Reset UI on cancel
+                 currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('automatic'); } }; // Reset UI on cancel
 
-                function processNextSmartFrame() {
-                    if (isCancelled || cancelExtractionRequested || currentTime > totalDuration + 0.1) { if(!isCancelled) resetProcessingUI('autoSmart'); return; }
+                function processNextDetectionFrame() {
+                    if (isCancelled || cancelExtractionRequested || currentTime > totalDuration + 0.1) { if(!isCancelled) resetProcessingUI('automatic'); return; }
                     const timestamp = currentTime;
-                     if (progressBarFillSmart) progressBarFillSmart.style.width = `${Math.min((currentTime / totalDuration) * 100, 100)}%`;
+                     if (progressBarFillAutomatic) progressBarFillAutomatic.style.width = `${Math.min((currentTime / totalDuration) * 100, 100)}%`;
 
                     captureFrameAtTime(timestamp, (blob) => {
                         if (isCancelled || cancelExtractionRequested) { return; }
 
                         if (!blob) {
                             if (currentTime <= totalDuration + 0.1) {
-                                currentTime += smartInterval; frameTimeoutId = setTimeout(processNextSmartFrame, 0);
-                            } else { resetProcessingUI('autoSmart'); }
+                                currentTime += frameSampleInterval; frameTimeoutId = setTimeout(processNextDetectionFrame, 0);
+                            } else { resetProcessingUI('automatic'); }
                             return;
                         }
 
@@ -5114,13 +5369,13 @@
                                  let captureThisFrame = false;
                                  if (!previousImageData) {
                                      captureThisFrame = true;
-                                     if (smartAlgorithm === "histogram") previousHist = computeHistogram(currentImageData, sampleFactor);
-                                     if (smartAlgorithm === 'pixeldiff') previousPixelData = currentImageData.data.slice();
+                                     if (detectionAlgorithm === "histogram") previousHist = computeHistogram(currentImageData, sampleFactor);
+                                     if (detectionAlgorithm === 'pixeldiff') previousPixelData = currentImageData.data.slice();
                                  } else {
-                                     if (smartAlgorithm === "histogram") {
+                                     if (detectionAlgorithm === "histogram") {
                                          const currentHist = computeHistogram(currentImageData, sampleFactor);
                                          if (!previousHist || histogramDifference(currentHist, previousHist) >= histThreshold) { captureThisFrame = true; previousHist = currentHist; }
-                                     } else if (smartAlgorithm === "pixeldiff") {
+                                     } else if (detectionAlgorithm === "pixeldiff") {
                                          const diff = computePixelDiff(currentImageData.data, previousPixelData, sampleFactor);
                                          if (diff >= pixelThreshold) { captureThisFrame = true; previousPixelData = currentImageData.data.slice(); }
                                      }
@@ -5132,25 +5387,25 @@
                                      previousImageData = currentImageData;
                                  }
 
-                                 if (currentTime <= totalDuration + 0.1) { currentTime += smartInterval; frameTimeoutId = setTimeout(processNextSmartFrame, 0); }
-                                 else resetProcessingUI('autoSmart');
+                                 if (currentTime <= totalDuration + 0.1) { currentTime += frameSampleInterval; frameTimeoutId = setTimeout(processNextDetectionFrame, 0); }
+                                 else resetProcessingUI('automatic');
 
                              } catch (error) {
-                                 console.error("[Process Smart] Error:", error);
-                                 if (currentTime <= totalDuration + 0.1) { currentTime += smartInterval; frameTimeoutId = setTimeout(processNextSmartFrame, 0); }
-                                 else resetProcessingUI('autoSmart');
+                                 console.error("[Automatic extraction] Error:", error);
+                                 if (currentTime <= totalDuration + 0.1) { currentTime += frameSampleInterval; frameTimeoutId = setTimeout(processNextDetectionFrame, 0); }
+                                 else resetProcessingUI('automatic');
                              }
                         };
 
                         img.onerror = () => {
                              URL.revokeObjectURL(blobUrl);
-                            console.error("[Process Smart] Failed to load blob into image");
-                            if (currentTime <= totalDuration + 0.1) { currentTime += smartInterval; frameTimeoutId = setTimeout(processNextSmartFrame, 0); }
-                            else resetProcessingUI('autoSmart');
+                            console.error("[Automatic extraction] Failed to load blob into image");
+                            if (currentTime <= totalDuration + 0.1) { currentTime += frameSampleInterval; frameTimeoutId = setTimeout(processNextDetectionFrame, 0); }
+                            else resetProcessingUI('automatic');
                         };
                     });
                 }
-                 frameTimeoutId = setTimeout(processNextSmartFrame, 0);
+                 frameTimeoutId = setTimeout(processNextDetectionFrame, 0);
             };
             startExtraction();
         };
@@ -5212,10 +5467,10 @@
                 downloadBlobsAsZip(allBlobs, "interval_screenshots");
             }
         });
-        if(downloadAllSmartButton) downloadAllSmartButton.addEventListener('click', () => { 
+        if(downloadAllAutomaticButton) downloadAllAutomaticButton.addEventListener('click', () => { 
             if (!processingActive) {
                 const allBlobs = [...screenshotBlobs, ...manualScreenshotBlobs].filter(item => item?.blob);
-                downloadBlobsAsZip(allBlobs, "smart_screenshots");
+                downloadBlobsAsZip(allBlobs, "automatic_frames");
             }
         });
         if(downloadManualButton) downloadManualButton.addEventListener('click', () => { 
@@ -5262,7 +5517,7 @@
 
         // Initial setup calls
         currentMode = $$('.mode-tab.active')[0]?.getAttribute('data-mode') || 'manual';
-        smartAlgorithm = $$('.smart-tab.active')[0]?.getAttribute('data-algo') || 'histogram';
+        detectionAlgorithm = $$('.detection-tab.active')[0]?.getAttribute('data-algo') || 'histogram';
         $$('input[type="range"]').forEach(updateSliderBackground);
 
          if (buttonGroups[currentMode]) {
