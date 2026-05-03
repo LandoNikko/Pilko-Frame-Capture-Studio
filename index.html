@@ -640,7 +640,7 @@
     }
     .screenshot-container:hover {
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        border-color: var(--accent-primary);
+        border-color: var(--text-tertiary);
     }
     .screenshot-container .img-container {
         display: block;
@@ -1342,7 +1342,7 @@
         text-decoration: none;
         transition: background-color 0.2s, border-color 0.2s, color 0.2s;
     }
-    #lightboxDownload:hover:enabled {
+    #lightboxDownload:hover {
         background-color: var(--border-color);
         border-color: var(--text-secondary);
         color: var(--text-primary);
@@ -1625,6 +1625,98 @@
       opacity: 1;
       pointer-events: auto;
     }
+
+    /* Frame selection */
+    .thumbnail-select-btn {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 26px;
+        height: 26px;
+        border-radius: var(--border-radius-sm);
+        background-color: rgba(0,0,0,0.5);
+        border: 2px solid rgba(255,255,255,0.4);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+        z-index: 3;
+        pointer-events: none;
+        color: transparent;
+        font-size: 1rem;
+    }
+    .screenshot-container:hover .thumbnail-select-btn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .thumbnail-select-btn:hover {
+        background-color: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.75);
+    }
+    .selection-mode .thumbnail-select-btn {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .screenshot-container.selected .thumbnail-select-btn,
+    .screenshot-container.marquee-preview .thumbnail-select-btn {
+        background-color: var(--text-secondary);
+        border-color: var(--text-secondary);
+        color: var(--bg-primary);
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .screenshot-container.selected .thumbnail-select-btn:hover,
+    .screenshot-container.marquee-preview .thumbnail-select-btn:hover {
+        background-color: var(--text-primary);
+        border-color: var(--text-primary);
+    }
+    .screenshot-container.selected,
+    .screenshot-container.marquee-preview {
+        border-color: var(--text-tertiary) !important;
+    }
+
+    .selection-mode .screenshot-container .thumbnail-download-btn,
+    .selection-mode .screenshot-container .lightbox-delete-btn,
+    .selection-mode .screenshot-container .frame-adjust-buttons,
+    .screenshot-container.marquee-preview .thumbnail-download-btn,
+    .screenshot-container.marquee-preview .lightbox-delete-btn,
+    .screenshot-container.marquee-preview .frame-adjust-buttons {
+        display: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    .selection-mode .screenshot-container { cursor: pointer; }
+    #marqueeRect {
+        position: fixed;
+        border: 1px solid var(--text-tertiary);
+        background-color: rgba(178, 184, 207, 0.07);
+        pointer-events: none;
+        z-index: 999;
+        display: none;
+        border-radius: var(--border-radius-sm);
+    }
+    #downloadSelectedIntervalBtn { border-color: var(--accent-interval); color: var(--accent-interval); }
+    #downloadSelectedIntervalBtn:hover:enabled { background-color: rgba(154,110,255,0.1); border-color: var(--accent-interval-dark); color: var(--accent-interval-dark); }
+    #downloadSelectedAutomaticBtn { border-color: var(--accent-secondary); color: var(--accent-secondary); }
+    #downloadSelectedAutomaticBtn:hover:enabled { background-color: rgba(45,212,191,0.1); border-color: var(--accent-secondary-dark); color: var(--accent-secondary-dark); }
+    #downloadSelectedManualBtn { border-color: var(--accent-primary); color: var(--accent-primary); }
+    #downloadSelectedManualBtn:hover:enabled { background-color: rgba(0,198,255,0.1); border-color: var(--accent-primary-dark); color: var(--accent-primary-dark); }
+    .cancel-selection-btn {
+        background: var(--bg-tertiary) !important;
+        border: 1px solid var(--border-color) !important;
+        color: var(--text-secondary) !important;
+        flex: 0 0 auto !important;
+        width: auto !important;
+        box-shadow: none !important;
+    }
+    .cancel-selection-btn:hover:enabled {
+        background: var(--border-color) !important;
+        border-color: var(--text-tertiary) !important;
+        color: var(--text-primary) !important;
+    }
+    .download-selected-btn { background: transparent !important; border: 1px solid; box-shadow: none; padding: calc(0.75rem - 1px) calc(1.5rem - 1px); }
 
   </style>
 </head>
@@ -2057,6 +2149,8 @@
                 <div class="action-button-row">
                     <button id="downloadAllButton" class="action-button secondary-button" disabled>Download All <i class="ri-download-2-line"></i></button>
                     <button id="namingSettingsButton" class="action-icon-button" title="Filename Settings" disabled><i class="ri-settings-3-line"></i></button>
+                    <button id="cancelSelectionIntervalBtn" class="action-button cancel-selection-btn" style="display:none;">Cancel</button>
+                    <button id="downloadSelectedIntervalBtn" class="action-button download-selected-btn" style="display:none;">Download Selected <i class="ri-download-2-line"></i></button>
                 </div>
             </div>
 
@@ -2065,6 +2159,8 @@
                 <div class="action-button-row">
                     <button id="downloadAllAutomaticButton" class="action-button secondary-button" disabled>Download All <i class="ri-download-2-line"></i></button>
                     <button id="namingSettingsButtonAutomatic" class="action-icon-button" title="Filename Settings" disabled><i class="ri-settings-3-line"></i></button>
+                    <button id="cancelSelectionAutomaticBtn" class="action-button cancel-selection-btn" style="display:none;">Cancel</button>
+                    <button id="downloadSelectedAutomaticBtn" class="action-button download-selected-btn" style="display:none;">Download Selected <i class="ri-download-2-line"></i></button>
                 </div>
             </div>
 
@@ -2074,6 +2170,8 @@
                     <button id="extractManualButton" class="action-button secondary-button" type="button">Save Frame <i class="ri-download-line"></i></button>
                     <button id="downloadManualButton" class="action-button secondary-button" type="button" disabled>Download All <i class="ri-download-2-line"></i></button>
                     <button id="namingSettingsButtonManual" class="action-icon-button" title="Filename Settings" disabled><i class="ri-settings-3-line"></i></button>
+                    <button id="cancelSelectionManualBtn" class="action-button cancel-selection-btn" style="display:none;">Cancel</button>
+                    <button id="downloadSelectedManualBtn" class="action-button download-selected-btn" style="display:none;">Download Selected <i class="ri-download-2-line"></i></button>
                 </div>
             </div>
 
@@ -2158,7 +2256,7 @@
           </div>
         </div>
 
-        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: February 28, 2026</p>
+        <p style="font-style: italic; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">Last updated on: May 3, 2026</p>
 
       </div>
     </div>
@@ -2558,7 +2656,9 @@
         let cancelExtractionRequested = false;
         let screenshotBlobs = [];
         let manualScreenshotBlobs = [];
-        let contactSheetBlob = null; // This holds the *final generated* image blob
+        let selectedFrames = new Set();
+        let selectionModeActive = false;
+        let contactSheetBlob = null; // Holds the *final generated* image blob
         let contactSheetPreviewData = new Array(20).fill(null); // Holds data for *preview* cells {blob, timestamp, blobUrl}
         let currentSamplingProcess = null;
         let transcriptionSegments = []; // { time: number, text: string }[]
@@ -2824,6 +2924,7 @@
 
         const setProcessingUI = (mode) => {
             processingActive = true; cancelExtractionRequested = false;
+            if (selectionModeActive) exitSelectionMode();
             [processButton, processAutomaticButton, processContactSheetButton, downloadAllButton, downloadAllAutomaticButton, downloadManualButton, downloadContactSheetButton, previewContactSheetButton, addManualButton, extractManualButton, clearScreenshotsButton, namingSettingsButton, namingSettingsButtonAutomatic, namingSettingsButtonManual].forEach(btn => {
                 if (btn) btn.disabled = true;
             });
@@ -2870,6 +2971,13 @@
                  const [removedItem] = blobArrayRef.splice(indexToRemove, 1);
                  if (removedItem?.blobUrl) URL.revokeObjectURL(removedItem.blobUrl);
 
+                 // Clean up from selection
+                 if (selectedFrames.has(removedItem)) {
+                     selectedFrames.delete(removedItem);
+                     if (selectedFrames.size === 0) exitSelectionMode();
+                     else updateSelectionButtons();
+                 }
+
                  const parentDiv = (blobArrayRef === manualScreenshotBlobs || blobArrayRef === screenshotBlobs) ? screenshotsDiv : null;
                  if (!parentDiv) return -1;
 
@@ -2891,6 +2999,127 @@
              }
              return -1;
          };
+
+        // Frame selection
+        const selectionButtonSets = () => [
+            { normal: [downloadAllButton, namingSettingsButton], sel: [$('cancelSelectionIntervalBtn'), $('downloadSelectedIntervalBtn')] },
+            { normal: [downloadAllAutomaticButton, namingSettingsButtonAutomatic], sel: [$('cancelSelectionAutomaticBtn'), $('downloadSelectedAutomaticBtn')] },
+            { normal: [extractManualButton, downloadManualButton, namingSettingsButtonManual], sel: [$('cancelSelectionManualBtn'), $('downloadSelectedManualBtn')] },
+        ];
+
+        const updateSelectionButtons = () => {
+            const count = selectedFrames.size;
+            selectionButtonSets().forEach(({ normal, sel }) => {
+                normal.forEach(btn => { if (btn) btn.style.display = selectionModeActive ? 'none' : ''; });
+                sel.forEach(btn => { if (btn) btn.style.display = selectionModeActive ? '' : 'none'; });
+            });
+            $$('.download-selected-btn').forEach(btn => {
+                btn.innerHTML = `Download Selected (${count}) <i class="ri-download-2-line"></i>`;
+            });
+        };
+
+        const enterSelectionMode = () => {
+            selectionModeActive = true;
+            screenshotsDiv.classList.add('selection-mode');
+            updateSelectionButtons();
+        };
+
+        const exitSelectionMode = () => {
+            selectionModeActive = false;
+            selectedFrames.clear();
+            screenshotsDiv.classList.remove('selection-mode');
+            screenshotsDiv.querySelectorAll('.screenshot-container.selected, .screenshot-container.marquee-preview')
+                .forEach(c => c.classList.remove('selected', 'marquee-preview'));
+            updateSelectionButtons();
+        };
+
+        const toggleFrameSelection = (blobData, container) => {
+            if (selectedFrames.has(blobData)) {
+                selectedFrames.delete(blobData);
+                container.classList.remove('selected');
+                if (selectedFrames.size === 0) { exitSelectionMode(); return; }
+            } else {
+                selectedFrames.add(blobData);
+                container.classList.add('selected');
+            }
+            updateSelectionButtons();
+        };
+
+        const marqueeEl = document.createElement('div');
+        marqueeEl.id = 'marqueeRect';
+        document.body.appendChild(marqueeEl);
+
+        let marqueeActive = false;
+        let marqueeStart = { x: 0, y: 0, minX: 0 };
+        let marqueePreviewContainers = new Set();
+        let marqueeRafId = null;
+
+        const isSelectableMode = () => currentMode === 'auto' || currentMode === 'automatic' || currentMode === 'manual';
+
+        const updateMarqueePreview = (curX, curY) => {
+            const x = Math.min(curX, marqueeStart.x);
+            const y = Math.min(curY, marqueeStart.y);
+            const w = Math.abs(curX - marqueeStart.x);
+            const h = Math.abs(curY - marqueeStart.y);
+            marqueeEl.style.left = x + 'px'; marqueeEl.style.top = y + 'px';
+            marqueeEl.style.width = w + 'px'; marqueeEl.style.height = h + 'px';
+
+            const mRect = { left: x, top: y, right: x + w, bottom: y + h };
+            screenshotsDiv.querySelectorAll('.screenshot-container').forEach(container => {
+                const r = container.getBoundingClientRect();
+                const hits = !(mRect.right < r.left || mRect.left > r.right || mRect.bottom < r.top || mRect.top > r.bottom);
+                const previewing = marqueePreviewContainers.has(container);
+                if (hits && !previewing) {
+                    container.classList.add('marquee-preview');
+                    marqueePreviewContainers.add(container);
+                } else if (!hits && previewing) {
+                    container.classList.remove('marquee-preview');
+                    marqueePreviewContainers.delete(container);
+                }
+            });
+        };
+
+        outputColumn.addEventListener('mousedown', (e) => {
+            if (!isSelectableMode() || processingActive || e.button !== 0) return;
+            if (e.target.closest('.screenshot-container')) return;
+            marqueeActive = true;
+            marqueeStart = { x: e.clientX, y: e.clientY, minX: outputColumn.getBoundingClientRect().left };
+            marqueeEl.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:0;height:0;display:block;`;
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!marqueeActive || marqueeRafId) return;
+            const ex = e.clientX, ey = e.clientY;
+            marqueeRafId = requestAnimationFrame(() => {
+                marqueeRafId = null;
+                updateMarqueePreview(Math.max(ex, marqueeStart.minX), ey);
+            });
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!marqueeActive) return;
+            if (marqueeRafId) { cancelAnimationFrame(marqueeRafId); marqueeRafId = null; }
+            marqueeActive = false;
+            marqueeEl.style.display = 'none';
+
+            let anyNew = false;
+            marqueePreviewContainers.forEach(container => {
+                container.classList.remove('marquee-preview');
+                container.classList.add('selected');
+                const blobRef = container.dataset.arrayType === 'manual' ? manualScreenshotBlobs : screenshotBlobs;
+                const idx = parseInt(container.dataset.index);
+                if (idx < 0 || idx >= blobRef.length) return;
+                const blobData = blobRef[idx];
+                if (!selectedFrames.has(blobData)) { selectedFrames.add(blobData); anyNew = true; }
+            });
+            marqueePreviewContainers.clear();
+
+            if (anyNew) {
+                if (!selectionModeActive) enterSelectionMode();
+                else updateSelectionButtons();
+            }
+        });
 
         const createScreenshotContainer = (blob, timestamp = -1, blobArrayRef = screenshotBlobs) => {
             if(!screenshotsDiv || !blob) return null;
@@ -2931,6 +3160,7 @@
             container.appendChild(imgContainer);
 
             imgContainer.addEventListener('click', () => {
+                 if (selectionModeActive) { toggleFrameSelection(blobData, container); return; }
                  const indexFromData = parseInt(container.dataset.index);
                  let clickedItem = null;
                  let actualIndex = -1;
@@ -2946,6 +3176,17 @@
                     console.error("Could not determine item for lightbox. Index:", indexFromData, "Array length:", blobArrayRef.length);
                  }
              });
+
+            const selectBtn = document.createElement('button');
+            selectBtn.className = 'thumbnail-select-btn';
+            selectBtn.title = 'Select for download';
+            selectBtn.innerHTML = '<i class="ri-check-line"></i>';
+            selectBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!selectionModeActive) enterSelectionMode();
+                toggleFrameSelection(blobData, container);
+            });
+            container.appendChild(selectBtn);
 
             const downloadBtn = document.createElement('button');
             downloadBtn.className = "action-icon-button action-icon-button--download thumbnail-download-btn";
@@ -4244,7 +4485,9 @@
                    if (processingActive) return;
                    const newMode = tab.getAttribute('data-mode');
                    const previousMode = currentMode;
-                   if (!newMode || !modeContentDiv) return; currentMode = newMode;
+                   if (!newMode || !modeContentDiv) return;
+                   if (selectionModeActive) exitSelectionMode();
+                   currentMode = newMode;
                    modeTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
                    tab.classList.add('active');
                    tab.setAttribute('aria-selected', 'true');
@@ -4797,15 +5040,32 @@
             });
         }
 
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.time-adjust-btn')) return;
-            const btn = e.target.closest('.time-adjust-btn');
-            const targetInput = $(btn.dataset.target);
-            if (!targetInput) return;
-            const currentTime = parseTimeString(targetInput.value || '0:00');
-            const newTime = Math.max(0, currentTime + parseFloat(btn.dataset.delta));
-            targetInput.value = formatTime(newTime);
-        });
+        const holdRepeat = (el, step) => {
+            if (!el) return;
+            let t0, timer;
+            const off = () => { clearTimeout(timer); timer = 0; window.removeEventListener('pointerup', off, true); window.removeEventListener('pointercancel', off, true); };
+            const tick = () => {
+                step();
+                const w = performance.now() - t0 < 800 ? 90 : performance.now() - t0 < 2200 ? 45 : 18;
+                timer = setTimeout(tick, w);
+            };
+            el.addEventListener('pointerdown', (e) => {
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                e.preventDefault();
+                t0 = performance.now();
+                step();
+                timer = setTimeout(tick, 400);
+                window.addEventListener('pointerup', off, true);
+                window.addEventListener('pointercancel', off, true);
+            });
+            el.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); step(); } });
+        };
+        $$('.time-adjust-btn[data-target]').forEach((btn) => holdRepeat(btn, () => {
+            const inp = $(btn.dataset.target);
+            if (!inp) return;
+            const t = parseTimeString(inp.value || '0:00');
+            inp.value = formatTime(Math.max(0, t + parseFloat(btn.dataset.delta)));
+        }));
 
         document.addEventListener('focus', (e) => {
             if (!e.target.classList) return;
@@ -4867,7 +5127,7 @@
             const currentFramerate = framerateInput ? parseFloat(framerateInput.value) || DEFAULT_SETTINGS.FRAMERATE : DEFAULT_SETTINGS.FRAMERATE;
             canvas.framerate = currentFramerate;
             
-            if (timecodeFormatSelect && timecodeFormatSelect.value !== 'off' && timestamp && timestamp >= 0) {
+            if (timecodeFormatSelect && timecodeFormatSelect.value !== 'off' && typeof timestamp === 'number' && Number.isFinite(timestamp) && timestamp >= 0) {
 
                 const timestampText = formatTimecode(timestamp, timecodeFormatSelect.value, canvas.framerate);
                 
@@ -5004,23 +5264,25 @@
 
         function formatTimecode(seconds, format, framerate) {
             if (isNaN(seconds)) seconds = 0;
-            framerate = framerate || 30;
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = Math.floor(seconds % 60);
-            // Use absolute frame number for ff (timeline style)
-            const absFrame = Math.floor(seconds * framerate);
-            // Use sub-second frame for :ff (as in SMPTE)
-            const subFrame = Math.floor((seconds % 1) * framerate);
+            framerate = Math.max(1, framerate || 30);
+            const totalFrames = Math.floor(seconds * framerate);
+            const ff = totalFrames - Math.floor(totalFrames / framerate) * framerate;
+            const totalWholeSeconds = Math.floor(totalFrames / framerate);
+            const h = Math.floor(totalWholeSeconds / 3600);
+            const remAfterH = totalWholeSeconds - h * 3600;
+            const m = Math.floor(remAfterH / 60);
+            const s = remAfterH - m * 60;
+            const pad2 = (n) => n.toString().padStart(2, '0');
+            const mmTotal = h * 60 + m;
             switch (format) {
-                case 'hh:mm:ss:ff': return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}:${subFrame.toString().padStart(2, '0')}`;
-                case 'hh:mm:ss': return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                case 'mm:ss:ff': return `${(h*60+m).toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}:${subFrame.toString().padStart(2, '0')}`;
-                case 'mm:ss': return `${(h*60+m).toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                case 'ss:ff': return `${(h*3600+m*60+s).toString().padStart(2, '0')}:${subFrame.toString().padStart(2, '0')}`;
-                case 'ss': return `${(h*3600+m*60+s).toString().padStart(2, '0')}`;
-                case 'ff': return `${absFrame}`;
-                default: return `${(h*60+m).toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                case 'hh:mm:ss:ff': return `${pad2(h)}:${pad2(m)}:${pad2(s)}:${pad2(ff)}`;
+                case 'hh:mm:ss': return `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+                case 'mm:ss:ff': return `${pad2(mmTotal)}:${pad2(s)}:${pad2(ff)}`;
+                case 'mm:ss': return `${pad2(mmTotal)}:${pad2(s)}`;
+                case 'ss:ff': return `${pad2(totalWholeSeconds)}:${pad2(ff)}`;
+                case 'ss': return `${pad2(totalWholeSeconds)}`;
+                case 'ff': return `${totalFrames}`;
+                default: return `${pad2(mmTotal)}:${pad2(s)}`;
             }
         }
 
@@ -5473,11 +5735,29 @@
                 downloadBlobsAsZip(allBlobs, "automatic_frames");
             }
         });
-        if(downloadManualButton) downloadManualButton.addEventListener('click', () => { 
+        if(downloadManualButton) downloadManualButton.addEventListener('click', () => {
             if (!processingActive) {
                 const allBlobs = [...screenshotBlobs, ...manualScreenshotBlobs].filter(item => item?.blob);
                 downloadBlobsAsZip(allBlobs, "manual_screenshots");
             }
+        });
+
+        // Frame selection
+        ['cancelSelectionIntervalBtn', 'cancelSelectionAutomaticBtn', 'cancelSelectionManualBtn'].forEach(id => {
+            const btn = $(id);
+            if (btn) btn.addEventListener('click', exitSelectionMode);
+        });
+
+        const handleDownloadSelected = () => {
+            if (!selectionModeActive || selectedFrames.size === 0) return;
+            const blobs = [...selectedFrames].filter(item => item?.blob);
+            const prefix = currentMode === 'automatic' ? 'automatic' : (currentMode === 'manual' ? 'manual' : 'interval');
+            downloadBlobsAsZip(blobs, `${prefix}_selected`);
+            exitSelectionMode();
+        };
+        ['downloadSelectedIntervalBtn', 'downloadSelectedAutomaticBtn', 'downloadSelectedManualBtn'].forEach(id => {
+            const btn = $(id);
+            if (btn) btn.addEventListener('click', handleDownloadSelected);
         });
 
         if(previewContactSheetButton) previewContactSheetButton.addEventListener('click', () => {
@@ -5498,6 +5778,7 @@
              if (processingActive) return;
              const hasAnyOutput = (screenshotBlobs.length + manualScreenshotBlobs.length > 0) || contactSheetPreviewData.some(d => d !== null) || contactSheetBlob;
              if (!hasAnyOutput) return;
+             if (selectionModeActive) exitSelectionMode();
              
              screenshotBlobs.concat(manualScreenshotBlobs).forEach(item => { if(item?.blobUrl) URL.revokeObjectURL(item.blobUrl); });
              if(screenshotsDiv) screenshotsDiv.innerHTML = '';
@@ -5688,37 +5969,19 @@
                 document.removeEventListener('mouseup', handleFrameMouseUp);
             };
             
-            if (manualTimePrevBtn) {
-                manualTimePrevBtn.addEventListener('click', () => {
-                    const currentTime = parseTimeString(manualTimeInput.value);
-                    const newTime = Math.max(0, currentTime - 1);
-                    updateVideoFromTime(newTime);
-                });
-            }
-            
-            if (manualTimeNextBtn) {
-                manualTimeNextBtn.addEventListener('click', () => {
-                    const currentTime = parseTimeString(manualTimeInput.value);
-                    const newTime = Math.min(manualVideo.duration || 0, currentTime + 1);
-                    updateVideoFromTime(newTime);
-                });
-            }
-            
-            if (manualFramePrevBtn) {
-                manualFramePrevBtn.addEventListener('click', () => {
-                    const currentFrame = parseInt(manualFrameInput.value);
-                    const newFrame = Math.max(0, currentFrame - 1);
-                    updateVideoFromFrame(newFrame);
-                });
-            }
-            
-            if (manualFrameNextBtn) {
-                manualFrameNextBtn.addEventListener('click', () => {
-                    const currentFrame = parseInt(manualFrameInput.value);
-                    const newFrame = currentFrame + 1;
-                    updateVideoFromFrame(newFrame);
-                });
-            }
+            const stepSec = (d) => () => {
+                const t = parseTimeString(manualTimeInput.value);
+                updateVideoFromTime(Math.max(0, Math.min(manualVideo.duration || 0, t + d)));
+            };
+            const stepFrm = (d) => () => {
+                let f = parseInt(manualFrameInput.value, 10);
+                if (isNaN(f)) f = 0;
+                updateVideoFromFrame(Math.max(0, f + d));
+            };
+            holdRepeat(manualTimePrevBtn, stepSec(-1));
+            holdRepeat(manualTimeNextBtn, stepSec(1));
+            holdRepeat(manualFramePrevBtn, stepFrm(-1));
+            holdRepeat(manualFrameNextBtn, stepFrm(1));
             
             manualVideo.addEventListener('timeupdate', updateManualDisplays);
             updateManualDisplays();
@@ -6026,13 +6289,16 @@
       if (timecodeFormatSelect) timecodeFormatSelect.value = 'off';
       if (customTextInput) customTextInput.value = '';
       window.customImageOverlay = null;
-      if (customImageUploadBtn) customImageUploadBtn.textContent = 'Upload Image...';
-      if (customImageRemoveBtn) customImageRemoveBtn.style.display = 'none';
+      const uploadBtn = document.getElementById('customImageUploadBtn');
+      const removeBtn = document.getElementById('customImageRemoveBtn');
+      const imageInput = document.getElementById('customImageInput');
+      if (uploadBtn) uploadBtn.textContent = 'Upload Image...';
+      if (removeBtn) removeBtn.style.display = 'none';
+      if (imageInput) imageInput.value = '';
     }
 
     bindCollapsible(proModeToggle, overlayConfigContent, (expanded) => {
       if (!expanded) initializeOverlayDefaults();
-      else if (timecodeFormatSelect) { timecodeFormatSelect.value = 'off'; timecodeFormat = 'off'; }
     });
 
     if (timecodeFormatSelect) {
