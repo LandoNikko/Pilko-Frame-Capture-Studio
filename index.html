@@ -1728,8 +1728,31 @@
 
     <div class="side-panel" role="complementary" aria-label="Settings and Controls">
       <div class="content-wrapper">
-        <h1 id="pageTitle" data-text="Pilko Studio">Pilko Studio</h1>
-
+        <!-- Temporary anniversary message -->
+        <style>
+            .page-logo-wrap { position: relative; width: 100%; }
+            .logo-anniversary-msg {
+              position: absolute; right: max(0.25rem, 6%); top: -0.15rem;
+              font: 600 0.68rem/1 'Inter', sans-serif; letter-spacing: 0.03em; white-space: nowrap;
+              pointer-events: none; opacity: 0; z-index: 2; color: var(--accent-primary);
+              transform: rotate(-10deg) translate(6px, -2px); transition: opacity 0.2s ease;
+            }
+            @keyframes logoAnnivHue {
+              0%, 100% { color: var(--accent-primary); }
+              25% { color: var(--accent-interval); }
+              50% { color: var(--accent-secondary); }
+              75% { color: var(--accent-tertiary); }
+            }
+            .page-logo-wrap:hover .logo-anniversary-msg { opacity: 1; animation: logoAnnivHue 2.4s linear infinite; }
+            @media (prefers-reduced-motion: reduce) {
+              .page-logo-wrap:hover .logo-anniversary-msg { animation: none; color: var(--accent-primary); }
+            }
+          </style>
+          <div class="page-logo-wrap">
+            <h1 id="pageTitle" data-text="Pilko Studio">Pilko Studio</h1>
+            <span class="logo-anniversary-msg" aria-hidden="true">1 year anniversary!</span>
+          </div>
+          <!-- End temporary anniversary message -->
         <div id="dropZone" role="button" tabindex="0" aria-label="Upload video file" aria-describedby="dropZoneText">
             <div id="uploadIcon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" id="uploadIconSvg"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-miterlimit="10" d="M9.047 9.5v5"/><path stroke-linejoin="round" d="M11.34 11.605L9.373 9.638a.458.458 0 0 0-.651 0l-1.968 1.967"/><path stroke-linejoin="round" d="M12 5.32H6.095A3.595 3.595 0 0 0 2.5 8.923v6.162a3.595 3.595 0 0 0 3.595 3.595H12a3.595 3.595 0 0 0 3.595-3.595V8.924A3.594 3.594 0 0 0 12 5.32m9.5 4.118v5.135c0 .25-.071.496-.205.708a1.355 1.355 0 0 1-.555.493a1.27 1.27 0 0 1-.73.124a1.366 1.366 0 0 1-.677-.278l-3.225-2.588a1.377 1.377 0 0 1-.503-1.047c0-.2.045-.396.133-.575c.092-.168.218-.315.37-.432l3.225-2.567a1.36 1.36 0 0 1 .678-.278c.25-.032.504.011.729.124a1.325 1.325 0 0 1 .76 1.181"/></g></svg>
