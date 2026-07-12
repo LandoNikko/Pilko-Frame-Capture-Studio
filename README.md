@@ -24,7 +24,11 @@ Offline: Download `index.html`
 - Example video for first testing.
 - Video metadata display (resolution, duration, aspect ratio, estimated video bitrate).
 - Capture format (PNG, JPEG, WEBP) and quality configuration (1-100%).
-- Configure capture crop area.
+- Detect video framerate and resolution.
+  - Configure for output.
+- Configure for desired output.
+  - Framerate interval.
+  - Capture crop area.
   - Aspect ratio presets.
   - Automatically crop black bars/letterbox.
 - Set framerate for frame-accurate captures.
