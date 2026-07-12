@@ -1746,7 +1746,7 @@
                 <div id="loadedFileStats">
                     <div class="info-row"><div class="info-label">Resolution</div><div class="info-value" id="resolutionValue">-</div></div>
                     <div class="info-row"><div class="info-label">Duration</div><div class="info-value" id="lengthValue">-</div></div>
-                    <div class="info-row"><div class="info-label">Aspect Ratio</div><div class="info-value" id="aspectRatioValue">-</div></div>
+                    <div class="info-row"><div class="info-label">Framerate (est.)</div><div class="info-value" id="framerateValue">-</div></div>
                     <div class="info-row"><div class="info-label">Bitrate (est.)</div><div class="info-value" id="bitrateValue">-</div></div>
                 </div>
             </div>
@@ -1798,8 +1798,8 @@
                 </div>
                 <div class="setting-control-group" id="framerateRow">
                     <label class="slider-label">
-                        Set Framerate
-                        <i class="ri-question-line info-icon-inline" title="Set your input video's framerate. This ensures accurate timecode data for the extracted frames and manual fine-tuning. (Default: 30)" id="framerateInfoIcon"></i>
+                        Framerate override
+                        <i class="ri-question-line info-icon-inline" title="The value used for timecodes and frame controls." id="framerateInfoIcon"></i>
                     </label>
                     <div class="time-input-controls" style="margin-left:auto; max-width: 180px;">
                         <button class="manual-time-btn" id="frameratePrevBtn" title="Decrease framerate" tabindex="-1" style="min-width:32px;">-</button>
@@ -2277,7 +2277,7 @@
         </div>
 
         <p style="font-style: normal; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">
-          Last updated on: May 10, 2026 | <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio/releases" target="_blank" rel="noopener noreferrer" style="color:var(--text-primary);">Read patch notes</a>
+          Last updated on: July 12, 2026 | <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio/releases" target="_blank" rel="noopener noreferrer" style="color:var(--text-primary);">Read patch notes</a>
         </p>
  
 
@@ -2361,7 +2361,7 @@
           </div>
           <div class="setting-control-group" id="namingFramerateRow" style="display:none; align-items:center;">
             <label class="slider-label" style="margin-bottom:0;">Set Framerate</label>
-            <input type="number" id="namingFramerateInput" class="value-input" value="30" min="1" max="240" step="1" style="width:70px; margin-left:auto;">
+            <input type="number" id="namingFramerateInput" class="value-input" value="30" min="1" max="1000" step="0.001" style="width:70px; margin-left:auto;">
           </div>
         </div>
         <div class="disclaimer-note" id="namingSettingsExample" style="background-color: var(--bg-primary); text-align: right; padding: 0.75rem; border-radius: var(--border-radius-md); font-family: monospace; margin: 1rem 0;">
@@ -2383,180 +2383,78 @@
     let cropData = null;
     let cropAreaData = null;
     let uploadedFile = null;
-    let detectedFps = 0;
+    let fpsDetectionId = 0;
+    let cancelFpsEstimate = null;
+    let automaticFpsInputUpdate = false;
 
-    // ─── MP4/MOV file header parser (extracts FPS from mdhd atom) ───
-    function parseMp4Fps(buf) {
-        const view = new DataView(buf);
-        const bytes = new Uint8Array(buf);
-        const end = buf.byteLength;
-        let pos = 0;
-        // Walk atoms to find 'moov'
-        while (pos + 8 <= end) {
-            const size = view.getUint32(pos);
-            const type = String.fromCharCode(bytes[pos+4], bytes[pos+5], bytes[pos+6], bytes[pos+7]);
-            pos += 8;
-            if (size <= 1 || pos + size > end) return 0;
-            if (type === 'moov') break;
-        }
-        // pos now points to first byte inside 'moov'
-        let foundMdhd = false;
-        while (pos + 8 <= end) {
-            const size = view.getUint32(pos);
-            const type = String.fromCharCode(bytes[pos+4], bytes[pos+5], bytes[pos+6], bytes[pos+7]);
-            pos += 8;
-            if (size <= 1 || pos + size > end) return 0;
-            if (type === 'mdhd') { foundMdhd = true; break; }
-        }
-        if (!foundMdhd) return 0;
-        const mdhd = pos - 8;
-        // mdhd box: version(1)+flags(3) then:
-        // v0: creation(4) modification(4) timescale(4) duration(4)
-        // v1: creation(8) modification(8) timescale(4) duration(4)
-        const ver = view.getUint8(mdhd + 8);
-        const off = ver === 0 ? mdhd + 12 + 16 : mdhd + 12 + 16 + 4 + 4;
-        const timescale = view.getUint32(off);
-        const duration = ver === 1 ? view.getBigUint64(off + 4) : BigInt(view.getUint32(off + 4));
-        if (!timescale || timescale === 0 || !duration || duration === 0n) return 0;
-        return Number(duration) / timescale;
-    }
-
-    // ─── WebM/EBML parser (extracts FPS from FrameDuration element) ───
-    function parseWebmFps(buf) {
-        const bytes = new Uint8Array(buf);
-
-        // Read EBML size (value encoding)
-        function readSize(data, pos) {
-            if (pos >= data.length) return { value: 0n, len: 0 };
-            const first = data[pos];
-            let n = 1;
-            if (first < 0x80) n = 1; else if (first < 0xc0) n = 2;
-            else if (first < 0xe0) n = 3; else if (first < 0xf0) n = 4;
-            else if (first < 0xf8) n = 5; else if (first < 0xfc) n = 6;
-            else if (first < 0xfe) n = 7; else n = 8;
-            n = Math.min(n, data.length - pos);
-            let v = 0n;
-            for (let i = 0; i < n; i++) v = (v << 7n) | BigInt(data[pos + i] & 0x7f);
-            return { value: v, len: n };
-        }
-
-        // Match raw bytes at position
-        function matchAt(data, pos, pattern) {
-            for (let i = 0; i < pattern.length; i++) {
-                if (data[pos + i] !== pattern[i]) return false;
-            }
-            return true;
-        }
-
-        // WebM element IDs as raw byte sequences
-        const ID_FD = [0x00, 0x9c];
-        const ID_SEG = [0x18, 0x53, 0x80, 0x67];
-        const ID_TRK = [0x16, 0x54, 0xae, 0x6b];
-        const ID_TE = [0x00, 0xae];
-        const ID_VID = [0x00, 0xe0];
-
-        function walk(data, start, end) {
-            let p = start;
-            while (p + 1 < end) {
-                // Detect ID length from first byte's leading 1s
-                const first = data[p];
-                let idLen = 1;
-                if (first >= 0xfe) idLen = 6; else if (first >= 0xfc) idLen = 5;
-                else if (first >= 0xf8) idLen = 4; else if (first >= 0xf0) idLen = 3;
-                else if (first >= 0xe0) idLen = 2;
-                if (idLen === 1 && (first & 0x80) === 0) { p++; continue; }
-
-                if (p + idLen + 1 >= data.length) { p++; continue; }
-
-                // Read size
-                const sizePos = p + idLen;
-                const { value: sz, len: szLen } = readSize(data, sizePos);
-                if (szLen === 0 || szLen > 8) { p++; continue; }
-                if (sz === 0n) { p++; continue; }
-                const dataPos = sizePos + szLen;
-                const childEnd = Math.min(end, dataPos + Number(sz));
-
-                // Check for FrameDuration
-                if (idLen === 2 && matchAt(data, p, ID_FD) && sz === 8n) {
-                    let ns = 0n;
-                    for (let i = 0; i < 8; i++) ns = (ns << 8n) | BigInt(data[dataPos + i]);
-                    if (ns > 0n) return Number(1000000000n / ns);
-                }
-                // Recurse into containers
-                else if (sz > 0n && (
-                    matchAt(data, p, ID_SEG) ||
-                    matchAt(data, p, ID_TRK) ||
-                    matchAt(data, p, ID_TE) ||
-                    matchAt(data, p, ID_VID)
-                )) {
-                    const result = walk(data, dataPos, childEnd);
-                    if (result > 0) return result;
-                }
-                p = childEnd;
-            }
-            return 0;
-        }
-
-        return walk(bytes, 0, bytes.length);
-    }
-
-    // ─── Fallback: measure FPS via requestVideoFrameCallback ───
-    function detectFpsFallback(file, onResult) {
+    // Estimate FPS from decoded frame timing - uses browser-provided media timestamps
+    function estimateVideoFps(file, onResult) {
         const blobUrl = URL.createObjectURL(file);
         const v = document.createElement('video');
         v.muted = true;
+        v.playsInline = true;
         v.preload = 'auto';
-        const timeout = setTimeout(() => { URL.revokeObjectURL(blobUrl); onResult(0); }, 10000);
-        v.onloadeddata = () => {
-            const times = [];
-            let lastFrame = -1;
-            let done = false;
-            const doneFn = (ts) => {
-                if (done) return;
-                if (lastFrame >= 0) times.push(ts - lastFrame);
-                lastFrame = ts;
-                if (times.length >= 30) {
-                    done = true;
-                    const avg = times.reduce((a, b) => a + b, 0) / times.length;
-                    const fps = Math.round(1000 / avg);
-                    clearTimeout(timeout);
-                    URL.revokeObjectURL(blobUrl);
-                    onResult(Math.max(1, Math.min(240, fps)));
-                } else {
-                    v.requestVideoFrameCallback(doneFn);
-                }
-            };
-            v.play().then(() => v.requestVideoFrameCallback(doneFn)).catch(() => {
-                clearTimeout(timeout);
-                URL.revokeObjectURL(blobUrl);
-                onResult(0);
-            });
+        let finished = false;
+        let callbackId = 0;
+        let timeout;
+        const samples = [];
+
+        const cleanup = () => {
+            clearTimeout(timeout);
+            if (callbackId && v.cancelVideoFrameCallback) v.cancelVideoFrameCallback(callbackId);
+            v.onloadeddata = v.onerror = v.onended = null;
+            v.pause();
+            v.removeAttribute('src');
+            URL.revokeObjectURL(blobUrl);
         };
-        v.onerror = () => { clearTimeout(timeout); URL.revokeObjectURL(blobUrl); onResult(0); };
-        v.src = blobUrl;
-    }
-
-    // ─── Unified: detect FPS from video file ───
-    function detectVideoFps(file, onResult) {
-        if (!file || !file.size) { onResult(0); return; }
-        const ext = file.name.split('.').pop().toLowerCase();
-        const maxBytes = Math.min(64 * 1024, file.size);
-
-        const readFile = (cb) => {
-            const slice = file.slice(0, maxBytes);
-            const r = new FileReader();
-            r.onload = () => cb(r.result);
-            r.onerror = () => cb(null);
-            r.readAsArrayBuffer(slice);
+        const finish = () => {
+            if (finished) return;
+            finished = true;
+            const valid = samples.filter(({ frames, elapsed }) => frames > 0 && elapsed > 0 && frames / elapsed <= 1000);
+            const totalFrames = valid.reduce((sum, sample) => sum + sample.frames, 0);
+            const totalTime = valid.reduce((sum, sample) => sum + sample.elapsed, 0);
+            const measured = totalTime > 0 ? totalFrames / totalTime : 0;
+            const fractionalRates = [11.988, 12.5, 14.985, 23.976, 29.97, 59.94, 119.88];
+            const nearestFractional = fractionalRates.reduce((best, rate) => Math.abs(rate - measured) < Math.abs(best - measured) ? rate : best, fractionalRates[0]);
+            const fps = !measured ? 0
+                : Math.abs(nearestFractional - measured) <= 0.006 ? nearestFractional
+                : Math.round(measured);
+            cleanup();
+            onResult(fps);
         };
 
-        if (ext === 'mp4' || ext === 'mov' || ext === 'm4v') {
-            readFile(buf => onResult(buf ? Math.round(parseMp4Fps(buf)) : 0));
-        } else if (ext === 'webm' || ext === 'mkv') {
-            readFile(buf => onResult(buf ? Math.round(parseWebmFps(buf)) : 0));
-        } else {
-            onResult(0);
+        if (typeof v.requestVideoFrameCallback !== 'function') {
+            finish();
+            return () => {};
         }
+
+        timeout = setTimeout(finish, 10000);
+        v.onloadeddata = () => {
+            let lastMediaTime;
+            let lastPresentedFrames;
+            const sampleFrame = (_, metadata) => {
+                if (finished) return;
+                if (lastMediaTime !== undefined) {
+                    const elapsed = metadata.mediaTime - lastMediaTime;
+                    const frames = metadata.presentedFrames - lastPresentedFrames;
+                    if (elapsed > 0 && frames > 0) samples.push({ frames, elapsed });
+                }
+                lastMediaTime = metadata.mediaTime;
+                lastPresentedFrames = metadata.presentedFrames;
+                if (samples.length >= 60) finish();
+                else callbackId = v.requestVideoFrameCallback(sampleFrame);
+            };
+            v.play().then(() => { callbackId = v.requestVideoFrameCallback(sampleFrame); }).catch(finish);
+        };
+        v.onerror = finish;
+        v.onended = finish;
+        v.src = blobUrl;
+
+        return () => {
+            if (finished) return;
+            finished = true;
+            cleanup();
+        };
     }
     
     let gridCache = {
@@ -2573,6 +2471,17 @@
       NUMBERING_STYLE: '001',
       PREFIX: 'screenshot_'
     };
+
+    // Keep framerate parsing and every frame/time conversion on the same boundary rule
+    const FRAME_EPSILON = 1e-7;
+    const parseFramerate = (value) => {
+      const parsed = parseFloat(String(value ?? '').replace(',', '.'));
+      return Number.isFinite(parsed) && parsed >= 1 ? parsed : DEFAULT_SETTINGS.FRAMERATE;
+    };
+    const getActiveFramerate = () => parseFramerate(document.getElementById('framerateInput')?.value);
+    const timeToFrame = (seconds, framerate) => Math.max(0, Math.floor(seconds * parseFramerate(framerate) + FRAME_EPSILON));
+    const frameToTime = (frame, framerate) => Math.max(0, frame) / parseFramerate(framerate);
+    const clampVideoTime = (seconds, duration, framerate = getActiveFramerate()) => Math.max(0, Math.min(seconds, Math.max(0, duration - frameToTime(1, framerate))));
 
     let namingSettings = {
       prefix: DEFAULT_SETTINGS.PREFIX,
@@ -2725,7 +2634,7 @@
                 namingSettings.numberingStyle = '1';
                 if (numberingStyleSelect) numberingStyleSelect.value = '1';
             }
-            if (namingFramerateInput) namingSettings.framerate = parseInt(namingFramerateInput.value) || 30;
+            if (namingFramerateInput) namingSettings.framerate = parseFloat(namingFramerateInput.value) || 30;
             toggleModal(namingSettingsModal, false);
         });
     }
@@ -2754,7 +2663,7 @@
         const tryExampleButton = $('tryExampleButton');
         const resolutionValue = $('resolutionValue');
         const lengthValue = $('lengthValue');
-        const aspectRatioValue = $('aspectRatioValue');
+        const framerateValue = $('framerateValue');
         const bitrateValue = $('bitrateValue');
         const imageCountDisplay = $('imageCountDisplay');
         const imageCountValue = $('imageCountValue');
@@ -2947,15 +2856,14 @@
             return `${roundWidth(Math.round(width))}×${roundWidth(Math.round(height))}`;
         };
         const updateFileInfoDisplay = () => {
-            if (!video?.duration || !isFinite(video.duration) || !video?.videoWidth || !video?.videoHeight || !resolutionValue || !lengthValue || !aspectRatioValue || !bitrateValue) {
+            if (!video?.duration || !isFinite(video.duration) || !video?.videoWidth || !video?.videoHeight || !resolutionValue || !lengthValue || !framerateValue || !bitrateValue) {
                 return;
             }
             currentVideoDuration = video.duration;
             const width = video.videoWidth;
             const height = video.videoHeight;
             lengthValue.textContent = formatTime(currentVideoDuration);
-            resolutionValue.textContent = getStandardizedResolution(width, height);
-            aspectRatioValue.textContent = getCommonAspectRatio(width, height);
+            resolutionValue.textContent = `${getStandardizedResolution(width, height)} (${getCommonAspectRatio(width, height)})`;
             if (uploadedFile?.size > 0 && currentVideoDuration > 0) { const bitrateKbps = Math.round((uploadedFile.size * 8) / currentVideoDuration / 1000); bitrateValue.textContent = `${bitrateKbps} kbps`; } else { bitrateValue.textContent = "N/A"; }
         };
         const calculateGridOutputHeight = () => {
@@ -3047,7 +2955,7 @@
             
             resetValue(resolutionValue, '-');
             resetValue(lengthValue, '-');
-            resetValue(aspectRatioValue, '-');
+            resetValue(framerateValue, '-');
             resetValue(bitrateValue, '-');
             
             resetInput(intervalSecondsSlider, DEFAULT_SETTINGS.INTERVAL);
@@ -3666,8 +3574,8 @@
                  filename += filename.length > namingSettings.prefix.length ? '_' + timestampStr : timestampStr;
              }
              if (namingSettings.includeFrame && item.timestamp !== undefined && item.timestamp >= 0) {
-                 const framerate = namingSettings.framerate || 30;
-                 const frameNum = Math.round(item.timestamp * framerate);
+                 const framerate = getActiveFramerate();
+                 const frameNum = timeToFrame(item.timestamp, framerate);
                  filename += filename.length > currentPrefix.length ? `_${frameNum}` : `${frameNum}`;
              }
              
@@ -3718,28 +3626,33 @@
             updateDropZoneUI(true, file.name);
             resetUIOnNewVideo();
 
-            // Attempt to auto-detect FPS from file header
-            detectVideoFps(file, (detected) => {
-                if (detected > 0) {
-                    detectedFps = detected;
+            // Estimate FPS and ignore results invalidated by a newer file or manual edit
+            const detectionId = ++fpsDetectionId;
+            if (cancelFpsEstimate) cancelFpsEstimate();
+            cancelFpsEstimate = estimateVideoFps(file, (estimated) => {
+                if (detectionId !== fpsDetectionId) return;
+                cancelFpsEstimate = null;
+                if (estimated <= 0) {
+                    if (framerateValue) framerateValue.textContent = '30fps (fallback)';
                     const fr = document.getElementById('framerateInput');
                     if (fr) {
-                        fr.value = detected;
-                        console.log(`Detected FPS from file: ${detected}`);
+                        automaticFpsInputUpdate = true;
+                        fr.value = DEFAULT_SETTINGS.FRAMERATE;
+                        fr.dispatchEvent(new Event('input'));
+                        automaticFpsInputUpdate = false;
                     }
-                } else {
-                    // File header didn't work; try browser-based fallback
-                    detectFpsFallback(file, (fallback) => {
-                        if (fallback > 0) {
-                            detectedFps = fallback;
-                            const fr = document.getElementById('framerateInput');
-                            if (fr) {
-                                fr.value = fallback;
-                                console.log(`Detected FPS via fallback: ${fallback}`);
-                            }
-                        }
-                    });
+                    return;
                 }
+                const fr = document.getElementById('framerateInput');
+                if (framerateValue) framerateValue.textContent = `${estimated}fps`;
+                if (!fr) return;
+                namingSettings.framerate = estimated;
+                if (namingFramerateInput) namingFramerateInput.value = estimated;
+                automaticFpsInputUpdate = true;
+                fr.value = estimated;
+                fr.dispatchEvent(new Event('input'));
+                automaticFpsInputUpdate = false;
+                console.log(`Estimated FPS from decoded frames: ${estimated}`);
             });
           
                             const onMetadataLoaded = () => {
@@ -3879,7 +3792,7 @@
             $$('.grid-size-tab').forEach(tab => tab.classList.remove('completed'));
             updateImageCount(); 
             resetProcessingUI('all');
-            if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(aspectRatioValue) aspectRatioValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
+            if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(framerateValue) framerateValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
             if(intervalSecondsSlider) intervalSecondsSlider.value = '10';
             if(intervalSecondsInput) intervalSecondsInput.value = '10';
             if(intervalFramesSlider) intervalFramesSlider.value = '10';
@@ -4006,7 +3919,7 @@
                      canvas.width = effectiveCropData.cropWidth; canvas.height = effectiveCropData.cropHeight;
                      ctx.drawImage(videoElement, effectiveCropData.cropX, effectiveCropData.cropY, effectiveCropData.cropWidth, effectiveCropData.cropHeight, 0, 0, canvas.width, canvas.height);
 
-                     drawTimestampOverlay(canvas, time);
+                     drawTimestampOverlay(canvas, videoElement.currentTime);
 
                      const { type, quality } = getCurrentFormatSettings();
                      canvas.toBlob((blob) => callback(blob), type, quality);
@@ -4041,9 +3954,9 @@
                  if (!duration || !isFinite(duration)) {
                      throw new Error("Video duration is invalid or not available.");
                  }
-                 const targetTime = Math.max(0, Math.min(time, duration ? duration - 0.01 : 0));
+                 const targetTime = clampVideoTime(time, duration);
 
-                 if (videoElement.currentTime.toFixed(2) !== targetTime.toFixed(2)) {
+                 if (Math.abs(videoElement.currentTime - targetTime) > FRAME_EPSILON) {
                     videoElement.currentTime = targetTime;
                  } else {
                     cleanupListeners();
@@ -4183,7 +4096,7 @@
 
         const updateDropZoneThumbnail = () => {
             if (!video?.src || video.readyState < 1 || !dropZone || !video.duration || !isFinite(video.duration)) return;
-            const previewTime = Math.min(Math.max(video.duration * 0.25, 0.1), video.duration - 0.01);
+            const previewTime = clampVideoTime(Math.max(video.duration * 0.25, 0.1), video.duration);
             captureFrameAtTime(previewTime, (blob) => {
                 if (!blob || !dropZone) return;
                 const blobUrl = URL.createObjectURL(blob);
@@ -4275,14 +4188,14 @@
             if (arrayType === 'contactSheet') {
                 const timeInput = $(`timeInput_${index}`); if (!timeInput) return;
                 const currentValue = parseFloat(timeInput.value); if (isNaN(currentValue)) return;
-                const newValue = Math.max(0, Math.min(currentValue + offsetSeconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
+                const newValue = clampVideoTime(currentValue + offsetSeconds, currentVideoDuration);
                 updateTimeValue(index, newValue, true);
             } else if (arrayType === 'auto' || arrayType === 'automatic') {
                 const blobArrayRef = arrayType === 'automatic' ? screenshotBlobs : screenshotBlobs;
                 if (index >= 0 && index < blobArrayRef.length) {
                     const currentItem = blobArrayRef[index];
                     if (currentItem && currentItem.timestamp !== undefined) {
-                        const newTime = Math.max(0, Math.min(currentItem.timestamp + offsetSeconds, currentVideoDuration ? currentVideoDuration - 0.01 : 0));
+                        const newTime = clampVideoTime(currentItem.timestamp + offsetSeconds, currentVideoDuration);
                         captureFrameAtTime(newTime, (blob) => {
                             if (blob) {
                                 const oldBlobUrl = currentItem.blobUrl;
@@ -4316,7 +4229,7 @@
 
         const updateTimeValue = (index, seconds, triggerFrameUpdate = false) => {
             if (isNaN(seconds)) seconds = 0;
-            const clampedTime = Math.min(Math.max(0, seconds), currentVideoDuration ? currentVideoDuration - 0.01 : 0);
+            const clampedTime = clampVideoTime(seconds, currentVideoDuration);
             const numberInput = $(`timeInput_${index}`);
             const formatted = $(`timeFormatted_${index}`);
             if (numberInput) numberInput.value = clampedTime.toFixed(2);
@@ -4438,7 +4351,7 @@
                          const startPercent = 0.1; const endPercent = 0.9;
                          const step = numCells > 1 ? (endPercent - startPercent) / (numCells - 1) : 0;
                          const percent = startPercent + (i * step);
-                         initialTimestamp = Math.max(0.01, Math.min(percent * currentVideoDuration, currentVideoDuration - 0.01));
+                         initialTimestamp = clampVideoTime(Math.max(0.01, percent * currentVideoDuration), currentVideoDuration);
                       } else {
                          initialTimestamp = 0;
                       }
@@ -4452,7 +4365,7 @@
                   timeFormatted.value = formatTime(initialTimestamp); timeFormatted.dataset.index = i; timeFormatted.placeholder = "0:00"; timeFormatted.setAttribute('draggable', 'false');
 
                   timeFormatted.addEventListener('change', (e) => { updateTimeValue(parseInt(e.target.dataset.index), parseTimeString(e.target.value), true); });
-                  attachTimeInputDrag(timeInput, timeFormatted, currentVideoDuration ? currentVideoDuration - 0.01 : 0, (v) => handleFineTuneChange(parseInt(timeInput.dataset.index, 10), v));
+                  attachTimeInputDrag(timeInput, timeFormatted, clampVideoTime(currentVideoDuration, currentVideoDuration), (v) => handleFineTuneChange(parseInt(timeInput.dataset.index, 10), v));
 
                   container.addEventListener('mouseenter', () => {
                       container.classList.add('highlight');
@@ -4496,7 +4409,7 @@
                      const startPercent = 0.1; const endPercent = 0.9;
                      const step = numSamples > 1 ? (endPercent - startPercent) / (numSamples - 1) : 0;
                      const percent = startPercent + (i * step);
-                     const time = Math.max(0.01, Math.min(percent * currentVideoDuration, currentVideoDuration ? currentVideoDuration - 0.01 : 0.01));
+                     const time = clampVideoTime(Math.max(0.01, percent * currentVideoDuration), currentVideoDuration);
                      sampleTimestamps.push(time);
                      if (!isLargeGrid && input && isNaN(existingValue)) {
                          const timeFormatted = $(`timeFormatted_${i}`);
@@ -4505,7 +4418,7 @@
                          console.warn(`Calculated default for invalid input at index ${i}.`);
                      }
                  } else {
-                    sampleTimestamps.push(Math.max(0.01, Math.min(existingValue, currentVideoDuration ? currentVideoDuration - 0.01 : 0.01)));
+                    sampleTimestamps.push(clampVideoTime(Math.max(0.01, existingValue), currentVideoDuration));
                  }
              }
 
@@ -4998,7 +4911,7 @@
                 const value = parseInt(intervalFramesInput.value) || 10;
                 const clamped = Math.max(1, value);
                 intervalFramesInput.value = clamped;
-                const framerate = parseInt(framerateInput?.value || 30);
+                const framerate = Math.round(parseFramerate(framerateInput?.value));
                 intervalFramesSlider.value = Math.min(clamped, framerate);
                 updateSliderBackground(intervalFramesSlider);
             });
@@ -5012,7 +4925,7 @@
         }
 
         window.updateIntervalFramesMax = () => {
-            const framerate = parseInt(framerateInput?.value) || 30;
+            const framerate = Math.round(parseFramerate(framerateInput?.value));
             if (intervalFramesSlider) {
                 intervalFramesSlider.max = framerate;
                 const currentValue = parseInt(intervalFramesSlider.value);
@@ -5360,7 +5273,7 @@
             
             const framerateInput = document.getElementById('framerateInput');
             
-            const currentFramerate = framerateInput ? parseFloat(framerateInput.value) || DEFAULT_SETTINGS.FRAMERATE : DEFAULT_SETTINGS.FRAMERATE;
+            const currentFramerate = parseFramerate(framerateInput?.value);
             canvas.framerate = currentFramerate;
 
             const drawTextOverlay = (text, position, size) => {
@@ -5447,23 +5360,30 @@
         function formatTimecode(seconds, format, framerate) {
             if (isNaN(seconds)) seconds = 0;
             framerate = Math.max(1, framerate || 30);
-            const totalFrames = Math.floor(seconds * framerate);
-            const ff = totalFrames - Math.floor(totalFrames / framerate) * framerate;
-            const totalWholeSeconds = Math.floor(totalFrames / framerate);
+            const totalFrames = timeToFrame(seconds, framerate);
+            // Fractional rates use non-drop-frame labels at their nominal integer rate
+            const nominalFramerate = Math.round(framerate);
+            const ff = totalFrames % nominalFramerate;
+            const totalWholeSeconds = Math.floor(totalFrames / nominalFramerate);
             const h = Math.floor(totalWholeSeconds / 3600);
             const remAfterH = totalWholeSeconds - h * 3600;
             const m = Math.floor(remAfterH / 60);
             const s = remAfterH - m * 60;
             const pad2 = (n) => n.toString().padStart(2, '0');
             const mmTotal = h * 60 + m;
+            const clockWholeSeconds = Math.floor(seconds);
+            const clockH = Math.floor(clockWholeSeconds / 3600);
+            const clockM = Math.floor((clockWholeSeconds % 3600) / 60);
+            const clockS = clockWholeSeconds % 60;
+            const clockMmTotal = clockH * 60 + clockM;
             switch (format) {
                 case 'start/end': return `${formatTime(seconds)} / ${formatTime(currentVideoDuration)}`;
                 case 'hh:mm:ss:ff': return `${pad2(h)}:${pad2(m)}:${pad2(s)}:${pad2(ff)}`;
-                case 'hh:mm:ss': return `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+                case 'hh:mm:ss': return `${pad2(clockH)}:${pad2(clockM)}:${pad2(clockS)}`;
                 case 'mm:ss:ff': return `${pad2(mmTotal)}:${pad2(s)}:${pad2(ff)}`;
-                case 'mm:ss': return `${pad2(mmTotal)}:${pad2(s)}`;
+                case 'mm:ss': return `${pad2(clockMmTotal)}:${pad2(clockS)}`;
                 case 'ss:ff': return `${pad2(totalWholeSeconds)}:${pad2(ff)}`;
-                case 'ss': return `${pad2(totalWholeSeconds)}`;
+                case 'ss': return `${pad2(clockWholeSeconds)}`;
                 case 'ff': return `${totalFrames}`;
                 default: return `${pad2(mmTotal)}:${pad2(s)}`;
             }
@@ -5694,13 +5614,14 @@
              updateImageCount();
              contactSheetBlob = null;
 
-             let interval;
-             if (intervalMode === 'second') {
+             const frameMode = intervalMode === 'frame';
+             let interval, frameInterval = 0, framerate = 30;
+             if (!frameMode) {
                  interval = parseFloat(intervalSecondsInput?.value || 10);
                  if (isNaN(interval) || interval <= 0) { resetProcessingUI('auto'); return; }
              } else {
-                 const frameInterval = parseInt(intervalFramesInput?.value || 10);
-                 const framerate = parseInt(framerateInput?.value || 30);
+                 frameInterval = parseInt(intervalFramesInput?.value || 10);
+                 framerate = parseFramerate(framerateInput?.value);
                  interval = frameInterval / framerate;
                  if (isNaN(interval) || interval <= 0) { resetProcessingUI('auto'); return; }
              }
@@ -5710,11 +5631,13 @@
              const endTime = trimEnabled && intervalEndInput?.value ? Math.min(parseTimeString(intervalEndInput.value), currentVideoDuration) : currentVideoDuration;
 
              const startExtraction = () => {
-                 let currentTime = startTime + 0.1; const totalDuration = endTime; let frameTimeoutId = null; let isCancelled = false;
+                 let currentFrame = frameMode ? Math.max(1, Math.ceil(startTime * framerate - FRAME_EPSILON)) : 0;
+                 let currentTime = frameMode ? frameToTime(currentFrame, framerate) : startTime + 0.1;
+                 const totalDuration = endTime; let frameTimeoutId = null; let isCancelled = false;
                  currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('auto'); } }; // Reset UI on cancel
 
                  function processNextFrame() {
-                     if (isCancelled || cancelExtractionRequested || currentTime > totalDuration + 0.1) { if(!isCancelled) resetProcessingUI('auto'); return; } // Check cancel before processing
+                     if (isCancelled || cancelExtractionRequested || currentTime > totalDuration) { if(!isCancelled) resetProcessingUI('auto'); return; } // Check cancel before processing
                      const timestamp = currentTime;
                      if (progressBarFillAuto) progressBarFillAuto.style.width = `${Math.min((currentTime / totalDuration) * 100, 100)}%`;
 
@@ -5724,8 +5647,13 @@
                             createScreenshotContainer(blob, timestamp, screenshotBlobs);
                             updateImageCount();
                          }
-                         if (currentTime <= totalDuration + 0.1) {
-                              currentTime += interval;
+                         if (currentTime <= totalDuration) {
+                              if (frameMode) {
+                                  currentFrame += frameInterval;
+                                  currentTime = frameToTime(currentFrame, framerate);
+                              } else {
+                                  currentTime += interval;
+                              }
                               frameTimeoutId = setTimeout(processNextFrame, 0);
                          } else {
                               resetProcessingUI('auto');
@@ -6047,15 +5975,7 @@
             
             if (!manualTimeInput || !manualFrameInput || !manualVideo) return;
             
-            const getFrameRate = () => {
-                const framerateInput = document.getElementById('framerateInput');
-                if (!framerateInput) return 30;
-                
-                // Handle both comma and dot as decimal separators
-                const value = framerateInput.value.replace(',', '.');
-                const framerate = parseFloat(value);
-                return isNaN(framerate) ? 30 : framerate;
-            };
+            const getFrameRate = () => getActiveFramerate();
             
             const frameRate = getFrameRate();
             
@@ -6065,7 +5985,7 @@
                 
                 const currentTime = manualVideo.currentTime;
                 const frameRate = getFrameRate();
-                const currentFrame = Math.round(currentTime * frameRate);
+                const currentFrame = timeToFrame(currentTime, frameRate);
                 
                 manualTimeInput.value = formatTime(currentTime);
                 manualFrameInput.value = currentFrame;
@@ -6074,7 +5994,7 @@
             // Update video position from time input
             const updateVideoFromTime = (newTime) => {
                 if (!manualVideo.src || manualVideo.readyState < 1) return;
-                const clampedTime = Math.max(0, Math.min(newTime, manualVideo.duration || 0));
+                const clampedTime = clampVideoTime(newTime, manualVideo.duration || 0);
                 manualVideo.currentTime = clampedTime;
             };
             
@@ -6082,8 +6002,8 @@
             const updateVideoFromFrame = (newFrame) => {
                 if (!manualVideo.src || manualVideo.readyState < 1) return;
                 const frameRate = getFrameRate();
-                const newTime = newFrame / frameRate;
-                const clampedTime = Math.max(0, Math.min(newTime, manualVideo.duration || 0));
+                const newTime = frameToTime(newFrame, frameRate);
+                const clampedTime = clampVideoTime(newTime, manualVideo.duration || 0, frameRate);
                 manualVideo.currentTime = clampedTime;
             };
             
@@ -6263,7 +6183,7 @@
       const numberingStyle = numberingStyleSelect?.value || namingSettings.numberingStyle;
       const includeTs = includeTimestamp?.checked ?? namingSettings.includeTimestamp;
       const includeFr = (includeFrame?.checked ?? namingSettings.includeFrame) || numberingStyle === 'none';
-      const framerate = parseInt(namingFramerateInput?.value || namingSettings.framerate);
+      const framerate = parseFloat(namingFramerateInput?.value || namingSettings.framerate);
       const exampleIndex = 0;
       const exampleTimestamp = 10;
       let filename = prefix;
@@ -6272,7 +6192,7 @@
       }
       if (includeTs) filename += '_0-10';
       if (includeFr) {
-        const frameNum = Math.round(exampleTimestamp * framerate);
+        const frameNum = timeToFrame(exampleTimestamp, framerate);
         filename += filename.length > prefix.length ? `_${frameNum}` : `${frameNum}`;
       }
       filename += '.png';
@@ -6295,6 +6215,11 @@
 
     if (framerateInput) {
       framerateInput.addEventListener('input', () => {
+        if (!automaticFpsInputUpdate) {
+          fpsDetectionId++;
+          if (cancelFpsEstimate) cancelFpsEstimate();
+          cancelFpsEstimate = null;
+        }
         let val = framerateInput.value.replace(',', '.');
         val = val.replace(/[^0-9.]/g, '');
         const parts = val.split('.');
@@ -6306,18 +6231,21 @@
         if (isNaN(num)) num = 30;
         
         framerateInput.value = val;
+        namingSettings.framerate = num;
+        if (namingFramerateInput) namingFramerateInput.value = num;
         updateNamingSettingsExample();
         updateIntervalFramesMax();
         const manualFrameInput = document.getElementById('manualFrameInput');
         const manualVideo = document.getElementById('manualVideo');
         const fr = num;
         if (manualFrameInput && manualVideo && !isNaN(manualVideo.currentTime)) {
-          manualFrameInput.value = Math.round(manualVideo.currentTime * fr);
+          manualFrameInput.value = timeToFrame(manualVideo.currentTime, fr);
         }
       });
 
       const frameratePrevBtn = document.getElementById('frameratePrevBtn');
       const framerateNextBtn = document.getElementById('framerateNextBtn');
+      // Adjustment buttons intentionally snap decimal rates to whole FPS.
       if (frameratePrevBtn) {
         frameratePrevBtn.addEventListener('click', (e) => {
           e.preventDefault();
@@ -6343,25 +6271,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const manualFrameInput = document.getElementById('manualFrameInput');
-      const manualTimeInput = document.getElementById('manualTimeInput');
-      const manualVideo = document.getElementById('manualVideo');
-      const framerateInput = document.getElementById('framerateInput');
-      function getCurrentFramerate() {
-        return parseInt(framerateInput?.value) || 30;
-      }
-      if (manualVideo && manualFrameInput && framerateInput) {
-        manualVideo.addEventListener('timeupdate', () => {
-          manualFrameInput.value = Math.round(manualVideo.currentTime * getCurrentFramerate());
-        });
-        manualFrameInput.addEventListener('change', (e) => {
-          const frame = parseInt(e.target.value);
-          if (!isNaN(frame)) {
-            manualVideo.currentTime = frame / getCurrentFramerate();
-          }
-        });
-      }
-      
       const overlaySizeOrder = ['S', 'M', 'L', 'XL'];
       const initOverlaySizeButton = (buttonId, windowProp, labelPrefix) => {
         const btn = document.getElementById(buttonId);
