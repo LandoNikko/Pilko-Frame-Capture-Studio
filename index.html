@@ -2481,7 +2481,9 @@
     const getActiveFramerate = () => parseFramerate(document.getElementById('framerateInput')?.value);
     const timeToFrame = (seconds, framerate) => Math.max(0, Math.floor(seconds * parseFramerate(framerate) + FRAME_EPSILON));
     const frameToTime = (frame, framerate) => Math.max(0, frame) / parseFramerate(framerate);
-    const clampVideoTime = (seconds, duration, framerate = getActiveFramerate()) => Math.max(0, Math.min(seconds, Math.max(0, duration - frameToTime(1, framerate))));
+    // Seek to frame centers to avoid landing on the previous frame at timestamp boundaries
+    const frameToSeekTime = (frame, framerate) => frameToTime(Math.max(0, frame) + 0.5, framerate);
+    const clampVideoTime = (seconds, duration, framerate = getActiveFramerate()) => Math.max(0, Math.min(seconds, Math.max(0, duration - frameToTime(0.5, framerate))));
 
     let namingSettings = {
       prefix: DEFAULT_SETTINGS.PREFIX,
@@ -5632,7 +5634,7 @@
 
              const startExtraction = () => {
                  let currentFrame = frameMode ? Math.max(1, Math.ceil(startTime * framerate - FRAME_EPSILON)) : 0;
-                 let currentTime = frameMode ? frameToTime(currentFrame, framerate) : startTime + 0.1;
+                 let currentTime = frameMode ? frameToSeekTime(currentFrame, framerate) : startTime + 0.1;
                  const totalDuration = endTime; let frameTimeoutId = null; let isCancelled = false;
                  currentSamplingProcess = { cancel: () => { isCancelled = true; cancelExtractionRequested = true; if (frameTimeoutId) clearTimeout(frameTimeoutId); resetProcessingUI('auto'); } }; // Reset UI on cancel
 
@@ -5650,7 +5652,7 @@
                          if (currentTime <= totalDuration) {
                               if (frameMode) {
                                   currentFrame += frameInterval;
-                                  currentTime = frameToTime(currentFrame, framerate);
+                                  currentTime = frameToSeekTime(currentFrame, framerate);
                               } else {
                                   currentTime += interval;
                               }
@@ -6002,7 +6004,7 @@
             const updateVideoFromFrame = (newFrame) => {
                 if (!manualVideo.src || manualVideo.readyState < 1) return;
                 const frameRate = getFrameRate();
-                const newTime = frameToTime(newFrame, frameRate);
+                const newTime = frameToSeekTime(newFrame, frameRate);
                 const clampedTime = clampVideoTime(newTime, manualVideo.duration || 0, frameRate);
                 manualVideo.currentTime = clampedTime;
             };
