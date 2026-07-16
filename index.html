@@ -179,6 +179,8 @@
     #dropZone #loadedFileInfo { display: none; }
     #dropZone.file-loaded { padding: 1rem 1.25rem 0.75rem; align-items: stretch; text-align: left; justify-content: flex-start; cursor: default; }
     #dropZone.file-loaded #uploadIcon, #dropZone.file-loaded #dropZoneText { display: none; }
+    #dropZone.file-loaded.is-loading #uploadIcon { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; transform: none; pointer-events: none; }
+    #dropZone.file-loaded.is-loading #loadedFileStats .info-value { visibility: hidden; }
     #dropZone.file-loaded #loadedFileInfo { display: block; width: 100%; }
     #loadedFileName { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0; display: flex; align-items: center; word-break: break-all; flex: 1; margin-right: 1rem; }
     #loadedFileName::before { content: '\EF80'; font-family: 'remixicon'; color: var(--text-primary); font-size: 1.2em; margin-right: 0.5rem; font-weight: normal; }
@@ -2961,13 +2963,13 @@
             resetValue(framerateValue, '-');
             resetValue(bitrateValue, '-');
             
-            resetInput(intervalSecondsSlider, DEFAULT_SETTINGS.INTERVAL);
+            setSliderValue(intervalSecondsSlider, DEFAULT_SETTINGS.INTERVAL);
             resetInput(intervalSecondsInput, DEFAULT_SETTINGS.INTERVAL);
-            resetInput(intervalFramesSlider, 10);
+            setSliderValue(intervalFramesSlider, 10);
             resetInput(intervalFramesInput, 10);
-            resetInput(histThresholdInput, DEFAULT_SETTINGS.HIST_THRESHOLD);
+            setSliderValue(histThresholdInput, DEFAULT_SETTINGS.HIST_THRESHOLD);
             resetValue(histThresholdValue, `${Math.round(DEFAULT_SETTINGS.HIST_THRESHOLD * 100)}%`);
-            resetInput(pixelThresholdInput, DEFAULT_SETTINGS.PIXEL_THRESHOLD);
+            setSliderValue(pixelThresholdInput, DEFAULT_SETTINGS.PIXEL_THRESHOLD);
             resetValue(pixelThresholdValue, `${DEFAULT_SETTINGS.PIXEL_THRESHOLD}%`);
             if(manualTimeInput) manualTimeInput.value = '0:00';
             if(manualFrameInput) manualFrameInput.value = '0';
@@ -3608,9 +3610,13 @@
 
         const handleFileLoad = (file) => {
             if (!video || !manualVideo || !contactSheetVideo || !file) return;
-            
-            if (file.name === 'Arcane - Come Play Series Trailer.mp4' || file.name === 'ElephantsDream.mp4' || file.name === 'sample-mp4-file.mp4') {
-                showSpinner();
+
+            showSpinner();
+            const framerateControl = document.getElementById('framerateInput');
+            if (framerateControl) {
+                framerateControl.addEventListener('input', () => {
+                    if (!automaticFpsInputUpdate) hideSpinner();
+                }, { once: true });
             }
             
             uploadedFile = file;
@@ -3644,22 +3650,23 @@
                         fr.dispatchEvent(new Event('input'));
                         automaticFpsInputUpdate = false;
                     }
-                    return;
+                } else {
+                    const fr = document.getElementById('framerateInput');
+                    if (framerateValue) framerateValue.textContent = `${estimated}fps`;
+                    if (fr) {
+                        namingSettings.framerate = estimated;
+                        if (namingFramerateInput) namingFramerateInput.value = estimated;
+                        automaticFpsInputUpdate = true;
+                        fr.value = estimated;
+                        fr.dispatchEvent(new Event('input'));
+                        automaticFpsInputUpdate = false;
+                        console.log(`Estimated FPS from decoded frames: ${estimated}`);
+                    }
                 }
-                const fr = document.getElementById('framerateInput');
-                if (framerateValue) framerateValue.textContent = `${estimated}fps`;
-                if (!fr) return;
-                namingSettings.framerate = estimated;
-                if (namingFramerateInput) namingFramerateInput.value = estimated;
-                automaticFpsInputUpdate = true;
-                fr.value = estimated;
-                fr.dispatchEvent(new Event('input'));
-                automaticFpsInputUpdate = false;
-                console.log(`Estimated FPS from decoded frames: ${estimated}`);
+                hideSpinner();
             });
           
                             const onMetadataLoaded = () => {
-                    hideSpinner();
                     updateFileInfoDisplay();
                     updateDropZoneThumbnail();
                     resetProcessingUI('all');
@@ -3700,7 +3707,6 @@
                 const blob = await response.blob();
                 const file = new File([blob], filename, { type: 'video/mp4' });
                 handleFileLoad(file);
-                hideSpinner();
             } catch (error) {
                 console.error('Error loading video from URL:', error);
                 hideSpinner();
@@ -3748,6 +3754,10 @@
         const showSpinner = () => {
             const uploadIconSvg = $('uploadIconSvg');
             const spinnerIcon = $('spinnerIcon');
+            if (dropZone) {
+                dropZone.classList.add('is-loading');
+                dropZone.setAttribute('aria-busy', 'true');
+            }
             if (uploadIconSvg && spinnerIcon) {
                 uploadIconSvg.style.display = 'none';
                 spinnerIcon.style.display = 'block';
@@ -3757,6 +3767,10 @@
         const hideSpinner = () => {
             const uploadIconSvg = $('uploadIconSvg');
             const spinnerIcon = $('spinnerIcon');
+            if (dropZone) {
+                dropZone.classList.remove('is-loading');
+                dropZone.removeAttribute('aria-busy');
+            }
             if (uploadIconSvg && spinnerIcon) {
                 uploadIconSvg.style.display = 'block';
                 spinnerIcon.style.display = 'none';
@@ -3796,16 +3810,16 @@
             updateImageCount(); 
             resetProcessingUI('all');
             if(resolutionValue) resolutionValue.textContent = '-'; if(lengthValue) lengthValue.textContent = '-'; if(framerateValue) framerateValue.textContent = '-'; if(bitrateValue) bitrateValue.textContent = '-';
-            if(intervalSecondsSlider) intervalSecondsSlider.value = '10';
+            setSliderValue(intervalSecondsSlider, DEFAULT_SETTINGS.INTERVAL);
             if(intervalSecondsInput) intervalSecondsInput.value = '10';
-            if(intervalFramesSlider) intervalFramesSlider.value = '10';
+            setSliderValue(intervalFramesSlider, 10);
             if(intervalFramesInput) intervalFramesInput.value = '10';
             if(intervalTrimToggle) intervalTrimToggle.checked = false;
             if(intervalTrimControls) intervalTrimControls.style.display = 'none';
             if(intervalStartInput) intervalStartInput.value = '0:00';
             if(intervalEndInput) intervalEndInput.value = '';
-            if(histThresholdInput) histThresholdInput.value = '0.50'; if(histThresholdValue) histThresholdValue.textContent = '50%';
-            if(pixelThresholdInput) pixelThresholdInput.value = '50'; if(pixelThresholdValue) pixelThresholdValue.textContent = '50%';
+            setSliderValue(histThresholdInput, DEFAULT_SETTINGS.HIST_THRESHOLD); if(histThresholdValue) histThresholdValue.textContent = `${Math.round(DEFAULT_SETTINGS.HIST_THRESHOLD * 100)}%`;
+            setSliderValue(pixelThresholdInput, DEFAULT_SETTINGS.PIXEL_THRESHOLD); if(pixelThresholdValue) pixelThresholdValue.textContent = `${DEFAULT_SETTINGS.PIXEL_THRESHOLD}%`;
 
         };
 
@@ -4063,6 +4077,12 @@
              else if (slider.closest('#manualMode')) { color = 'var(--accent-primary)'; }
              else if (slider.closest('#contactSheetMode')) { color = 'var(--accent-tertiary)'; }
             slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${pct}%, var(--border-color) ${pct}%, var(--border-color) 100%)`;
+        };
+
+        const setSliderValue = (slider, value) => {
+            if (!slider) return;
+            slider.value = value;
+            updateSliderBackground(slider);
         };
 
         const setupSlider = (slider, displaySpan, suffix) => {
