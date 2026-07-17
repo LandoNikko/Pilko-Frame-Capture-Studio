@@ -53,6 +53,7 @@ Offline: Download `index.html`
 
 - No cloud processing or installations.
 - Frames are stored temporarily in your browser.
+- Saving settings stores preferences in your browser's localStorage.
 - 100% client-side: built into a single `.html` using native HTML, CSS and JavaScript.
   - Why? For trust and accessibility. Easy to deploy locally, no installations required.
 
@@ -73,7 +74,7 @@ Offline: Download `index.html`
 
 ## ![How it Works Shield][how-it-works-shield] [![Try it][demo-shield]][demo-url]
 
-The tool finds timestamps (or you pick them). Your browser's built-in capabilities (`<video>`, `<canvas>`) capture the frame at that time, optionally cropping based on black bar detection, encode it to the selected image format, and provide the image data for display/download.
+The tool finds timestamps (or you pick them). Your browser's built-in capabilities (`<video>`, `<canvas>`) capture the frame at that time, optionally applying crop area or black-bar removal, encode it to the selected image format, and provide the image data for display/download.
 
 PySceneDetect exists for better scene detection, but requires Python and setup for local deployment. Pilko Studio's solution is Histogram and Pixel Difference algorithms in Automatic, which get the same job done, are lightweight (basic JS) and work inside a single .html -file. The project's goal is accessibility in deployment for the average users.
 
@@ -83,7 +84,7 @@ I recommend using [Media Download](https://github.com/mhogomchungu/media-downloa
 [how-it-works-shield]: https://img.shields.io/badge/How_it_Works-00c6ff?style=for-the-badge&color=121727
 
 [demo-shield]: https://img.shields.io/badge/Try_it-00c6ff?style=for-the-badge&color=080c19
-[demo-url]: [URL](https://pilko.studio)
+[demo-url]: https://pilko.studio
 
 <video src="https://i.imgur.com/sD1RuDA.mp4"></video>
 
