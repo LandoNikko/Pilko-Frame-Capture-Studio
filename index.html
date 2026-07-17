@@ -180,7 +180,7 @@
     #dropZone.file-loaded { padding: 1rem 1.25rem 0.75rem; align-items: stretch; text-align: left; justify-content: flex-start; cursor: default; }
     #dropZone.file-loaded #uploadIcon, #dropZone.file-loaded #dropZoneText { display: none; }
     #dropZone.file-loaded.is-loading #uploadIcon { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; transform: none; pointer-events: none; }
-    #dropZone.file-loaded.is-loading #loadedFileStats .info-value { visibility: hidden; }
+    #dropZone.file-loaded.is-loading #framerateValue { visibility: hidden; }
     #dropZone.file-loaded #loadedFileInfo { display: block; width: 100%; }
     #loadedFileName { font-size: 0.95rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0; display: flex; align-items: center; word-break: break-all; flex: 1; margin-right: 1rem; }
     #loadedFileName::before { content: '\EF80'; font-family: 'remixicon'; color: var(--text-primary); font-size: 1.2em; margin-right: 0.5rem; font-weight: normal; }
@@ -210,16 +210,7 @@
     #tryExampleButton { padding: 0.6rem 1.5rem; font-size: 0.9rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; font-weight: 500; }
     #tryExampleButton:hover { background-color: rgba(255, 255, 255, 0.1); border-color: var(--text-tertiary); box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); }
 
-    #selectFileButton {
-      font-size: 0.8rem;
-      padding: 0.4rem 1rem;
-      background-color: transparent;
-      border: 1px solid var(--text-primary);
-      color: var(--text-primary);
-      border-radius: var(--border-radius-md);
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
+    #selectFileButton { font-size: 0.8rem; padding: 0.4rem 1rem; background-color: transparent; border: 1px solid var(--text-primary); color: var(--text-primary); border-radius: var(--border-radius-md); cursor: pointer; transition: background-color 0.2s; }
     #selectFileButton:hover { background-color: var(--text-primary); color: var(--bg-primary); }
 
     .transcription-upload-btn { padding: 0.6rem 1.5rem; font-size: 0.9rem; background-color: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--border-radius-md); color: var(--text-primary); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s; font-weight: 500; }
@@ -230,46 +221,15 @@
     #videoInput { display: none; }
 
     #imageCountDisplay { text-align: center; font-size: 0.9rem; color: var(--text-tertiary); margin-top: 1.5rem; margin-bottom: 0.75rem; padding: 0.4rem 0; background-color: var(--bg-tertiary); border-radius: var(--border-radius-md); border: 1px solid var(--border-color); flex-shrink: 0; }
-    #imageCountValue {
-        font-weight: 600;
-        font-family: var(--data-font);
-        margin-left: 0.5ch;
-    }
+    #imageCountValue { font-weight: 600; font-family: var(--data-font); margin-left: 0.5ch; }
     #imageCountValue.interval-mode { color: var(--accent-interval); }
     #imageCountValue.automatic-mode { color: var(--accent-secondary); }
     #imageCountValue.manual-mode { color: var(--accent-primary); }
     #imageCountValue.grid-mode { color: var(--accent-tertiary); }
 
-    .setting-row { 
-        display: flex; 
-        flex-direction: column;
-        align-items: stretch; 
-        flex-wrap: wrap; 
-        margin-bottom: 1rem; 
-        background-color: var(--bg-tertiary); 
-        padding: 0.5rem 1rem; 
-        border-radius: var(--border-radius-md); 
-        border: 1px solid var(--border-color); 
-        flex-shrink: 0;
-    }
-    .setting-control-group {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        margin:0.5rem 0;
-    }
-    .setting-label { 
-        flex: 1; 
-        font-size: 0.9rem; 
-        color: var(--text-primary); 
-        font-weight: 500; 
-        margin-right: 0.8rem; 
-        margin: 0; 
-        cursor: default; 
-        display: inline-flex; 
-        align-items: center; 
-    }
+    .setting-row { display: flex; flex-direction: column; align-items: stretch; flex-wrap: wrap; margin-bottom: 1rem; background-color: var(--bg-tertiary); padding: 0.5rem 1rem; border-radius: var(--border-radius-md); border: 1px solid var(--border-color); flex-shrink: 0; }
+    .setting-control-group { display: flex; align-items: center; justify-content: space-between; width: 100%; margin:0.5rem 0; }
+    .setting-label { flex: 1; font-size: 0.9rem; color: var(--text-primary); font-weight: 500; margin-right: 0.8rem; margin: 0; cursor: default; display: inline-flex; align-items: center; }
     .info-icon-inline { font-size: 1.1em; color: var(--border-dashed); cursor: help; }
 
     .toggle-row { display: flex; align-items: center; justify-content: space-between; }
@@ -285,20 +245,14 @@
     .format-controls { display: flex; align-items: center; }
 
     .capture-config-toggle-wrapper { margin-left: auto; display: flex; align-items: center; flex-shrink: 0; }
-    .capture-config-toggle-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        color: var(--text-tertiary);
-        font-size: 0.85rem;
-        cursor: pointer;
-    }
+    .capture-config-toggle-label { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--text-tertiary); font-size: 0.85rem; cursor: pointer; }
     .capture-config-toggle-label:hover { color: var(--text-secondary); }
     .capture-config-chevron { font-size: 1.1rem; color: inherit; }
     .collapsible-content { display: none; }
     .collapsible-content.is-open { display: block; }
 
     .crop-area-panel[hidden] { display: none !important; }
+    #removeBlackBarsRow[hidden] { display: none !important; }
     .crop-area-panel { margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
     .crop-area-preview-wrap { position: relative; display: inline-block; max-width: 100%; background: var(--bg-tertiary); border-radius: var(--border-radius-sm); overflow: hidden; }
     #cropAreaCanvas { display: block; max-width: 100%; height: auto; cursor: crosshair; }
@@ -309,8 +263,6 @@
     .crop-area-panel .helper-text { display: none; }
     .crop-area-panel.crop-area-no-video .helper-text { display: block; }
     .crop-area-panel.crop-area-no-video .crop-area-preview-wrap { display: none; }
-    .crop-area-remove-bars-row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: 0.25rem; }
-    .crop-area-remove-bars-row .corner-position-btn { padding: 0.35rem 0.6rem; }
     
     .corner-position-btn {
         background-color: var(--bg-tertiary);
@@ -327,15 +279,26 @@
         color: var(--text-secondary);
     }
     
-    .corner-position-btn:hover {
-        background: var(--border-color);
-        color: var(--text-primary);
-    }
-    
-    .corner-position-btn svg {
-        transition: transform 0.2s ease;
-    }
+    .corner-position-btn:hover { background: var(--border-color); color: var(--text-primary); }
+    .corner-position-btn svg { transition: transform 0.2s ease; }
 
+    #rememberSettingsStatusButton { padding: 0 0.65rem; font-size: 0.8rem; margin-right: 0.5rem; height: 24px; }
+    #rememberSettingsStatusButton[hidden] { display: none !important; }
+    .remember-status-groups { display: flex; flex-direction: column; gap: 0.85rem; margin: 0 0 1rem; }
+    .remember-status-group h3 { margin: 0 0 0.35rem; font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+    .remember-status-empty { margin: 0 0 1rem; font-size: 0.85rem; font-style: italic; color: var(--text-tertiary); }
+    .remember-status-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0; }
+    .remember-status-table th, .remember-status-table td {
+        text-align: left; padding: 0.3rem 0.35rem; border-bottom: 1px solid var(--border-color); vertical-align: top;
+    }
+    .remember-status-table th { color: var(--text-secondary); font-weight: 600; }
+    .remember-status-table td:nth-child(2) { opacity: 0.6; }
+    .remember-status-table tr.is-modified td:nth-child(3) { color: var(--text-primary); font-weight: 600; }
+    .remember-status-table tr:not(.is-modified) td:nth-child(3) { opacity: 0.6; }
+    .mode-title-manual { color: var(--accent-primary); }
+    .mode-title-interval { color: var(--accent-interval); }
+    .mode-title-automatic { color: var(--accent-secondary); }
+    .mode-title-grid { color: var(--accent-tertiary); }
 
     #jpegQualityGlobalRow, #webpQualityGlobalRow {
         display: none;
@@ -367,22 +330,9 @@
     .mode-tabs button.active { color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); }
     .detection-algo-tabs button.active { background: var(--gradient-secondary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
     .grid-size-tabs button.active { background: var(--gradient-tertiary); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
-    .grid-size-tabs button {
-        position: relative;
-        padding-right: 24px;
-    }
-    .grid-size-tabs button.completed::after {
-        content: "✓";
-        position: absolute;
-        right: 8px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-weight: bold;
-        color: var(--accent-tertiary);
-    }
-    .grid-size-tabs button.active.completed::after {
-        color: var(--bg-primary);
-    }
+    .grid-size-tabs button { position: relative; padding-right: 24px; }
+    .grid-size-tabs button.completed::after { content: "✓"; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-weight: bold; color: var(--accent-tertiary); }
+    .grid-size-tabs button.active.completed::after { color: var(--bg-primary); }
     .detection-algo-tabs, .grid-size-tabs, .interval-mode-tabs { margin-bottom: 1rem; }
     .detection-algo-tabs button, .grid-size-tabs button, .interval-mode-tabs button { padding: 0.5rem 0.5rem; font-size: 0.8rem; }
     .interval-mode-tabs button.active { background: var(--gradient-interval); color: var(--bg-primary); font-weight: 600; box-shadow: inset 0 1px 2px rgba(0,0,0,0.15); }
@@ -394,25 +344,10 @@
 
     .slider-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0; padding-bottom: 0.75rem; flex-wrap: wrap; }
     .slider-label, h3.slider-label { padding-left:1em; text-align: left; font-size: 0.85rem; color: var(--text-tertiary); flex-shrink: 0; margin: 0; font-weight: normal; }
+    .slider-label--danger { color: var(--danger-color); }
     .slider-wrapper { flex: 1; display: flex; align-items: center; gap: 0.8rem; min-width: 150px; }
-    .value-display {
-        font-weight: 500;
-        min-width: 40px;
-        text-align: right;
-        font-family: var(--data-font);
-        color: var(--text-primary);
-        font-size: 0.9rem;
-    }
-    .value-input {
-        width: 150px;
-        padding: 0.35rem 1rem;
-        background-color: var(--bg-secondary);
-        color: var(--text-primary);
-        border: 1px solid var(--border-color);
-        border-radius: var(--border-radius-sm);
-        font-size: 0.9rem;
-        font-family: inherit;
-    }
+    .value-display { font-weight: 500; min-width: 40px; text-align: right; font-family: var(--data-font); color: var(--text-primary); font-size: 0.9rem; }
+    .value-input { width: 150px; padding: 0.35rem 1rem; background-color: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); font-size: 0.9rem; font-family: inherit; }
 
     input[type="range"] { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 100%; height: 6px; background: var(--text-tertiary); border-radius: var(--border-radius-full); outline: none; cursor: pointer; transition: background 0.2s; }
     input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--white); border: none; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25); transition: transform 0.1s ease-out; }
@@ -430,15 +365,9 @@
       filter: saturate(0.4) brightness(0.85);
     }
     /* Icon Styles */
-    .action-button i, .secondary-button i {
-      margin-left: 0.5em;
-      vertical-align: middle;
-      font-size: 1.1em;
-      line-height: 1;
-    }
-     .action-button.secondary-button i {
-         color: inherit;
-     }
+    .action-button i, .secondary-button i { margin-left: 0.5em; vertical-align: middle; font-size: 1.1em; line-height: 1; }
+    .action-button.secondary-button i { color: inherit; }
+
 
      #addManualButton i, #extractManualButton i, #clearScreenshotsButton .delete-icon-svg {
          margin-right: 0;
@@ -493,121 +422,28 @@
         border: 1px solid;
         box-shadow: 0 1px 4px rgba(0,0,0,0.10);
     }
-    .action-icon-button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        box-shadow: none;
-    }
-    .action-icon-button--delete {
-        background-color: rgba(244, 63, 94, 0.1);
-        color: var(--danger-color);
-        border-color: var(--danger-color);
-        box-shadow: 0 1px 4px rgba(244, 63, 94, 0.1);
-    }
-    .action-icon-button--delete:hover:enabled {
-        background-color: var(--danger-color);
-        color: var(--black);
-        box-shadow: none;
-    }
-    .action-icon-button--delete:disabled {
-        background-color: rgba(244, 63, 94, 0.1);
-        color: var(--danger-color);
-        border-color: var(--danger-color);
-    }
-    .action-icon-button--download {
-        background-color: rgba(154, 110, 255, 0.08);
-        color: var(--text-tertiary);
-        border-color: var(--text-tertiary);
-        box-shadow: 0 1px 4px rgba(154, 110, 255, 0.10);
-    }
-    .action-icon-button--download:hover:enabled {
-        background-color: var(--text-primary);
-        color: var(--black);
-        border-color: var(--text-tertiary);
-    }
-    .action-icon-button--download:disabled {
-        background-color: rgba(154, 110, 255, 0.08);
-        color: var(--text-tertiary);
-        border-color: var(--text-primary);
-    }
+    .action-icon-button:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+    .action-icon-button--delete { background-color: rgba(244, 63, 94, 0.1); color: var(--danger-color); border-color: var(--danger-color); box-shadow: 0 1px 4px rgba(244, 63, 94, 0.1); }
+    .action-icon-button--delete:hover:enabled { background-color: var(--danger-color); color: var(--black); box-shadow: none; }
+    .action-icon-button--delete:disabled { background-color: rgba(244, 63, 94, 0.1); color: var(--danger-color); border-color: var(--danger-color); }
+    .action-icon-button--download { background-color: rgba(154, 110, 255, 0.08); color: var(--text-tertiary); border-color: var(--text-tertiary); box-shadow: 0 1px 4px rgba(154, 110, 255, 0.10); }
+    .action-icon-button--download:hover:enabled { background-color: var(--text-primary); color: var(--black); border-color: var(--text-tertiary); }
+    .action-icon-button--download:disabled { background-color: rgba(154, 110, 255, 0.08); color: var(--text-tertiary); border-color: var(--text-primary); }
+    #clearScreenshotsButton { margin-top: 0; padding: 0.6rem 1rem 0.6rem 0.8rem; font-size: 0.85rem; width: auto; flex-shrink: 0; }
+    #clearScreenshotsButton .delete-icon-svg { margin-right: 0.5em; }
 
-    #clearScreenshotsButton {
-        margin-top: 0;
-        padding: 0.6rem 1rem 0.6rem 0.8rem;
-        font-size: 0.85rem;
-        width: auto;
-        flex-shrink: 0;
-    }
-    #clearScreenshotsButton .delete-icon-svg {
-        margin-right: 0.5em;
-    }
-
-    .transcription-segment-remove {
-        padding: 0.35rem 0.5rem;
-        font-size: 0.85rem;
-    }
-    .transcription-segment-remove .delete-icon-svg {
-        width: 1.1em;
-        height: 1.1em;
-    }
-
-    .transcription-upload-row {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        margin-bottom: 0.75rem;
-    }
-    .transcription-upload-row .transcription-upload-btn {
-        margin-left: auto;
-    }
-    .transcription-file-display {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-    }
-    .transcription-clear-file-btn {
-        padding: 0.25rem;
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--danger-color);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .transcription-clear-file-btn:hover {
-        color: var(--text-primary);
-    }
-    .transcription-clear-file-btn .delete-icon-svg {
-        width: 1em;
-        height: 1em;
-    }
-
-    .delete-icon-svg {
-      width: 1.1em;
-      height: 1.1em;
-      fill: currentColor;
-      vertical-align: middle;
-    }
-
-    #manualVideo, #intervalVideo {
-        width: 100%;
-        border-radius: var(--border-radius-lg);
-        background-color: var(--black);
-        margin-bottom: 1rem;
-        border: 1px solid var(--border-color);
-        display: block;
-        min-height: 200px;
-    }
-
-    #addManualButton i {
-      display: inline-block;
-    }
-
-    #addManualButton.cutting i {
-      animation: cut-animation 0.3s ease-in-out;
-    }
+    .transcription-segment-remove { padding: 0.35rem 0.5rem; font-size: 0.85rem; }
+    .transcription-segment-remove .delete-icon-svg { width: 1.1em; height: 1.1em; }
+    .transcription-upload-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .transcription-upload-row .transcription-upload-btn { margin-left: auto; }
+    .transcription-file-display { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .transcription-clear-file-btn { padding: 0.25rem; background: none; border: none; cursor: pointer; color: var(--danger-color); display: inline-flex; align-items: center; justify-content: center; }
+    .transcription-clear-file-btn:hover { color: var(--text-primary); }
+    .transcription-clear-file-btn .delete-icon-svg { width: 1em; height: 1em; }
+    .delete-icon-svg { width: 1.1em; height: 1.1em; fill: currentColor; vertical-align: middle; }
+    #manualVideo, #intervalVideo { width: 100%; border-radius: var(--border-radius-lg); background-color: var(--black); margin-bottom: 1rem; border: 1px solid var(--border-color); display: block; min-height: 200px; }
+    #addManualButton i { display: inline-block; }
+    #addManualButton.cutting i { animation: cut-animation 0.3s ease-in-out; }
 
     /* Scissors cutting animation */
     @keyframes cut-animation {
@@ -719,11 +555,7 @@
     .transcription-segment .time-input-wrapper { width: 80px; }
     .transcription-segment .transcription-text { flex: 1; font-size: 0.85rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .time-input-container { display: flex; flex-direction: column; gap: 0.3rem; position: relative; }
-    .time-input-wrapper {
-        position: relative;
-        display: inline-block;
-        height: 2rem;
-    }
+    .time-input-wrapper { position: relative; display: inline-block; height: 2rem; }
     
     #manualMode .time-input-container .time-input-wrapper {
         width: 120px;
@@ -930,6 +762,23 @@
         font-size: 0.85rem;
         background-color: rgba(36, 44, 68, 0.5);
         border-radius: var(--border-radius-sm);
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+    #namingSettingsExample {
+        background-color: var(--bg-primary);
+        padding: 0.75rem;
+        border-radius: var(--border-radius-md);
+        font-family: monospace;
+        font-style: normal;
+        margin: 1rem 0;
+        line-height: 1.4;
+    }
+    #namingSettingsExampleText {
+        display: inline-block;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-all;
     }
     #largeGridMessage {
         display: none;
@@ -980,7 +829,8 @@
         color: var(--accent-primary);
     }
 
-    .status-row #toolInfoButton {
+    .status-row #toolInfoButton,
+    #openFilenameSettingsFromStatus {
         background-color: var(--bg-secondary);
         border: 1px solid var(--border-color);
         color: var(--text-tertiary);
@@ -993,17 +843,28 @@
         justify-content: center;
         font-weight: 500;
         font-size: 0.9rem;
+    }
+
+    .status-row #toolInfoButton {
         min-width: 2.2rem;
         aspect-ratio: 1;
     }
 
-    .status-row #toolInfoButton:hover {
+    #openFilenameSettingsFromStatus {
+        width: 100%;
+        margin-bottom: 1rem;
+        padding: 0.45rem 0.75rem;
+    }
+
+    .status-row #toolInfoButton:hover,
+    #openFilenameSettingsFromStatus:hover {
         background-color: var(--bg-tertiary);
         border-color: var(--text-tertiary);
         color: var(--text-primary);
     }
 
-    .status-row #toolInfoButton:active {
+    .status-row #toolInfoButton:active,
+    #openFilenameSettingsFromStatus:active {
         transform: scale(0.95);
     }
 
@@ -1109,7 +970,7 @@
 
     .modal-body h3 {
         color: var(--text-primary);
-        margin: 1.5rem 0 0.5rem;
+        margin: 1rem 0 0.5rem;
         font-size: 1.1rem;
     }
 
@@ -1559,6 +1420,8 @@
         font-size: 0.85rem;
         background-color: rgba(36, 44, 68, 0.5);
         border-radius: var(--border-radius-sm);
+        overflow-wrap: anywhere;
+        word-break: break-word;
     }
     #largeGridDisclaimer {
         display: none;
@@ -1590,10 +1453,12 @@
         .lightbox-controls-left { position: relative; }
         .lightbox-nav-controls { margin-left: auto; }
         .modal-overlay#namingSettingsModal,
+        .modal-overlay#rememberSettingsStatusModal,
         .modal-overlay#toolInfoModal {
             align-items: flex-end;
         }
         .modal-overlay#namingSettingsModal .info-box-content,
+        .modal-overlay#rememberSettingsStatusModal .info-box-content,
         .modal-overlay#toolInfoModal .info-box-content {
             max-width: 100vw;
             width: 100vw;
@@ -1602,7 +1467,8 @@
             border-radius: 1.2rem 1.2rem 0 0;
             padding-bottom: 2.5rem;
         }
-        .modal-overlay#namingSettingsModal .info-box-content {
+        .modal-overlay#namingSettingsModal .info-box-content,
+        .modal-overlay#rememberSettingsStatusModal .info-box-content {
             padding-left: 1rem;
             padding-right: 1rem;
         }
@@ -1762,82 +1628,31 @@
 
         <div class="settings-panel" role="region" aria-label="Capture Settings">
             <div class="setting-row">
-                <!-- Capture Configuration -->
                 <div class="setting-control-group">
-                    <label class="setting-label toggle-label">Capture Configuration</label>
-                    <div class="capture-config-toggle-wrapper">
-                        <input type="checkbox" id="captureConfigToggle" class="toggle-input" aria-controls="captureConfigContent" aria-expanded="false">
-                        <label for="captureConfigToggle" class="capture-config-toggle-label">
-                            <span class="capture-config-toggle-text">Show</span>
-                            <i class="ri-arrow-down-s-line capture-config-chevron" aria-hidden="true"></i>
-                        </label>
-                    </div>
-                </div>
-                <div class="collapsible-content" id="captureConfigContent">
-                <div class="setting-control-group">
-                    <label class="slider-label">Capture Format</label>
-                    <div class="format-controls">
-                        <select id="captureFormatSelect" class="value-input" style="width:90px;">
-                            <option value="png" selected>PNG</option>
-                            <option value="jpeg">JPEG</option>
-                            <option value="webp">WEBP</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="slider-row" id="jpegQualityGlobalRow">
-                    <h3 class="slider-label">JPEG Quality</h3>
-                    <div class="slider-wrapper">
-                        <input type="range" id="jpegQualityGlobal" min="1" max="100" value="90" step="1" aria-label="JPEG quality setting">
-                        <span id="jpegQualityGlobalValue" class="value-display">90%</span>
-                    </div>
-                </div>
-                <div class="slider-row" id="webpQualityGlobalRow">
-                    <h3 class="slider-label">WEBP Quality</h3>
-                    <div class="slider-wrapper">
-                        <input type="range" id="webpQualityGlobal" min="1" max="100" value="90" step="1" aria-label="WEBP quality setting">
-                        <span id="webpQualityGlobalValue" class="value-display">90%</span>
-                    </div>
-                </div>
-                <div class="setting-control-group" id="framerateRow">
-                    <label class="slider-label">
-                        Framerate override
-                        <i class="ri-question-line info-icon-inline" title="The value used for timecodes and frame controls." id="framerateInfoIcon"></i>
+                    <label class="setting-label toggle-label">
+                        Save My Settings
                     </label>
-                    <div class="time-input-controls" style="margin-left:auto; max-width: 180px;">
-                        <button class="manual-time-btn" id="frameratePrevBtn" title="Decrease framerate" tabindex="-1" style="min-width:32px;">-</button>
-                        <input type="text" id="framerateInput" class="value-input time-input-field" value="30" style="width:87px; text-align:center;" inputmode="decimal">
-                        <button class="manual-time-btn" id="framerateNextBtn" title="Increase framerate" tabindex="-1" style="min-width:32px;">+</button>
-                    </div>
-                </div>
-                <div class="setting-control-group">
-                    <label class="slider-label">Crop Area</label>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="cropAreaToggle" class="toggle-input" aria-controls="cropAreaPanel">
-                        <label for="cropAreaToggle" class="toggle-label-switch"></label>
-                    </div>
-                </div>
-                <div class="crop-area-panel" id="cropAreaPanel" role="region" aria-label="Crop area selection" hidden>
-                    <div class="helper-text">Load a video to set crop area</div>
-                    <div class="crop-area-preview-wrap">
-                        <canvas id="cropAreaCanvas" width="400" height="225"></canvas>
-                    </div>
-                    <div class="crop-area-footer">
-                        <span id="cropAreaRes" class="crop-area-res" aria-live="polite">—</span>
-                        <div class="crop-area-btns">
-                            <button type="button" id="cropAreaPreset1x1" class="corner-position-btn">1×1</button>
-                            <button type="button" id="cropAreaPreset169" class="corner-position-btn">16:9</button>
-                            <button type="button" id="cropAreaPreset12" class="corner-position-btn">9:20</button>
-                            <button type="button" id="cropAreaResetBtn" class="corner-position-btn">Reset</button>
+                    <div class="format-controls" style="margin-left: auto;">
+                        <button
+                            type="button"
+                            id="rememberSettingsStatusButton"
+                            class="corner-position-btn"
+                            hidden
+                        >
+                            Status
+                        </button>
+                        <div class="toggle-switch" style="margin-left: 0;">
+                            <input
+                                type="checkbox"
+                                id="rememberSettingsToggle"
+                                class="toggle-input"
+                            >
+                            <label
+                                for="rememberSettingsToggle"
+                                class="toggle-label-switch"
+                            ></label>
                         </div>
                     </div>
-                    <div class="crop-area-remove-bars-row">
-                        <label class="slider-label" for="cropAreaRemoveBarsBtn">
-                            Remove Black Bars
-                            <i class="ri-question-line info-icon-inline" title="Automatically detect and crop black bars from letterboxed videos" id="removeBarsInfoIcon"></i>
-                        </label>
-                        <button type="button" id="cropAreaRemoveBarsBtn" class="corner-position-btn">Apply</button>
-                    </div>
-                </div>
                 </div>
                 <!-- Add Overlay -->
                 <div class="setting-control-group">
@@ -1941,6 +1756,86 @@
                     <div class="slider-wrapper" style="margin-left: auto; flex: 0 1 auto; width: 200px;">
                         <input type="range" id="overlayOpacityInput" min="0" max="100" value="100" step="1" aria-label="Overlay opacity">
                         <span id="overlayOpacityValue" class="value-display"></span>
+                    </div>
+                </div>
+                </div>
+                <!-- Capture Configuration -->
+                <div class="setting-control-group">
+                    <label class="setting-label toggle-label">Capture Configuration</label>
+                    <div class="capture-config-toggle-wrapper">
+                        <input type="checkbox" id="captureConfigToggle" class="toggle-input" aria-controls="captureConfigContent" aria-expanded="false">
+                        <label for="captureConfigToggle" class="capture-config-toggle-label">
+                            <span class="capture-config-toggle-text">Show</span>
+                            <i class="ri-arrow-down-s-line capture-config-chevron" aria-hidden="true"></i>
+                        </label>
+                    </div>
+                </div>
+                <div class="collapsible-content" id="captureConfigContent">
+                <div class="setting-control-group">
+                    <label class="slider-label">Capture Format</label>
+                    <div class="format-controls">
+                        <select id="captureFormatSelect" class="value-input" style="width:90px;">
+                            <option value="png" selected>PNG</option>
+                            <option value="jpeg">JPEG</option>
+                            <option value="webp">WEBP</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="slider-row" id="jpegQualityGlobalRow">
+                    <h3 class="slider-label">JPEG Quality</h3>
+                    <div class="slider-wrapper">
+                        <input type="range" id="jpegQualityGlobal" min="1" max="100" value="90" step="1" aria-label="JPEG quality setting">
+                        <span id="jpegQualityGlobalValue" class="value-display">90%</span>
+                    </div>
+                </div>
+                <div class="slider-row" id="webpQualityGlobalRow">
+                    <h3 class="slider-label">WEBP Quality</h3>
+                    <div class="slider-wrapper">
+                        <input type="range" id="webpQualityGlobal" min="1" max="100" value="90" step="1" aria-label="WEBP quality setting">
+                        <span id="webpQualityGlobalValue" class="value-display">90%</span>
+                    </div>
+                </div>
+                <div class="setting-control-group" id="framerateRow">
+                    <label class="slider-label">
+                        <span class="slider-label--danger">Framerate Override</span>
+                        <i class="ri-question-line info-icon-inline" title="Leave as is. Only change the value if you know what you're doing." id="framerateInfoIcon"></i>
+                    </label>
+                    <div class="time-input-controls" style="margin-left:auto; max-width: 180px;">
+                        <button class="manual-time-btn" id="frameratePrevBtn" title="Decrease framerate" tabindex="-1" style="min-width:32px;">-</button>
+                        <input type="text" id="framerateInput" class="value-input time-input-field" value="30" style="width:87px; text-align:center;" inputmode="decimal">
+                        <button class="manual-time-btn" id="framerateNextBtn" title="Increase framerate" tabindex="-1" style="min-width:32px;">+</button>
+                    </div>
+                </div>
+                <div class="setting-control-group">
+                    <label class="slider-label">Crop Area</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="cropAreaToggle" class="toggle-input" aria-controls="cropAreaPanel">
+                        <label for="cropAreaToggle" class="toggle-label-switch"></label>
+                    </div>
+                </div>
+                <div class="setting-control-group" id="removeBlackBarsRow" hidden>
+                    <label class="slider-label">
+                        Remove Black Bars
+                        <i class="ri-question-line info-icon-inline" title="Automatically detect and crop black bars from letterboxed videos" id="removeBarsInfoIcon"></i>
+                    </label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="removeBlackBarsToggle" class="toggle-input">
+                        <label for="removeBlackBarsToggle" class="toggle-label-switch"></label>
+                    </div>
+                </div>
+                <div class="crop-area-panel" id="cropAreaPanel" role="region" aria-label="Crop area selection" hidden>
+                    <div class="helper-text">Load a video to set crop area</div>
+                    <div class="crop-area-preview-wrap">
+                        <canvas id="cropAreaCanvas" width="400" height="225"></canvas>
+                    </div>
+                    <div class="crop-area-footer">
+                        <span id="cropAreaRes" class="crop-area-res" aria-live="polite">—</span>
+                        <div class="crop-area-btns">
+                            <button type="button" id="cropAreaPreset1x1" class="corner-position-btn">1×1</button>
+                            <button type="button" id="cropAreaPreset169" class="corner-position-btn">16:9</button>
+                            <button type="button" id="cropAreaPreset12" class="corner-position-btn">9:20</button>
+                            <button type="button" id="cropAreaResetBtn" class="corner-position-btn">Reset</button>
+                        </div>
                     </div>
                 </div>
                 </div>
@@ -2248,16 +2143,16 @@
           <div class="info-modal-column">
             <h3>Extraction Modes</h3>
             <ul>
-              <li><strong style="color: var(--accent-primary)">Manual</strong><br><span>Manually select and capture specific frames from the video player.</span></li>
-              <li><strong style="color: var(--accent-interval)">Interval</strong><br><span>Extract frames at regular intervals (frames or seconds).</span></li>
-              <li><strong style="color: var(--accent-secondary)">Automatic</strong><br><span>Detects scene changes or use a transcription file to capture frames.</span>
+              <li><strong class="mode-title-manual">Manual</strong><br><span>Manually select and capture specific frames from the video player.</span></li>
+              <li><strong class="mode-title-interval">Interval</strong><br><span>Extract frames at regular intervals (frames or seconds).</span></li>
+              <li><strong class="mode-title-automatic">Automatic</strong><br><span>Detects scene changes or use a transcription file to capture frames.</span>
                 <ul>
-                  <li><strong style="color: var(--accent-secondary)">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
-                  <li><strong style="color: var(--accent-secondary)">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
-                  <li><strong style="color: var(--accent-secondary)">Transcription</strong> captures a frame for each timestamp segment. You can fine-tune and remove these segments manually. You need to upload a separate transcription file (SRT or VTT) to use this feature.</li>
+                  <li><strong class="mode-title-automatic">Histogram Diff</strong> compares the overall distribution of colors and brightness levels between frames. If the distribution is different enough (determined by the slider value) in a scene change, it triggers a frame capture.</li>
+                  <li><strong class="mode-title-automatic">Pixel Diff</strong> measures the percentage of pixels that have changed between frames. If the percentage is above the threshold (determined by the slider value), a frame capture will be triggered.</li>
+                  <li><strong class="mode-title-automatic">Transcription</strong> captures a frame for each timestamp segment. You can fine-tune and remove these segments manually. You need to upload a separate transcription file (SRT or VTT) to use this feature.</li>
                 </ul>
               </li>
-              <li><strong style="color: var(--accent-tertiary)">Grid</strong><br><span>Generate a grid of screenshots into a single image.</span></li>
+              <li><strong class="mode-title-grid">Grid</strong><br><span>Generate a grid of screenshots into a single image.</span></li>
             </ul>
           </div>
 
@@ -2271,16 +2166,17 @@
               <li>Automatic frame capture by scene changes or subtitles.</li>
               <li>Different capture formats (PNG, JPEG, WEBP) with quality sliders.</li>
               <li>Preview and fine-tune captured frames with buttons or hotkeys.</li>
+              <li>Extensive filename output configuration.</li>
               <li>Download individually or in bulk as .zip.</li>
             </ul>
 
             <h3>Processing & Privacy</h3>
-            <p>All video processing and screenshot extraction happen locally within the browser:<br><strong>NO</strong> cloud processing, <strong>NO</strong> installations, <strong>NO</strong> server-side dependencies, ensuring your privacy.</strong><br>This website already works locally and from a single .html-file (crazy, right?), but you can download the .html-file and run it locally even offline with the same functionality for full peace of mind;<br>Download or view the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
+            <p>All video processing and screenshot extraction happen locally within the browser:<br><strong>NO</strong> cloud processing, <strong>NO</strong> installations, <strong>NO</strong> server-side dependencies, ensuring your privacy.</strong><br>This website already works locally and from a single .html-file! <i>Crazy, right?</i> You can download the .html-file and run it locally even offline with the same functionality for full peace of mind;<br>Download or view the source code on <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary)">GitHub</a>.</p>
           </div>
         </div>
 
         <p style="font-style: normal; margin-top: 0rem; opacity: 0.6; font-size: 0.85rem; text-align: right;">
-          Last updated on: July 12, 2026 | <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio/releases" target="_blank" rel="noopener noreferrer" style="color:var(--text-primary);">Read patch notes</a>
+          Last updated on: July 17, 2026 | <a href="https://github.com/LandoNikko/Pilko-Frame-Capture-Studio/releases" target="_blank" rel="noopener noreferrer" style="color:var(--text-primary);">Read patch notes</a>
         </p>
  
 
@@ -2330,8 +2226,17 @@
       <div class="modal-body">
         <div class="setting-row">
           <div class="setting-control-group">
-            <label class="setting-label">Prefix</label>
-            <input type="text" id="filenamePrefix" class="value-input" value="screenshot_" placeholder="screenshot_">
+            <label class="setting-label">Video filename</label>
+            <div class="setting-controls">
+              <div class="toggle-switch">
+                <input type="checkbox" id="includeVideoFilename" class="toggle-input">
+                <label for="includeVideoFilename" class="toggle-label-switch"></label>
+              </div>
+            </div>
+          </div>
+          <div class="setting-control-group">
+            <label class="setting-label">Text</label>
+            <input type="text" id="filenameUserText" class="value-input" value="screenshot_" placeholder="screenshot_">
           </div>
           <div class="setting-control-group">
             <label class="setting-label">Numbering Style</label>
@@ -2367,13 +2272,27 @@
             <input type="number" id="namingFramerateInput" class="value-input" value="30" min="1" max="1000" step="0.001" style="width:70px; margin-left:auto;">
           </div>
         </div>
-        <div class="disclaimer-note" id="namingSettingsExample" style="background-color: var(--bg-primary); text-align: right; padding: 0.75rem; border-radius: var(--border-radius-md); font-family: monospace; margin: 1rem 0;">
+        <div class="disclaimer-note" id="namingSettingsExample">
           <span id="namingSettingsExampleText">screenshot_001_0-10.png</span>
         </div>
           <div class="setting-control-group">
             <button id="saveNamingSettings" class="action-button">Save Settings</button>
           </div>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="rememberSettingsStatusModal" role="dialog" aria-labelledby="rememberSettingsStatusTitle">
+    <div class="info-box-content">
+      <button class="modal-close" id="rememberSettingsStatusClose" aria-label="Close"><i class="ri-close-line"></i></button>
+      <h2 class="modal-title" id="rememberSettingsStatusTitle">My Settings Status</h2>
+      <div class="modal-body">
+        <p>Only settings that differ from default values are listed.</p>
+        <p id="rememberSettingsStatusEmpty" class="remember-status-empty" hidden>No default settings changed yet.</p>
+        <div id="rememberSettingsStatusGroups" class="remember-status-groups"></div>
+        <p>Not tracked:<br>framerate override, trim, transcription or overlay images</p>
+        <button type="button" id="openFilenameSettingsFromStatus">Configure Filename Settings</button>
+    </div>
     </div>
   </div>
 
@@ -2385,6 +2304,7 @@
     let verticalSeparatorElement = null;
     let cropData = null;
     let cropAreaData = null;
+    let cropAreaUserSet = false; // true only after user edits the marquee (not black-bar detection)
     let uploadedFile = null;
     let fpsDetectionId = 0;
     let cancelFpsEstimate = null;
@@ -2472,7 +2392,12 @@
       PIXEL_THRESHOLD: 50,
       FRAMERATE: 30,
       NUMBERING_STYLE: '001',
-      PREFIX: 'screenshot_'
+      FILENAME_USER_TEXT: 'screenshot_',
+      IMAGE_QUALITY: 90,
+      GRID_COLS: 5,
+      GRID_ROWS: 4,
+      GRID_OUTPUT_WIDTH: 3000,
+      OVERLAY_OPACITY: 100
     };
 
     // Keep framerate parsing and every frame/time conversion on the same boundary rule
@@ -2489,12 +2414,30 @@
     const clampVideoTime = (seconds, duration, framerate = getActiveFramerate()) => Math.max(0, Math.min(seconds, Math.max(0, duration - frameToTime(0.5, framerate))));
 
     let namingSettings = {
-      prefix: DEFAULT_SETTINGS.PREFIX,
+      // Output filename parts (Filename Settings modal)
+      filenameUserText: DEFAULT_SETTINGS.FILENAME_USER_TEXT,
       numberingStyle: DEFAULT_SETTINGS.NUMBERING_STYLE,
+      includeVideoFilename: false, // prepend source video basename
       includeTimestamp: false,
-      includeIndex: true,
       includeFrame: false,
       framerate: DEFAULT_SETTINGS.FRAMERATE
+    };
+
+    // Source video basename for the "Video filename" naming option (not the output filename)
+    const EXAMPLE_VIDEO_FILENAME_BASE = 'videofilename';
+    const getSourceVideoFilenameBase = () => {
+      const name = uploadedFile?.name;
+      if (!name) return EXAMPLE_VIDEO_FILENAME_BASE;
+      const dot = name.lastIndexOf('.');
+      return dot > 0 ? name.slice(0, dot) : name;
+    };
+    const isVideoFilenameIncluded = () => {
+      const toggle = document.getElementById('includeVideoFilename');
+      return toggle ? toggle.checked : !!namingSettings.includeVideoFilename;
+    };
+    const getFilenameUserText = () => {
+      const input = document.getElementById('filenameUserText');
+      return input ? input.value : namingSettings.filenameUserText;
     };
 
     const safeGetElement = (id, fallback = null) => {
@@ -2575,7 +2518,8 @@
     const namingSettingsButton = document.getElementById('namingSettingsButton');
     const namingSettingsButtonAutomatic = document.getElementById('namingSettingsButtonAutomatic');
     const namingSettingsButtonManual = document.getElementById('namingSettingsButtonManual');
-    const filenamePrefix = document.getElementById('filenamePrefix');
+    const filenameUserTextInput = document.getElementById('filenameUserText');
+    const includeVideoFilenameToggle = document.getElementById('includeVideoFilename');
     const includeTimestamp = document.getElementById('includeTimestamp');
     const numberingStyleSelect = document.getElementById('numberingStyleSelect');
     const saveNamingSettings = document.getElementById('saveNamingSettings');
@@ -2585,8 +2529,25 @@
     const namingFramerateInput = document.getElementById('namingFramerateInput');
     const namingFramerateRow = document.getElementById('namingFramerateRow');
 
+    function syncNamingSettingsFromModalUI({ enforceNumberingOnSave = false } = {}) {
+      if (filenameUserTextInput) namingSettings.filenameUserText = filenameUserTextInput.value;
+      if (includeVideoFilenameToggle) namingSettings.includeVideoFilename = includeVideoFilenameToggle.checked;
+      if (includeTimestamp) namingSettings.includeTimestamp = includeTimestamp.checked;
+      if (numberingStyleSelect) namingSettings.numberingStyle = numberingStyleSelect.value;
+      if (namingSettings.numberingStyle === 'none' && includeFrame) {
+        includeFrame.checked = true;
+      }
+      if (includeFrame) namingSettings.includeFrame = includeFrame.checked;
+      if (enforceNumberingOnSave && namingSettings.numberingStyle === 'none' && !namingSettings.includeFrame) {
+        namingSettings.numberingStyle = '1';
+        if (numberingStyleSelect) numberingStyleSelect.value = '1';
+      }
+      if (namingFramerateInput) namingSettings.framerate = parseFloat(namingFramerateInput.value) || DEFAULT_SETTINGS.FRAMERATE;
+    }
+
     const openNamingSettingsModal = () => {
-        if (filenamePrefix) filenamePrefix.value = namingSettings.prefix;
+        if (filenameUserTextInput) filenameUserTextInput.value = namingSettings.filenameUserText;
+        if (includeVideoFilenameToggle) includeVideoFilenameToggle.checked = namingSettings.includeVideoFilename;
         if (includeTimestamp) includeTimestamp.checked = namingSettings.includeTimestamp;
         if (numberingStyleSelect) numberingStyleSelect.value = namingSettings.numberingStyle;
         if (includeFrame) includeFrame.checked = namingSettings.includeFrame;
@@ -2615,32 +2576,11 @@
         namingSettingsButtonManual.addEventListener('click', openNamingSettingsModal);
     }
 
-    if (numberingStyleSelect) {
-        numberingStyleSelect.addEventListener('change', () => {
-            namingSettings.numberingStyle = numberingStyleSelect.value;
-            if (namingSettings.numberingStyle === 'none' && includeFrame) {
-                includeFrame.checked = true;
-                namingSettings.includeFrame = true;
-            }
-            updateNamingSettingsExample();
-        });
-    }
-
     if (saveNamingSettings) {
         saveNamingSettings.addEventListener('click', () => {
-            if (filenamePrefix) namingSettings.prefix = filenamePrefix.value || 'screenshot_';
-            if (includeTimestamp) namingSettings.includeTimestamp = includeTimestamp.checked;
-            if (numberingStyleSelect) namingSettings.numberingStyle = numberingStyleSelect.value;
-            if (namingSettings.numberingStyle === 'none' && includeFrame) {
-                includeFrame.checked = true;
-            }
-            if (includeFrame) namingSettings.includeFrame = includeFrame.checked;
-            if (namingSettings.numberingStyle === 'none' && !namingSettings.includeFrame) {
-                namingSettings.numberingStyle = '1';
-                if (numberingStyleSelect) numberingStyleSelect.value = '1';
-            }
-            if (namingFramerateInput) namingSettings.framerate = parseFloat(namingFramerateInput.value) || 30;
+            syncNamingSettingsFromModalUI({ enforceNumberingOnSave: true });
             toggleModal(namingSettingsModal, false);
+            saveRememberedSettings();
         });
     }
 
@@ -2654,6 +2594,407 @@
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
       };
+    }
+
+    // Save My Settings (localStorage)
+    const REMEMBER_SETTINGS_ENABLED_KEY = 'pilkoStudio.rememberSettings.enabled';
+    const REMEMBERED_SETTINGS_KEY = 'pilkoStudio.rememberSettings.v1';
+    let restoringRememberedSettings = false;
+    const REMEMBER_TC = ['off','start/end','hh:mm:ss:ff','hh:mm:ss','mm:ss:ff','mm:ss','ss:ff','ss','ff'];
+    const REMEMBER_SIZE = ['S','M','L','XL'];
+    const REMEMBER_POS = ['top-left','top-right','bottom-left','bottom-right'];
+    const OVERLAY_DEFAULTS = {
+      size: 'M',
+      timecodePosition: 'bottom-right',
+      timecode2Position: 'bottom-left',
+      textPosition: 'top-right',
+      imagePosition: 'top-left'
+    };
+
+    function isRememberSettingsEnabled() {
+      const toggle = document.getElementById('rememberSettingsToggle');
+      if (toggle) return toggle.checked;
+      try { return localStorage.getItem(REMEMBER_SETTINGS_ENABLED_KEY) === 'true'; }
+      catch (e) { console.warn('Remember settings: failed to read enabled flag', e); return false; }
+    }
+
+    function updateRememberSettingsChrome() {
+      const statusBtn = document.getElementById('rememberSettingsStatusButton');
+      if (statusBtn) statusBtn.hidden = !isRememberSettingsEnabled();
+    }
+
+    function formatRememberedValue(v) {
+      return v === true ? 'On' : v === false ? 'Off' : (v == null ? '' : String(v));
+    }
+
+    function rememberedValuesEqual(a, b) {
+      if (typeof a === 'boolean' || typeof b === 'boolean') return !!a === !!b;
+      const sa = String(a ?? '').trim(), sb = String(b ?? '').trim();
+      if (sa === sb) return true;
+      // Zero-padded values are distinct (e.g. numbering style "001" vs "01")
+      if (/^0\d/.test(sa) || /^0\d/.test(sb)) return false;
+      const na = parseFloat(sa), nb = parseFloat(sb);
+      return Number.isFinite(na) && Number.isFinite(nb) && na === nb;
+    }
+
+    function getRememberedOverlayState(stored) {
+      const pick = (key, winKey, fallback) => stored?.[key] || window[winKey] || fallback;
+      return {
+        timecodeSize: pick('timecodeSize', 'timecodeOverlaySize', OVERLAY_DEFAULTS.size),
+        timecodePosition: pick('timecodePosition', 'timecodePosition', OVERLAY_DEFAULTS.timecodePosition),
+        timecode2Size: pick('timecode2Size', 'timecode2OverlaySize', OVERLAY_DEFAULTS.size),
+        timecode2Position: pick('timecode2Position', 'timecode2Position', OVERLAY_DEFAULTS.timecode2Position),
+        textSize: pick('textSize', 'customTextOverlaySize', OVERLAY_DEFAULTS.size),
+        textPosition: pick('textPosition', 'customTextPosition', OVERLAY_DEFAULTS.textPosition),
+        imageSize: pick('imageSize', 'customImageOverlaySize', OVERLAY_DEFAULTS.size),
+        imagePosition: pick('imagePosition', 'customImagePosition', OVERLAY_DEFAULTS.imagePosition)
+      };
+    }
+
+    function renderRememberedStatusGroup({ title, titleClass, rows }) {
+      const section = document.createElement('section');
+      section.className = 'remember-status-group';
+      const heading = document.createElement('h3');
+      heading.textContent = title;
+      if (titleClass) heading.className = titleClass;
+      section.appendChild(heading);
+
+      const table = document.createElement('table');
+      table.className = 'remember-status-table';
+      const thead = table.createTHead().insertRow();
+      ['Setting', 'Default', 'Modified'].forEach((label) => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        thead.appendChild(th);
+      });
+      const tbody = table.createTBody();
+      rows.forEach(([label, def, cur]) => {
+        const tr = tbody.insertRow();
+        tr.classList.add('is-modified');
+        [label, formatRememberedValue(def), formatRememberedValue(cur)].forEach((text) => {
+          tr.insertCell().textContent = text;
+        });
+      });
+      section.appendChild(table);
+      return section;
+    }
+
+    function buildRememberedStatusGroups(s) {
+      const n = s.naming || {};
+      const os = getRememberedOverlayState(s.overlayState);
+      const row = (label, def, cur) => [label, def, cur];
+      const timecode = (name, format, size, pos, defPos) => [
+        row(`${name} format`, 'off', format),
+        row(`${name} size`, OVERLAY_DEFAULTS.size, size),
+        row(`${name} position`, defPos, pos)
+      ];
+      return [
+        {
+          title: 'Add Overlay',
+          rows: [
+            row('Enabled', false, s.overlayEnabled),
+            ...timecode('Timecode 1', s.timecodeFormat, os.timecodeSize, os.timecodePosition, OVERLAY_DEFAULTS.timecodePosition),
+            ...timecode('Timecode 2', s.timecode2Format, os.timecode2Size, os.timecode2Position, OVERLAY_DEFAULTS.timecode2Position),
+            row('Overlay text', '', s.customText),
+            row('Text size', OVERLAY_DEFAULTS.size, os.textSize),
+            row('Text position', OVERLAY_DEFAULTS.textPosition, os.textPosition),
+            row('Image size', OVERLAY_DEFAULTS.size, os.imageSize),
+            row('Image position', OVERLAY_DEFAULTS.imagePosition, os.imagePosition),
+            row('Overlay opacity', DEFAULT_SETTINGS.OVERLAY_OPACITY, s.overlayOpacity)
+          ]
+        },
+        {
+          title: 'Capture Configuration',
+          rows: [
+            row('Capture format', 'png', s.captureFormat),
+            row('JPEG quality', DEFAULT_SETTINGS.IMAGE_QUALITY, s.jpegQuality),
+            row('WEBP quality', DEFAULT_SETTINGS.IMAGE_QUALITY, s.webpQuality),
+            row('Crop area', false, s.cropArea),
+            row('Crop resolution', '', s.cropAreaRes || ''),
+            row('Remove black bars', false, s.removeBlackBars)
+          ]
+        },
+        {
+          title: 'Interval',
+          titleClass: 'mode-title-interval',
+          rows: [
+            row('Interval seconds', DEFAULT_SETTINGS.INTERVAL, s.intervalSeconds),
+            row('Interval frames', DEFAULT_SETTINGS.INTERVAL, s.intervalFrames)
+          ]
+        },
+        {
+          title: 'Automatic',
+          titleClass: 'mode-title-automatic',
+          rows: [
+            row('Histogram threshold', DEFAULT_SETTINGS.HIST_THRESHOLD, s.histogramThreshold),
+            row('Pixel threshold', DEFAULT_SETTINGS.PIXEL_THRESHOLD, s.pixelThreshold)
+          ]
+        },
+        {
+          title: 'Grid',
+          titleClass: 'mode-title-grid',
+          rows: [
+            row('Grid size', `${DEFAULT_SETTINGS.GRID_COLS}×${DEFAULT_SETTINGS.GRID_ROWS}`, `${s.gridCols}×${s.gridRows}`),
+            row('Grid output width', DEFAULT_SETTINGS.GRID_OUTPUT_WIDTH, s.gridOutputWidth)
+          ]
+        },
+        {
+          title: 'Filename',
+          rows: [
+            row('Video filename', false, n.includeVideoFilename),
+            row('Text', DEFAULT_SETTINGS.FILENAME_USER_TEXT, n.filenameUserText),
+            row('Numbering style', DEFAULT_SETTINGS.NUMBERING_STYLE, n.numberingStyle),
+            row('Timestamp', false, n.includeTimestamp),
+            row('Frame', false, n.includeFrame)
+          ]
+        }
+      ]
+        .map((group) => ({
+          ...group,
+          rows: group.rows.filter(([, def, cur]) => !rememberedValuesEqual(def, cur))
+        }))
+        .filter((group) => group.rows.length > 0);
+    }
+
+    function openRememberedSettingsStatusModal() {
+      const host = document.getElementById('rememberSettingsStatusGroups');
+      const empty = document.getElementById('rememberSettingsStatusEmpty');
+      if (!host) return;
+      const groups = buildRememberedStatusGroups(collectRememberedSettings());
+      host.replaceChildren(...groups.map(renderRememberedStatusGroup));
+      if (empty) empty.hidden = groups.length > 0;
+      toggleModal(document.getElementById('rememberSettingsStatusModal'), true);
+    }
+
+    function setRememberedControl(id, value) {
+      const element = document.getElementById(id);
+      if (!element || value == null) return;
+      if (element.type === 'checkbox') element.checked = Boolean(value);
+      else element.value = value;
+      element.dispatchEvent(new Event('input', { bubbles: true }));
+      element.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function cycleToValue(buttonId, readValue, targetValue) {
+      const button = document.getElementById(buttonId);
+      if (!button || targetValue == null) return;
+      for (let i = 0; i < 4 && readValue() !== targetValue; i++) button.click();
+    }
+
+    function setClampedControl(id, value, min, max, round) {
+      const num = parseFloat(value);
+      if (!Number.isFinite(num)) return;
+      const clamped = Math.min(max, Math.max(min, num));
+      setRememberedControl(id, String(round ? Math.round(clamped) : clamped));
+    }
+
+    function collectRememberedSettings() {
+      const val = (id) => document.getElementById(id)?.value;
+      const checked = (id) => !!document.getElementById(id)?.checked;
+      const activeGrid = document.querySelector('.grid-size-tab.active');
+      const isCustomGrid = activeGrid?.textContent.trim() === 'Custom';
+      const overlayEnabled = checked('proModeToggle');
+      return {
+        captureFormat: val('captureFormatSelect') || 'png',
+        jpegQuality: val('jpegQualityGlobal') || String(DEFAULT_SETTINGS.IMAGE_QUALITY),
+        webpQuality: val('webpQualityGlobal') || String(DEFAULT_SETTINGS.IMAGE_QUALITY),
+        removeBlackBars: checked('removeBlackBarsToggle'),
+        cropArea: checked('cropAreaToggle'),
+        cropAreaRes: (checked('cropAreaToggle') && cropAreaData)
+          ? `${cropAreaData.cropWidth}×${cropAreaData.cropHeight}` : '',
+        // Only persist marquee crops. Black bar results are re-detected per video.
+        cropAreaData: (checked('cropAreaToggle') && cropAreaUserSet && cropAreaData?.cropWidth > 0)
+          ? { cropX: cropAreaData.cropX, cropY: cropAreaData.cropY, cropWidth: cropAreaData.cropWidth, cropHeight: cropAreaData.cropHeight }
+          : null,
+        intervalSeconds: val('intervalSecondsInput') || String(DEFAULT_SETTINGS.INTERVAL),
+        intervalFrames: val('intervalFramesInput') || String(DEFAULT_SETTINGS.INTERVAL),
+        histogramThreshold: val('histThresholdInput') || String(DEFAULT_SETTINGS.HIST_THRESHOLD),
+        pixelThreshold: val('pixelThresholdInput') || String(DEFAULT_SETTINGS.PIXEL_THRESHOLD),
+        gridRows: isCustomGrid ? (val('customGridRows') || '2') : (activeGrid?.getAttribute('data-rows') || String(DEFAULT_SETTINGS.GRID_ROWS)),
+        gridCols: isCustomGrid ? (val('customGridCols') || '3') : (activeGrid?.getAttribute('data-cols') || String(DEFAULT_SETTINGS.GRID_COLS)),
+        gridOutputWidth: val('gridOutputWidth') || String(DEFAULT_SETTINGS.GRID_OUTPUT_WIDTH),
+        overlayEnabled,
+        timecodeFormat: val('timecodeFormatSelect') || 'off',
+        timecode2Format: val('timecode2FormatSelect') || 'off',
+        customText: val('customTextInput') || '',
+        overlayOpacity: val('overlayOpacityInput') || String(DEFAULT_SETTINGS.OVERLAY_OPACITY),
+        overlayState: overlayEnabled ? {
+          timecodeSize: window.timecodeOverlaySize || OVERLAY_DEFAULTS.size,
+          timecodePosition: window.timecodePosition || OVERLAY_DEFAULTS.timecodePosition,
+          timecode2Size: window.timecode2OverlaySize || OVERLAY_DEFAULTS.size,
+          timecode2Position: window.timecode2Position || OVERLAY_DEFAULTS.timecode2Position,
+          textSize: window.customTextOverlaySize || OVERLAY_DEFAULTS.size,
+          textPosition: window.customTextPosition || OVERLAY_DEFAULTS.textPosition,
+          imageSize: window.customImageOverlaySize || OVERLAY_DEFAULTS.size,
+          imagePosition: window.customImagePosition || OVERLAY_DEFAULTS.imagePosition
+        } : null,
+        naming: {
+          includeVideoFilename: checked('includeVideoFilename'),
+          filenameUserText: val('filenameUserText') ?? namingSettings.filenameUserText,
+          numberingStyle: val('numberingStyleSelect') ?? namingSettings.numberingStyle,
+          includeTimestamp: checked('includeTimestamp'),
+          includeFrame: checked('includeFrame')
+        }
+      };
+    }
+
+    function saveRememberedSettings() {
+      if (!isRememberSettingsEnabled() || restoringRememberedSettings) return;
+      try {
+        localStorage.setItem(REMEMBERED_SETTINGS_KEY, JSON.stringify(collectRememberedSettings()));
+      } catch (e) { console.warn('Remember settings: failed to save', e); }
+    }
+
+    const saveRememberedSettingsDebounced = debounce(saveRememberedSettings, 250);
+
+    function loadRememberedSettings() {
+      try {
+        const raw = localStorage.getItem(REMEMBERED_SETTINGS_KEY);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') {
+          console.warn('Remember settings: invalid stored data');
+          return null;
+        }
+        return parsed;
+      } catch (e) { console.warn('Remember settings: failed to load', e); return null; }
+    }
+
+    function applyRememberedSettings(settings) {
+      if (!settings || typeof settings !== 'object') return;
+      if (['png','jpeg','webp'].includes(settings.captureFormat)) setRememberedControl('captureFormatSelect', settings.captureFormat);
+      setClampedControl('jpegQualityGlobal', settings.jpegQuality, 1, 100, true);
+      setClampedControl('webpQualityGlobal', settings.webpQuality, 1, 100, true);
+      cropAreaUserSet = !!(settings.cropArea && settings.cropAreaData?.cropWidth > 0);
+      cropAreaData = cropAreaUserSet ? {
+        cropX: Math.max(0, Math.round(Number(settings.cropAreaData.cropX) || 0)),
+        cropY: Math.max(0, Math.round(Number(settings.cropAreaData.cropY) || 0)),
+        cropWidth: Math.max(1, Math.round(Number(settings.cropAreaData.cropWidth) || 1)),
+        cropHeight: Math.max(1, Math.round(Number(settings.cropAreaData.cropHeight) || 1))
+      } : null;
+      setRememberedControl('cropAreaToggle', !!settings.cropArea);
+      setRememberedControl('removeBlackBarsToggle', !!(settings.cropArea && settings.removeBlackBars));
+      document.dispatchEvent(new CustomEvent('crop-settings-sync'));
+
+      setClampedControl('intervalSecondsInput', settings.intervalSeconds, 0.5, 9999, false);
+      setClampedControl('intervalFramesInput', settings.intervalFrames, 1, 9999, true);
+
+      setClampedControl('histThresholdInput', settings.histogramThreshold, 0.2, 0.8, false);
+      setClampedControl('pixelThresholdInput', settings.pixelThreshold, 20, 80, true);
+
+      const gridRows = parseFloat(settings.gridRows), gridCols = parseFloat(settings.gridCols);
+      if (Number.isFinite(gridRows) && Number.isFinite(gridCols) && gridRows >= 1 && gridCols >= 1) {
+        const rowsStr = String(Math.round(gridRows)), colsStr = String(Math.round(gridCols));
+        const tabs = [...document.querySelectorAll('.grid-size-tab')];
+        const preset = tabs.find(t => t.textContent.trim() !== 'Custom' &&
+          t.getAttribute('data-rows') === rowsStr && t.getAttribute('data-cols') === colsStr);
+        if (preset) preset.click();
+        else {
+          const rowsEl = document.getElementById('customGridRows');
+          const colsEl = document.getElementById('customGridCols');
+          if (rowsEl) rowsEl.value = rowsStr;
+          if (colsEl) colsEl.value = colsStr;
+          tabs.find(t => t.textContent.trim() === 'Custom')?.click();
+        }
+      }
+      setClampedControl('gridOutputWidth', settings.gridOutputWidth, 1000, 10000, true);
+
+      const pro = document.getElementById('proModeToggle');
+      if (pro?.checked) { pro.checked = false; pro.dispatchEvent(new Event('change', { bubbles: true })); }
+      if (settings.overlayEnabled) {
+        if (REMEMBER_TC.includes(settings.timecodeFormat)) setRememberedControl('timecodeFormatSelect', settings.timecodeFormat);
+        if (REMEMBER_TC.includes(settings.timecode2Format)) setRememberedControl('timecode2FormatSelect', settings.timecode2Format);
+        if (typeof settings.customText === 'string') setRememberedControl('customTextInput', settings.customText);
+        setClampedControl('overlayOpacityInput', settings.overlayOpacity, 0, 100, true);
+        const os = settings.overlayState || {};
+        [
+          ['timecodeSizeBtn', () => window.timecodeOverlaySize, os.timecodeSize, REMEMBER_SIZE],
+          ['timecodeCornerPositionBtn', () => window.timecodePosition, os.timecodePosition, REMEMBER_POS],
+          ['timecode2SizeBtn', () => window.timecode2OverlaySize, os.timecode2Size, REMEMBER_SIZE],
+          ['timecode2CornerPositionBtn', () => window.timecode2Position, os.timecode2Position, REMEMBER_POS],
+          ['customTextSizeBtn', () => window.customTextOverlaySize, os.textSize, REMEMBER_SIZE],
+          ['cornerPositionBtn', () => window.customTextPosition, os.textPosition, REMEMBER_POS],
+          ['customImageSizeBtn', () => window.customImageOverlaySize, os.imageSize, REMEMBER_SIZE],
+          ['imageCornerPositionBtn', () => window.customImagePosition, os.imagePosition, REMEMBER_POS]
+        ].forEach(([id, read, target, allowed]) => {
+          if (allowed.includes(target)) cycleToValue(id, read, target);
+        });
+        if (pro) { pro.checked = true; pro.dispatchEvent(new Event('change', { bubbles: true })); }
+      }
+
+      if (settings.naming && typeof settings.naming === 'object') {
+        namingSettings.includeVideoFilename = !!(settings.naming.includeVideoFilename ?? settings.naming.includeFilename);
+        if (typeof settings.naming.filenameUserText === 'string') namingSettings.filenameUserText = settings.naming.filenameUserText;
+        else if (typeof settings.naming.userText === 'string') namingSettings.filenameUserText = settings.naming.userText;
+        else if (typeof settings.naming.prefix === 'string') namingSettings.filenameUserText = settings.naming.prefix;
+        if (['0001','001','01','1','none'].includes(settings.naming.numberingStyle)) {
+          namingSettings.numberingStyle = settings.naming.numberingStyle;
+        }
+        namingSettings.includeTimestamp = !!settings.naming.includeTimestamp;
+        namingSettings.includeFrame = !!settings.naming.includeFrame;
+        if (includeVideoFilenameToggle) includeVideoFilenameToggle.checked = namingSettings.includeVideoFilename;
+        if (filenameUserTextInput) filenameUserTextInput.value = namingSettings.filenameUserText;
+        const styleEl = document.getElementById('numberingStyleSelect');
+        const tsEl = document.getElementById('includeTimestamp');
+        const frameEl = document.getElementById('includeFrame');
+        if (styleEl) styleEl.value = namingSettings.numberingStyle;
+        if (tsEl) tsEl.checked = namingSettings.includeTimestamp;
+        if (frameEl) frameEl.checked = namingSettings.includeFrame;
+      }
+    }
+
+    function restoreRememberedSettingsIfEnabled() {
+      if (!isRememberSettingsEnabled()) return;
+      const settings = loadRememberedSettings();
+      if (!settings) return;
+      restoringRememberedSettings = true;
+      try { applyRememberedSettings(settings); }
+      finally { restoringRememberedSettings = false; }
+    }
+
+    function initRememberSettings() {
+      const toggle = document.getElementById('rememberSettingsToggle');
+      const statusBtn = document.getElementById('rememberSettingsStatusButton');
+      const statusModal = document.getElementById('rememberSettingsStatusModal');
+      const statusClose = document.getElementById('rememberSettingsStatusClose');
+      const settingsPanel = document.querySelector('.settings-panel');
+      try { if (toggle) toggle.checked = localStorage.getItem(REMEMBER_SETTINGS_ENABLED_KEY) === 'true'; }
+      catch (e) { console.warn('Remember settings: failed to sync toggle', e); }
+      updateRememberSettingsChrome();
+
+      toggle?.addEventListener('change', () => {
+        try { localStorage.setItem(REMEMBER_SETTINGS_ENABLED_KEY, toggle.checked ? 'true' : 'false'); }
+        catch (e) { console.warn('Remember settings: failed to update enabled flag', e); }
+        if (toggle.checked) saveRememberedSettings();
+        updateRememberSettingsChrome();
+      });
+      statusBtn?.addEventListener('click', () => openRememberedSettingsStatusModal());
+      document.getElementById('openFilenameSettingsFromStatus')?.addEventListener('click', () => {
+        toggleModal(statusModal, false);
+        openNamingSettingsModal();
+      });
+      if (statusModal && statusClose) {
+        statusClose.addEventListener('click', () => toggleModal(statusModal, false));
+        statusModal.addEventListener('click', (e) => {
+          if (e.target === statusModal) toggleModal(statusModal, false);
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && statusModal.classList.contains('active')) toggleModal(statusModal, false);
+        });
+      }
+
+      if (settingsPanel) {
+        const maybeSave = () => { if (!restoringRememberedSettings) saveRememberedSettingsDebounced(); };
+        settingsPanel.addEventListener('input', maybeSave);
+        settingsPanel.addEventListener('change', maybeSave);
+        settingsPanel.addEventListener('click', event => {
+          if (!restoringRememberedSettings && event.target.closest(
+            '.detection-tab, .grid-size-tab, .overlay-size-cycle-btn, ' +
+            '#timecodeCornerPositionBtn, #timecode2CornerPositionBtn, #cornerPositionBtn, #imageCornerPositionBtn'
+          )) queueMicrotask(saveRememberedSettingsDebounced);
+        });
+      }
+      restoreRememberedSettingsIfEnabled();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -2748,7 +3089,6 @@
         const namingSettingsButtonManual = $('namingSettingsButtonManual');
         const namingSettingsModal = $('namingSettingsModal');
         const namingSettingsClose = $('namingSettingsClose');
-        const filenamePrefix = $('filenamePrefix');
         const includeTimestamp = $('includeTimestamp');
         const numberingStyleSelect = $('numberingStyleSelect');
         const saveNamingSettings = $('saveNamingSettings');
@@ -3564,24 +3904,25 @@
          const generateFilename = (item, index) => {
              const { type } = getCurrentFormatSettings();
              const extension = getFileExtensionFromType(type);
+
+             // Output name = optional video basename + user text + numbering/timestamp/frame
+             let filename = (isVideoFilenameIncluded() ? getSourceVideoFilenameBase() : '') + (getFilenameUserText() || '');
              
-             const currentPrefix = filenamePrefix?.value ?? namingSettings.prefix;
-             let filename = currentPrefix;
-             
-             if (namingSettings.includeIndex && namingSettings.numberingStyle !== 'none') {
+             if (namingSettings.numberingStyle !== 'none') {
                  const paddedIndex = (index + 1).toString().padStart(namingSettings.numberingStyle.length, '0');
                  filename += paddedIndex;
              }
              
-             // Add timestamp if enabled and available
-             if (namingSettings.includeTimestamp && item.timestamp !== undefined && item.timestamp >= 0) {
+             const useTimestamp = document.getElementById('includeTimestamp')?.checked ?? namingSettings.includeTimestamp;
+             if (useTimestamp && item.timestamp !== undefined && item.timestamp >= 0) {
                  const timestampStr = formatTime(item.timestamp).replace(/:/g, '-');
-                 filename += filename.length > namingSettings.prefix.length ? '_' + timestampStr : timestampStr;
+                 filename += filename ? '_' + timestampStr : timestampStr;
              }
-             if (namingSettings.includeFrame && item.timestamp !== undefined && item.timestamp >= 0) {
+             const useFrame = document.getElementById('includeFrame')?.checked ?? namingSettings.includeFrame;
+             if (useFrame && item.timestamp !== undefined && item.timestamp >= 0) {
                  const framerate = getActiveFramerate();
                  const frameNum = timeToFrame(item.timestamp, framerate);
-                 filename += filename.length > currentPrefix.length ? `_${frameNum}` : `${frameNum}`;
+                 filename += filename ? `_${frameNum}` : `${frameNum}`;
              }
              
              return `${filename}.${extension}`;
@@ -3631,9 +3972,11 @@
             intervalVideo.src = fileURL;
             contactSheetVideo.src = fileURL;
             cropAreaData = null;
+            cropAreaUserSet = false;
             document.dispatchEvent(new CustomEvent('video-loaded'));
             updateDropZoneUI(true, file.name);
             resetUIOnNewVideo();
+            restoreRememberedSettingsIfEnabled();
 
             // Estimate FPS and ignore results invalidated by a newer file or manual edit
             const detectionId = ++fpsDetectionId;
@@ -4965,6 +5308,16 @@
         setupSlider(pixelThresholdInput, pixelThresholdValue, '');
         if (overlayOpacityInput && overlayOpacityValue) setupSlider(overlayOpacityInput, overlayOpacityValue, '%');
         
+        if (jpegQualityGlobal) {
+            jpegQualityGlobal.value = 90;
+            if (jpegQualityGlobalValue) jpegQualityGlobalValue.textContent = '90%';
+            updateSliderBackground(jpegQualityGlobal);
+        }
+        if (webpQualityGlobal) {
+            webpQualityGlobal.value = 90;
+            if (webpQualityGlobalValue) webpQualityGlobalValue.textContent = '90%';
+            updateSliderBackground(webpQualityGlobal);
+        }
         if (intervalSecondsSlider) {
             intervalSecondsSlider.value = DEFAULT_SETTINGS.INTERVAL;
             updateSliderBackground(intervalSecondsSlider);
@@ -5085,15 +5438,18 @@
             const reset = () => {
                 if (applyTimeout) clearTimeout(applyTimeout);
                 applyTimeout = null;
-                cropAreaSel = null; cropAreaData = null; draw();
+                cropAreaSel = null; cropAreaData = null; cropAreaUserSet = false; draw();
                 if (typeof updateFileInfoDisplay === 'function') updateFileInfoDisplay();
+                saveRememberedSettingsDebounced();
             };
             const commitCrop = () => {
                 const v = getV();
                 if (!v?.videoWidth || !cropAreaSel || cropAreaSel.w < MIN || cropAreaSel.h < MIN) return;
                 const cw = canvas.width, ch = canvas.height, vw = v.videoWidth, vh = v.videoHeight;
+                cropAreaUserSet = true;
                 cropAreaData = { cropX: Math.round((cropAreaSel.x / cw) * vw), cropY: Math.round((cropAreaSel.y / ch) * vh), cropWidth: Math.max(1, Math.round((cropAreaSel.w / cw) * vw)), cropHeight: Math.max(1, Math.round((cropAreaSel.h / ch) * vh)) };
                 syncRes();
+                saveRememberedSettingsDebounced();
             };
             const scheduleApply = () => {
                 if (applyTimeout) clearTimeout(applyTimeout);
@@ -5109,19 +5465,80 @@
                 scheduleApply();
             };
 
-            document.addEventListener('video-loaded', () => {
-                cropAreaSel = null;
-                if (!panel || panel.hidden) return;
-                const tryRefresh = () => { if (getV()) { panel.classList.remove('crop-area-no-video'); refresh(); return true; } return false; };
-                if (!tryRefresh()) {
-                    const id = setInterval(() => { if (tryRefresh()) clearInterval(id); }, 150);
-                    setTimeout(() => clearInterval(id), 8000);
+            const removeBarsToggle = $('removeBlackBarsToggle');
+            const removeBarsRow = $('removeBlackBarsRow');
+            const syncCropPanel = () => {
+                if (!panel || !toggle) return;
+                panel.hidden = !toggle.checked;
+                if (removeBarsRow) removeBarsRow.hidden = !toggle.checked;
+            };
+            const applyCropRect = () => {
+                if (!cropAreaData || !panel || panel.hidden || !canvas) return;
+                const v = getV() || (video?.videoWidth ? video : null);
+                if (!v?.videoWidth) return;
+                const vw = v.videoWidth, vh = v.videoHeight, cw = Math.min(400, vw), ch = (cw / vw) * vh;
+                canvas.width = cw; canvas.height = ch;
+                cropAreaSel = {
+                    x: (cropAreaData.cropX / vw) * cw, y: (cropAreaData.cropY / vh) * ch,
+                    w: (cropAreaData.cropWidth / vw) * cw, h: (cropAreaData.cropHeight / vh) * ch
+                };
+                draw();
+                if (typeof updateFileInfoDisplay === 'function') updateFileInfoDisplay();
+            };
+            const runBlackBars = () => {
+                if (!removeBarsToggle?.checked || cropAreaUserSet) return;
+                const start = () => {
+                    if (!video?.src || video.readyState < 2) return false;
+                    detectCropBoundariesMulti(() => {
+                        if (cropAreaUserSet || !cropData) return;
+                        cropAreaData = { cropX: cropData.cropX, cropY: cropData.cropY, cropWidth: cropData.cropWidth, cropHeight: cropData.cropHeight };
+                        applyCropRect();
+                        saveRememberedSettingsDebounced();
+                    });
+                    return true;
+                };
+                if (start()) return;
+                const id = setInterval(() => { if (start() || !removeBarsToggle?.checked || cropAreaUserSet) clearInterval(id); }, 150);
+                setTimeout(() => clearInterval(id), 8000);
+            };
+            // Single sync path: user crop wins; otherwise black bars; otherwise just refresh preview
+            const syncCropSettings = () => {
+                syncCropPanel();
+                if (!toggle?.checked) return;
+                const run = () => {
+                    if (!getV()?.videoWidth && !video?.videoWidth) return false;
+                    panel.classList.remove('crop-area-no-video');
+                    if (cropAreaUserSet && cropAreaData) { applyCropRect(); refresh(); }
+                    else if (removeBarsToggle?.checked) { refresh(); runBlackBars(); }
+                    else refresh();
+                    return true;
+                };
+                if (run()) return;
+                const id = setInterval(() => { if (run()) clearInterval(id); }, 150);
+                setTimeout(() => clearInterval(id), 8000);
+            };
+            document.addEventListener('video-loaded', () => { cropAreaSel = null; syncCropPanel(); });
+            document.addEventListener('crop-settings-sync', syncCropSettings);
+            if (toggle) toggle.addEventListener('change', (e) => {
+                if (e.target.checked) syncCropSettings();
+                else {
+                    if (removeBarsToggle) removeBarsToggle.checked = false;
+                    reset();
+                    syncCropPanel();
                 }
             });
-            if (toggle) toggle.addEventListener('change', (e) => {
-                if (panel) panel.hidden = !e.target.checked;
-                if (e.target.checked) refresh(); else reset();
+            if (removeBarsToggle) removeBarsToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    if (!restoringRememberedSettings) cropAreaUserSet = false;
+                    runBlackBars();
+                } else if (!cropAreaUserSet) {
+                    cropAreaData = null; cropAreaSel = null;
+                    if (panel && !panel.hidden) draw();
+                    if (typeof updateFileInfoDisplay === 'function') updateFileInfoDisplay();
+                    saveRememberedSettingsDebounced();
+                }
             });
+            syncCropPanel();
             if (manualVideo) {
                 manualVideo.addEventListener('timeupdate', scheduleCropPreviewFromTime);
                 manualVideo.addEventListener('seeked', scheduleCropPreviewFromTime);
@@ -5156,20 +5573,6 @@
                 [$('cropAreaPreset12'), 9, 20]
             ];
             presetBtns.forEach(([btn, rw, rh]) => { if (btn) btn.addEventListener('click', () => setPreset(rw, rh)); });
-            const removeBarsBtn = $('cropAreaRemoveBarsBtn');
-            if (removeBarsBtn) removeBarsBtn.addEventListener('click', () => {
-                if (!video?.src || video.readyState < 2) return;
-                detectCropBoundariesMulti(() => { document.dispatchEvent(new CustomEvent('crop-apply-black-bars')); });
-            });
-            document.addEventListener('crop-apply-black-bars', () => {
-                if (!cropData || !panel || panel.hidden) return;
-                const v = getV();
-                if (!v?.videoWidth) return;
-                const vw = v.videoWidth, vh = v.videoHeight, cw = Math.min(400, vw), ch = (cw / vw) * vh;
-                cropAreaData = { cropX: cropData.cropX, cropY: cropData.cropY, cropWidth: cropData.cropWidth, cropHeight: cropData.cropHeight };
-                cropAreaSel = { x: (cropData.cropX / vw) * cw, y: (cropData.cropY / vh) * ch, w: (cropData.cropWidth / vw) * cw, h: (cropData.cropHeight / vh) * ch };
-                draw();
-            });
         })();
 
         if (intervalTrimToggle) intervalTrimToggle.addEventListener('change', (e) => {
@@ -6197,26 +6600,30 @@
       } catch (error) { console.error("Error during script execution:", error); const errorDisplay = document.createElement('div'); errorDisplay.textContent = `Initialization Error: ${error.message}. Please refresh or check console (F12).`; errorDisplay.style.cssText = 'color: var(--danger-color); padding: 1rem; background-color: var(--bg-secondary); border: 1px solid var(--danger-color); margin: 1rem; border-radius: var(--border-radius-md);'; document.body.prepend(errorDisplay); }
     });
 
-    if (filenamePrefix) filenamePrefix.addEventListener('input', updateNamingSettingsExample);
+    if (filenameUserTextInput) filenameUserTextInput.addEventListener('input', updateNamingSettingsExample);
+    if (includeVideoFilenameToggle) includeVideoFilenameToggle.addEventListener('change', updateNamingSettingsExample);
     if (includeTimestamp) includeTimestamp.addEventListener('change', updateNamingSettingsExample);
     if (numberingStyleSelect) numberingStyleSelect.addEventListener('change', updateNamingSettingsExample);
+    function syncNamingSettingsFromUI() {
+      syncNamingSettingsFromModalUI();
+      saveRememberedSettingsDebounced();
+    }
     function updateNamingSettingsExample() {
       if (!namingSettingsExampleText) return;
-      const prefix = filenamePrefix?.value ?? namingSettings.prefix;
       const numberingStyle = numberingStyleSelect?.value || namingSettings.numberingStyle;
       const includeTs = includeTimestamp?.checked ?? namingSettings.includeTimestamp;
       const includeFr = (includeFrame?.checked ?? namingSettings.includeFrame) || numberingStyle === 'none';
       const framerate = parseFloat(namingFramerateInput?.value || namingSettings.framerate);
       const exampleIndex = 0;
       const exampleTimestamp = 10;
-      let filename = prefix;
+      let filename = (isVideoFilenameIncluded() ? getSourceVideoFilenameBase() : '') + (getFilenameUserText() || '');
       if (numberingStyle !== 'none') {
         filename += (exampleIndex + 1).toString().padStart(numberingStyle.length, '0');
       }
-      if (includeTs) filename += '_0-10';
+      if (includeTs) filename += filename ? '_0-10' : '0-10';
       if (includeFr) {
         const frameNum = timeToFrame(exampleTimestamp, framerate);
-        filename += filename.length > prefix.length ? `_${frameNum}` : `${frameNum}`;
+        filename += filename ? `_${frameNum}` : `${frameNum}`;
       }
       filename += '.png';
       namingSettingsExampleText.textContent = filename;
@@ -6224,6 +6631,7 @@
       if (numberingStyle === 'none' && includeFrame) {
         includeFrame.checked = true;
       }
+      syncNamingSettingsFromUI();
     }
 
     if (includeFrame) {
@@ -6294,23 +6702,22 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      const overlaySizeOrder = ['S', 'M', 'L', 'XL'];
       const initOverlaySizeButton = (buttonId, windowProp, labelPrefix) => {
         const btn = document.getElementById(buttonId);
         if (!btn) return;
 
-        window[windowProp] = 'M';
+        window[windowProp] = OVERLAY_DEFAULTS.size;
 
         const updateButton = () => {
-          const size = window[windowProp] || 'M';
+          const size = window[windowProp] || OVERLAY_DEFAULTS.size;
           btn.textContent = size;
           btn.title = 'Cycle between sizes';
           btn.setAttribute('aria-label', `${labelPrefix} size: ${size}`);
         };
 
         btn.addEventListener('click', () => {
-          const currentIndex = overlaySizeOrder.indexOf(window[windowProp] || 'M');
-          window[windowProp] = overlaySizeOrder[(currentIndex + 1) % overlaySizeOrder.length];
+          const currentIndex = REMEMBER_SIZE.indexOf(window[windowProp] || OVERLAY_DEFAULTS.size);
+          window[windowProp] = REMEMBER_SIZE[(currentIndex + 1) % REMEMBER_SIZE.length];
           updateButton();
         });
 
@@ -6349,19 +6756,19 @@
         updateButton();
       };
       
-      initPositionButton('cornerPositionBtn', 'customTextPosition', 'top-right', 
+      initPositionButton('cornerPositionBtn', 'customTextPosition', OVERLAY_DEFAULTS.textPosition,
         ['top-right', 'bottom-right', 'bottom-left', 'top-left'], 
         'Text position: ');
       
-      initPositionButton('imageCornerPositionBtn', 'customImagePosition', 'top-left',
+      initPositionButton('imageCornerPositionBtn', 'customImagePosition', OVERLAY_DEFAULTS.imagePosition,
         ['top-left', 'top-right', 'bottom-right', 'bottom-left'],
         'Image position: ');
       
-      initPositionButton('timecodeCornerPositionBtn', 'timecodePosition', 'bottom-right',
+      initPositionButton('timecodeCornerPositionBtn', 'timecodePosition', OVERLAY_DEFAULTS.timecodePosition,
         ['bottom-right', 'bottom-left', 'top-left', 'top-right'],
         'Timecode 1 position: ');
 
-      initPositionButton('timecode2CornerPositionBtn', 'timecode2Position', 'bottom-left',
+      initPositionButton('timecode2CornerPositionBtn', 'timecode2Position', OVERLAY_DEFAULTS.timecode2Position,
         ['bottom-left', 'top-left', 'top-right', 'bottom-right'],
         'Timecode 2 position: ');
       
@@ -6401,6 +6808,8 @@
           customImageInput.value = '';
         });
       }
+
+      initRememberSettings();
     });
 
     // Shared collapsible logic (Capture Configuration + Add Overlay)
