@@ -11,7 +11,10 @@
 
 [discord-shield-static]: https://img.shields.io/badge/Discord-landomrandom-121727?style=for-the-badge&labelColor=080c19&messageColor=e0e6f7&logo=discord&logoColor=00c6ff
 
-Pilko Studio is a frame capture web tool that lets you extract screenshots from your videos in many different ways, manually or automated, locally within your browser. It works seamlessly on both desktop and mobile.
+Pilko Studio is a frame capture web tool that lets you extract screenshots from videos in many different ways: manually and automatically, locally within your browser.
+
+**Platform:** Windows, macOS, Linux, ChromeOS, iOS, Android  
+**Browser:** Any
 
 Try it here: https://pilko.studio
 
@@ -22,28 +25,27 @@ Offline: Download `index.html`
 ## ![Features Shield][features-shield]
 
 - Example video for first testing.
-- Video metadata display (resolution, duration, aspect ratio, estimated video bitrate).
+- Video metadata display (resolution, duration, aspect ratio, estimated framerate and bitrate).
 - Capture format (PNG, JPEG, WEBP) and quality configuration (1-100%).
-- Detect video framerate and resolution.
-  - Configure for output.
-- Configure for desired output.
-  - Framerate interval.
-  - Capture crop area.
-  - Aspect ratio presets.
-  - Automatically crop black bars/letterbox.
-- Set framerate for frame-accurate captures.
 - Capture methods
   - `Manual` - Navigate video player to capture and save specific frames.
-  - `Interval` - Extract frames at regular intervals (frames or seconds).
-  - `Automatic` - Automatically detects scene changes and aims to capture only one frame per scene.
-  - `Transcription` - Captures a frame for each timestamp segment.
+  - `Interval` - Extract screenshots by incremental time, frame or fixed count.
+  - `Automatic` - Detect and capture frames by changes in content.
+    - `Histogram Diff` and `Pixel Diff` - Aims to capture one frame per scene.
+    - `Transcription` - Captures a frame per timestamp segment (SRT or VTT).
   - `Grid` - Generates a grid of screenshots to a single image.
-- Add different overlays
-  - SMPTE timecode
+- Capture configuration
+  - `Trim Start/End` to limit capturing to a time range in automatic capture methods.
+  - `Crop Video` area pixel perfectly with marquee selection.
+  - Automatic black bars/letterbox cropping.
+  - `Framerate Override` possibility, even though framerate fetching is very accurate.
+- Add different overlays in any corner
+  - Timecodes (SMPTE/EBU, frame)
   - Custom text
   - Upload image/logo
-- Configure filenames for export.
-- Preview frames in a gallery/lightbox, remove unwanted frames, download individually or as ZIP.
+- `Save My Settings` to streamline repeating needs.
+- Customize output filenames.
+- Preview frames in a gallery/lightbox, fine-tune or remove unwanted frames, download individually or as ZIP.
 
 ![Pilko_Panel](https://i.imgur.com/n5oZIt9.jpeg)
 
@@ -53,9 +55,10 @@ Offline: Download `index.html`
 
 - No cloud processing or installations.
 - Frames are stored temporarily in your browser.
-- Saving settings stores preferences in your browser's localStorage.
-- 100% client-side: built into a single `.html` using native HTML, CSS and JavaScript.
+- `Save My Settings` stores preferences in your browser's localStorage.
+- Built into a single `.html` using native HTML, CSS and JavaScript.
   - Why? For trust and accessibility. Easy to deploy locally, no installations required.
+  - Icons and fonts won't work if you run the tool with no internet.
 
 [processing-shield]: https://img.shields.io/badge/Privacy%20&%20Processing-00c6ff?style=for-the-badge&color=121727
 
