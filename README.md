@@ -18,7 +18,7 @@ Pilko Studio is a frame capture web tool that lets you extract screenshots from 
 
 Try it here: https://pilko.studio
 
-Offline: Download `index.html`
+Local/Offline: Download `index.html`
 
 <video src="https://github.com/user-attachments/assets/2eb13ce0-5c57-4d8f-aaad-a23820f57534" controls width="600"></video>
 
@@ -75,7 +75,7 @@ Offline: Download `index.html`
 
 [use-cases-shield]: https://img.shields.io/badge/Use_Cases-00c6ff?style=for-the-badge&color=121727
 
-## ![How it Works Shield][how-it-works-shield] [![Try it][demo-shield]][demo-url]
+## ![How it Works Shield][how-it-works-shield]
 
 The tool finds timestamps (or you pick them). Your browser's built-in capabilities (`<video>`, `<canvas>`) capture the frame at that time, optionally applying crop area or black-bar removal, encode it to the selected image format, and provide the image data for display/download.
 
@@ -89,12 +89,8 @@ I recommend using [Media Download](https://github.com/mhogomchungu/media-downloa
 [demo-shield]: https://img.shields.io/badge/Try_it-00c6ff?style=for-the-badge&color=080c19
 [demo-url]: https://pilko.studio
 
-<video src="https://i.imgur.com/sD1RuDA.mp4"></video>
-
 ## ![Feedback Shield][feedback-shield]
 
 [![Email][gmail-shield]][gmail-url] ![Discord: landomrandom Status][discord-shield-static]
 
 [feedback-shield]: https://img.shields.io/badge/Feedback-242c44?style=for-the-badge&color=121727&logo=github&logoColor=00c6ff
-
-![Progress](https://i.imgur.com/F2pb5gW.gif)
