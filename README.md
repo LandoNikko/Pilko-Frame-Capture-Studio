@@ -11,7 +11,7 @@
 
 [discord-shield-static]: https://img.shields.io/badge/Discord-landomrandom-121727?style=for-the-badge&labelColor=080c19&messageColor=e0e6f7&logo=discord&logoColor=00c6ff
 
-Pilko Studio is a frame capture web tool that lets you extract screenshots from videos in many different ways: manually and automatically, locally within your browser.
+Pilko Studio is a frame capture web tool that lets you extract screenshots from videos in many different ways: manually and automatically, locally within the browser.
 
 **Platform:** Windows, macOS, Linux, ChromeOS, iOS, Android  
 **Browser:** Any
@@ -43,9 +43,12 @@ Local/Offline: Download `index.html`
   - Timecodes (SMPTE/EBU, frame)
   - Custom text
   - Upload image/logo
-- `Save My Settings` to streamline repeating needs.
+- `Remember Settings` for repeated use
 - Customize output filenames.
-- Fine-tune every capture by second or by frame from the side panel or the lightbox, remove unwanted frames, download individually or as ZIP.
+- Fine-tune controls
+  - Adjust every capture by second or frame
+  - Remove unwanted frames
+  - Ddownload individually or as ZIP
 
 ![Pilko_Panel](https://i.imgur.com/n5oZIt9.jpeg)
 
@@ -85,6 +88,12 @@ The tool doesn't do video extraction from links, such as Youtube, TikTok, Instag
 I recommend using [Media Download](https://github.com/mhogomchungu/media-downloader) or [Hitomi Downloader](https://github.com/KurtBestor/Hitomi-Downloader)
 
 [how-it-works-shield]: https://img.shields.io/badge/How_it_Works-00c6ff?style=for-the-badge&color=121727
+
+## ![Credits][credits-shield]
+
+Example clip: [Sprite Fright](https://studio.blender.org/projects/sprite-fright/) - Blender Foundation, [CC BY 1.0](https://creativecommons.org/licenses/by/1.0/).
+
+[credits-shield]: https://img.shields.io/badge/Credits-00c6ff?style=for-the-badge&color=121727
 
 [demo-shield]: https://img.shields.io/badge/Try_it-00c6ff?style=for-the-badge&color=080c19
 [demo-url]: https://pilko.studio
