@@ -45,7 +45,7 @@ Local/Offline: Download `index.html`
   - Upload image/logo
 - `Save My Settings` to streamline repeating needs.
 - Customize output filenames.
-- Preview frames in a gallery/lightbox, fine-tune or remove unwanted frames, download individually or as ZIP.
+- Fine-tune every capture by second or by frame from the side panel or the lightbox, remove unwanted frames, download individually or as ZIP.
 
 ![Pilko_Panel](https://i.imgur.com/n5oZIt9.jpeg)
 
